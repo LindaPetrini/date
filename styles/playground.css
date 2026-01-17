@@ -1023,6 +1023,234 @@
     color: var(--color-petrol);
 }
 
+/* Toy 15: Room slider (wider labels) */
+.dial-label-wide {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-text);
+    text-align: center;
+    min-width: 80px;
+    line-height: 1.3;
+}
+
+.dial-sub {
+    font-size: 0.65rem;
+    opacity: 0.6;
+}
+
+.room-slider {
+    background: linear-gradient(to right, var(--color-petrol), var(--color-rosa), var(--color-burgundy));
+}
+
+/* Toy 16: Crying scenario */
+.scenario-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.scenario-option {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    padding: 0.75rem 1rem;
+    background: transparent;
+    border: 1px solid var(--color-rosa-light);
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+    color: var(--color-text);
+}
+
+.scenario-option:hover {
+    border-color: var(--color-petrol);
+    background: rgba(45, 106, 106, 0.05);
+}
+
+.scenario-option.selected {
+    border-color: var(--color-petrol);
+    background: rgba(45, 106, 106, 0.1);
+}
+
+.scenario-response {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 0.9rem;
+    color: var(--color-petrol);
+    margin-top: 1rem;
+    min-height: 1.5em;
+}
+
+/* Toy 17: Speed reading */
+.reading-container {
+    text-align: center;
+}
+
+.reading-text {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    text-align: left;
+    padding: 1rem;
+    background: var(--color-rosa-light);
+    border-radius: 8px;
+    margin: 1rem 0;
+    display: none;
+}
+
+.reading-text.show {
+    display: block;
+}
+
+.reading-timer {
+    font-family: var(--font-mono);
+    font-size: 1.5rem;
+    color: var(--color-petrol);
+    margin: 0.5rem 0;
+}
+
+.reading-question {
+    margin-top: 1.5rem;
+    text-align: left;
+}
+
+.reading-question.hidden {
+    display: none;
+}
+
+.question-text {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--color-burgundy-dark);
+    margin-bottom: 1rem;
+}
+
+.question-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.question-option {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    background: transparent;
+    border: 1px solid var(--color-rosa-light);
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+}
+
+.question-option:hover {
+    border-color: var(--color-petrol);
+    background: rgba(45, 106, 106, 0.05);
+}
+
+.reading-result {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--color-petrol);
+    margin-top: 1rem;
+    min-height: 1.5em;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Toy 18: Spirituality slider */
+.spirit-slider {
+    background: linear-gradient(to right, var(--color-text), var(--color-petrol), var(--color-burgundy));
+}
+
+/* Toy 19: Neuro quiz */
+.neuro-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.neuro-option {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    padding: 0.6rem 0.75rem;
+    background: transparent;
+    border: 1px solid var(--color-rosa-light);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.neuro-option:hover {
+    border-color: var(--color-petrol);
+    background: rgba(45, 106, 106, 0.05);
+}
+
+.neuro-option input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--color-petrol);
+    cursor: pointer;
+}
+
+.neuro-option.checked {
+    border-color: var(--color-petrol);
+    background: rgba(45, 106, 106, 0.1);
+}
+
+.neuro-response {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 0.9rem;
+    color: var(--color-petrol);
+    margin-top: 1rem;
+    min-height: 1.5em;
+}
+
+/* Toy 20: Lead/Follow */
+.lead-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.lead-option {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    padding: 0.75rem 1rem;
+    background: transparent;
+    border: 1px solid var(--color-rosa-light);
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+    color: var(--color-text);
+}
+
+.lead-option:hover {
+    border-color: var(--color-petrol);
+    background: rgba(45, 106, 106, 0.05);
+}
+
+.lead-option.selected {
+    border-color: var(--color-petrol);
+    background: rgba(45, 106, 106, 0.1);
+}
+
+.lead-response {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 0.9rem;
+    color: var(--color-petrol);
+    margin-top: 1rem;
+    min-height: 1.5em;
+}
+
 /* Mobile adjustments */
 @media (max-width: 480px) {
     .playground-container {

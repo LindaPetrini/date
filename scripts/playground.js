@@ -23,6 +23,12 @@ const Playground = {
         this.initNatureRank();
         this.initUpsideDown();
         this.initAIQuiz();
+        this.initRoomSlider();
+        this.initCryingScenario();
+        this.initSpeedReading();
+        this.initSpiritSlider();
+        this.initNeuroQuiz();
+        this.initLeadFollow();
         this.initFunQuestion();
         this.initShare();
     },
@@ -851,6 +857,273 @@ const Playground = {
         }
     },
 
+    // ========== Toy 15: Room Slider ==========
+    initRoomSlider() {
+        const dial = document.getElementById('room-dial');
+        const response = document.getElementById('room-response');
+
+        const updateResponse = (value) => {
+            let text;
+            if (value < 20) {
+                text = "one room. everything within reach. I get it.";
+            } else if (value < 40) {
+                text = "cozy. a few distinct spaces but close together.";
+            } else if (value < 60) {
+                text = "balanced. room to spread out but not too much.";
+            } else if (value < 80) {
+                text = "you like having space to yourself.";
+            } else {
+                text = "a room for each mood. ambitious.";
+            }
+            response.textContent = text;
+        };
+
+        dial.addEventListener('input', () => {
+            this.responses.room = dial.value;
+            updateResponse(dial.value);
+        });
+
+        dial.addEventListener('change', () => {
+            this.saveResponses();
+        });
+
+        if (this.responses.room !== undefined) {
+            dial.value = this.responses.room;
+            updateResponse(this.responses.room);
+        }
+    },
+
+    // ========== Toy 16: Crying Scenario ==========
+    initCryingScenario() {
+        const options = document.querySelectorAll('.scenario-option');
+        const response = document.getElementById('crying-response');
+
+        const responses = {
+            'hug': "physical comfort first. warm.",
+            'ask': "checking in before acting. respectful.",
+            'space': "not everyone wants to be seen crying. you know this.",
+            'cry': "emotional contagion. you feel things.",
+            'depends': "context matters. that's fair."
+        };
+
+        options.forEach(btn => {
+            btn.addEventListener('click', () => {
+                options.forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                const answer = btn.dataset.answer;
+                response.textContent = responses[answer];
+                this.responses.crying = answer;
+                this.saveResponses();
+            });
+        });
+
+        if (this.responses.crying) {
+            const saved = document.querySelector(`.scenario-option[data-answer="${this.responses.crying}"]`);
+            if (saved) {
+                saved.classList.add('selected');
+                response.textContent = responses[this.responses.crying];
+            }
+        }
+    },
+
+    // ========== Toy 17: Speed Reading ==========
+    initSpeedReading() {
+        const startBtn = document.getElementById('start-reading');
+        const doneBtn = document.getElementById('done-reading');
+        const textDiv = document.getElementById('reading-text');
+        const timerDiv = document.getElementById('reading-timer');
+        const questionDiv = document.getElementById('reading-question');
+        const questionText = document.getElementById('question-text');
+        const questionOptions = document.getElementById('question-options');
+        const resultDiv = document.getElementById('reading-result');
+
+        const passage = `The octopus has three hearts. Two pump blood to the gills, while the third pumps it to the rest of the body. When an octopus swims, the heart that delivers blood to the body stops beating, which is why these creatures prefer crawling—swimming exhausts them. Their blood is blue because it contains copper-based hemocyanin, which is more efficient at transporting oxygen in cold, low-oxygen environments. Each of their eight arms has its own mini-brain, a cluster of neurons that can act independently, allowing an arm to taste, touch, and even make decisions without consulting the central brain.`;
+
+        const wordCount = passage.split(/\s+/).length;
+        let startTime;
+        let timerInterval;
+
+        const question = {
+            text: "Why do octopuses prefer crawling to swimming?",
+            options: [
+                { text: "Their arms work better on surfaces", correct: false },
+                { text: "Swimming stops one of their hearts", correct: true },
+                { text: "They can't see well while swimming", correct: false },
+                { text: "Their blood flows better when crawling", correct: false }
+            ]
+        };
+
+        startBtn.addEventListener('click', () => {
+            startBtn.classList.add('hidden');
+            textDiv.textContent = passage;
+            textDiv.classList.add('show');
+            doneBtn.classList.remove('hidden');
+            startTime = Date.now();
+
+            timerInterval = setInterval(() => {
+                const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+                timerDiv.textContent = `${elapsed}s`;
+            }, 100);
+        });
+
+        doneBtn.addEventListener('click', () => {
+            clearInterval(timerInterval);
+            const elapsed = (Date.now() - startTime) / 1000;
+            const wpm = Math.round((wordCount / elapsed) * 60);
+
+            textDiv.classList.remove('show');
+            doneBtn.classList.add('hidden');
+            timerDiv.textContent = '';
+
+            this.responses.readingWpm = wpm;
+
+            questionDiv.classList.remove('hidden');
+            questionText.textContent = question.text;
+
+            question.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'question-option';
+                btn.textContent = opt.text;
+                btn.addEventListener('click', () => {
+                    questionDiv.classList.add('hidden');
+                    const correct = opt.correct;
+                    this.responses.readingCorrect = correct;
+                    this.saveResponses();
+
+                    if (correct) {
+                        resultDiv.textContent = `${wpm} words per minute, and you got it right.`;
+                    } else {
+                        resultDiv.textContent = `${wpm} words per minute, but the answer was wrong. speed vs comprehension.`;
+                    }
+                });
+                questionOptions.appendChild(btn);
+            });
+        });
+
+        if (this.responses.readingWpm) {
+            startBtn.classList.add('hidden');
+            const correct = this.responses.readingCorrect;
+            if (correct) {
+                resultDiv.textContent = `${this.responses.readingWpm} wpm, correct answer. already done.`;
+            } else {
+                resultDiv.textContent = `${this.responses.readingWpm} wpm, wrong answer. already done.`;
+            }
+        }
+    },
+
+    // ========== Toy 18: Spirit Slider ==========
+    initSpiritSlider() {
+        const dial = document.getElementById('spirit-dial');
+        const response = document.getElementById('spirit-response');
+
+        const updateResponse = (value) => {
+            let text;
+            if (value < 15) {
+                text = "pure materialism. physics all the way down.";
+            } else if (value < 35) {
+                text = "mostly materialist. open to mystery though.";
+            } else if (value < 55) {
+                text = "agnostic zone. not sure, and okay with that.";
+            } else if (value < 75) {
+                text = "something's going on. you feel it.";
+            } else {
+                text = "believer. there's more to this.";
+            }
+            response.textContent = text;
+        };
+
+        dial.addEventListener('input', () => {
+            this.responses.spirit = dial.value;
+            updateResponse(dial.value);
+        });
+
+        dial.addEventListener('change', () => {
+            this.saveResponses();
+        });
+
+        if (this.responses.spirit !== undefined) {
+            dial.value = this.responses.spirit;
+            updateResponse(this.responses.spirit);
+        }
+    },
+
+    // ========== Toy 19: Neuro Quiz ==========
+    initNeuroQuiz() {
+        const checkboxes = document.querySelectorAll('.neuro-option input[type="checkbox"]');
+        const response = document.getElementById('neuro-response');
+
+        const updateResponse = () => {
+            const checked = [...checkboxes].filter(cb => cb.checked).map(cb => cb.dataset.item);
+            this.responses.neuro = checked;
+            this.saveResponses();
+
+            checkboxes.forEach(cb => {
+                cb.closest('.neuro-option').classList.toggle('checked', cb.checked);
+            });
+
+            if (checked.includes('normal') && checked.length === 1) {
+                response.textContent = "normal. sure.";
+            } else if (checked.length === 0) {
+                response.textContent = "";
+            } else if (checked.length >= 4) {
+                response.textContent = "your brain is interesting.";
+            } else if (checked.includes('swings')) {
+                response.textContent = "swings are great. vestibular joy.";
+            } else if (checked.includes('hyperfocus')) {
+                response.textContent = "hyperfocus is a superpower (and a curse).";
+            } else {
+                response.textContent = "noted.";
+            }
+        };
+
+        checkboxes.forEach(cb => {
+            cb.addEventListener('change', updateResponse);
+        });
+
+        if (this.responses.neuro) {
+            this.responses.neuro.forEach(item => {
+                const cb = document.querySelector(`.neuro-option input[data-item="${item}"]`);
+                if (cb) {
+                    cb.checked = true;
+                    cb.closest('.neuro-option').classList.add('checked');
+                }
+            });
+            updateResponse();
+        }
+    },
+
+    // ========== Toy 20: Lead/Follow ==========
+    initLeadFollow() {
+        const options = document.querySelectorAll('.lead-option');
+        const response = document.getElementById('lead-response');
+
+        const responses = {
+            'lead': "you like to steer. good to know.",
+            'follow': "you like to be taken somewhere. noted.",
+            'both': "context-dependent. flexible.",
+            'neither': "collaborative. building together."
+        };
+
+        options.forEach(btn => {
+            btn.addEventListener('click', () => {
+                options.forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                const answer = btn.dataset.answer;
+                response.textContent = responses[answer];
+                this.responses.lead = answer;
+                this.saveResponses();
+            });
+        });
+
+        if (this.responses.lead) {
+            const saved = document.querySelector(`.lead-option[data-answer="${this.responses.lead}"]`);
+            if (saved) {
+                saved.classList.add('selected');
+                response.textContent = responses[this.responses.lead];
+            }
+        }
+    },
+
     // ========== Share Results ==========
     initShare() {
         const btn = document.getElementById('share-results');
@@ -923,6 +1196,30 @@ const Playground = {
 
         if (r.ai && r.ai.length > 0) {
             lines.push(`ai quiz: ${r.ai.join(', ')}`);
+        }
+
+        if (r.room !== undefined) {
+            lines.push(`room preference: ${r.room}/100 (0=one room, 100=mansion)`);
+        }
+
+        if (r.crying) {
+            lines.push(`crying scenario: ${r.crying}`);
+        }
+
+        if (r.readingWpm) {
+            lines.push(`reading: ${r.readingWpm} wpm, ${r.readingCorrect ? 'correct' : 'wrong'}`);
+        }
+
+        if (r.spirit !== undefined) {
+            lines.push(`spirituality: ${r.spirit}/100 (0=materialist, 100=believer)`);
+        }
+
+        if (r.neuro && r.neuro.length > 0) {
+            lines.push(`neuro: ${r.neuro.join(', ')}`);
+        }
+
+        if (r.lead) {
+            lines.push(`lead/follow: ${r.lead}`);
         }
 
         if (r.fun) {

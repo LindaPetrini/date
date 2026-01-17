@@ -313,10 +313,140 @@
             </div>
         </section>
 
-        <!-- Toy 15: Are you having fun? -->
-        <section class="toy" id="toy-fun" data-order="15">
+        <!-- Toy 15: Room slider -->
+        <section class="toy" id="toy-room" data-order="15">
             <div class="toy-header">
                 <span class="toy-number">15</span>
+                <h2>ideal living space</h2>
+            </div>
+            <div class="toy-content">
+                <div class="dial-container">
+                    <span class="dial-label-wide">one room<br><span class="dial-sub">everything happens here</span></span>
+                    <input type="range" id="room-dial" min="0" max="100" value="50" class="dial-slider room-slider">
+                    <span class="dial-label-wide">mansion<br><span class="dial-sub">a room for each mood</span></span>
+                </div>
+                <div class="dial-response" id="room-response"></div>
+            </div>
+        </section>
+
+        <!-- Toy 16: Crying scenario -->
+        <section class="toy" id="toy-crying" data-order="16">
+            <div class="toy-header">
+                <span class="toy-number">16</span>
+                <h2>someone starts crying in the room</h2>
+            </div>
+            <div class="toy-content">
+                <div class="scenario-options">
+                    <button class="scenario-option" data-answer="hug">go hug them</button>
+                    <button class="scenario-option" data-answer="ask">ask what they need</button>
+                    <button class="scenario-option" data-answer="space">give them space, look away</button>
+                    <button class="scenario-option" data-answer="cry">also start crying</button>
+                    <button class="scenario-option" data-answer="depends">it really depends on who</button>
+                </div>
+                <div class="scenario-response" id="crying-response"></div>
+            </div>
+        </section>
+
+        <!-- Toy 17: Speed reading -->
+        <section class="toy" id="toy-reading" data-order="17">
+            <div class="toy-header">
+                <span class="toy-number">17</span>
+                <h2>speed reading test</h2>
+                <p class="toy-hint">read this as fast as you can, then answer</p>
+            </div>
+            <div class="toy-content">
+                <div class="reading-container">
+                    <button class="toy-action" id="start-reading">start</button>
+                    <div class="reading-text" id="reading-text"></div>
+                    <div class="reading-timer" id="reading-timer"></div>
+                    <button class="toy-action hidden" id="done-reading">done reading</button>
+                </div>
+                <div class="reading-question hidden" id="reading-question">
+                    <p class="question-text" id="question-text"></p>
+                    <div class="question-options" id="question-options"></div>
+                </div>
+                <div class="reading-result" id="reading-result"></div>
+            </div>
+        </section>
+
+        <!-- Toy 18: Spirituality slider -->
+        <section class="toy" id="toy-spirit" data-order="18">
+            <div class="toy-header">
+                <span class="toy-number">18</span>
+                <h2>where do you land?</h2>
+            </div>
+            <div class="toy-content">
+                <div class="dial-container">
+                    <span class="dial-label-wide">materialist<br><span class="dial-sub">atoms all the way down</span></span>
+                    <input type="range" id="spirit-dial" min="0" max="100" value="50" class="dial-slider spirit-slider">
+                    <span class="dial-label-wide">believer<br><span class="dial-sub">something's going on</span></span>
+                </div>
+                <div class="dial-response" id="spirit-response"></div>
+            </div>
+        </section>
+
+        <!-- Toy 19: Neuro quiz -->
+        <section class="toy" id="toy-neuro" data-order="19">
+            <div class="toy-header">
+                <span class="toy-number">19</span>
+                <h2>is your brain normal?</h2>
+            </div>
+            <div class="toy-content">
+                <div class="neuro-options">
+                    <label class="neuro-option">
+                        <input type="checkbox" data-item="swings">
+                        <span>I love swings (still, as an adult)</span>
+                    </label>
+                    <label class="neuro-option">
+                        <input type="checkbox" data-item="silence">
+                        <span>I need silence to think</span>
+                    </label>
+                    <label class="neuro-option">
+                        <input type="checkbox" data-item="systems">
+                        <span>I make systems for everything</span>
+                    </label>
+                    <label class="neuro-option">
+                        <input type="checkbox" data-item="fidget">
+                        <span>I fidget constantly</span>
+                    </label>
+                    <label class="neuro-option">
+                        <input type="checkbox" data-item="texture">
+                        <span>some textures are unbearable</span>
+                    </label>
+                    <label class="neuro-option">
+                        <input type="checkbox" data-item="hyperfocus">
+                        <span>I can hyperfocus for hours</span>
+                    </label>
+                    <label class="neuro-option">
+                        <input type="checkbox" data-item="normal">
+                        <span>my brain is pretty normal actually</span>
+                    </label>
+                </div>
+                <div class="neuro-response" id="neuro-response"></div>
+            </div>
+        </section>
+
+        <!-- Toy 20: Lead/Follow -->
+        <section class="toy" id="toy-lead" data-order="20">
+            <div class="toy-header">
+                <span class="toy-number">20</span>
+                <h2>generally speaking</h2>
+            </div>
+            <div class="toy-content">
+                <div class="lead-options">
+                    <button class="lead-option" data-answer="lead">I'd rather decide what's happening</button>
+                    <button class="lead-option" data-answer="follow">pls take me on a ride</button>
+                    <button class="lead-option" data-answer="both">depends on the context</button>
+                    <button class="lead-option" data-answer="neither">I'd rather we figure it out together</button>
+                </div>
+                <div class="lead-response" id="lead-response"></div>
+            </div>
+        </section>
+
+        <!-- Toy 21: Are you having fun? (moved to end) -->
+        <section class="toy" id="toy-fun" data-order="21">
+            <div class="toy-header">
+                <span class="toy-number">21</span>
                 <h2>are you having fun?</h2>
             </div>
             <div class="toy-content">
