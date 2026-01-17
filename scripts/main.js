@@ -7,7 +7,7 @@
 const STORAGE_KEY = 'dateme_progress';
 
 // State
-let currentProgress = 0;  // 0 = intro only, 1-3 = puzzles completed
+let currentProgress = 0;
 let progressKnotScenes = [];
 
 /**
@@ -16,6 +16,10 @@ let progressKnotScenes = [];
 function init() {
     // Load saved progress
     loadProgress();
+
+    // Initialize systems
+    if (typeof Prompts !== 'undefined') Prompts.init();
+    if (typeof EasterEggs !== 'undefined') EasterEggs.init();
 
     // Initialize progress indicator knots
     initProgressKnots();
@@ -43,12 +47,12 @@ function initProgressKnots() {
         if (container && typeof Knots3D !== 'undefined') {
             container.innerHTML = '';
             const isUnlocked = i <= currentProgress;
-            const color = isUnlocked ? Knots3D.colors.sage : Knots3D.colors.light;
+            const color = isUnlocked ? Knots3D.colors.petrol : Knots3D.colors.light;
 
             const scene = Knots3D.createKnotScene(container, 'trefoil', {
                 size: 48,
                 color: color,
-                tubeRadius: 0.18,
+                tubeRadius: 0.22,
                 rotation: { x: 0.3 + i * 0.2, y: 0.5 + i * 0.3, z: i * 0.1 },
                 animate: false
             });
@@ -164,55 +168,15 @@ function unlockStage(stageNum) {
 }
 
 /**
- * Start a puzzle
- */
-function startPuzzle(puzzleNum) {
-    const puzzleSection = document.getElementById(`puzzle-${puzzleNum}`);
-    if (puzzleSection) {
-        // Initialize the puzzle
-        Puzzles.init(puzzleNum);
-
-        // Show the puzzle modal
-        puzzleSection.classList.add('active');
-
-        // Prevent body scroll
-        document.body.style.overflow = 'hidden';
-    }
-}
-
-/**
- * Close a puzzle
- */
-function closePuzzle(puzzleNum) {
-    const puzzleSection = document.getElementById(`puzzle-${puzzleNum}`);
-    if (puzzleSection) {
-        puzzleSection.classList.remove('active');
-
-        // Restore body scroll
-        document.body.style.overflow = '';
-
-        // Clear feedback
-        const feedback = document.getElementById(`feedback-${puzzleNum}`);
-        if (feedback) {
-            const feedbackText = feedback.querySelector('.feedback-text');
-            if (feedbackText) {
-                feedbackText.textContent = '';
-                feedbackText.className = 'feedback-text';
-            }
-        }
-    }
-}
-
-/**
  * Handle keyboard events
  */
 function handleKeydown(e) {
-    // Escape closes any open puzzle
+    // Escape closes any open prompt
     if (e.key === 'Escape') {
         for (let i = 1; i <= 3; i++) {
-            const puzzleSection = document.getElementById(`puzzle-${i}`);
-            if (puzzleSection && puzzleSection.classList.contains('active')) {
-                closePuzzle(i);
+            const promptSection = document.getElementById(`prompt-${i}`);
+            if (promptSection && promptSection.classList.contains('active')) {
+                closePrompt(i);
                 break;
             }
         }
@@ -225,6 +189,8 @@ function handleKeydown(e) {
 function resetProgress() {
     try {
         localStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem('dateme_responses');
+        localStorage.removeItem('dateme_eggs');
         currentProgress = 0;
         updateUI();
 
@@ -249,9 +215,7 @@ if (document.readyState === 'loading') {
     init();
 }
 
-// Expose functions globally for onclick handlers
-window.startPuzzle = startPuzzle;
-window.closePuzzle = closePuzzle;
+// Expose functions globally
 window.unlockStage = unlockStage;
 window.saveProgress = saveProgress;
 window.resetProgress = resetProgress;

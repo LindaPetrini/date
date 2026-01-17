@@ -8,14 +8,14 @@ const Knots3D = {
     renderers: [],
     animationFrames: [],
 
-    // Warm earth tone colors matching CSS palette
+    // Petrol + Rosa antico colors matching CSS palette
     colors: {
-        primary: 0xC17F59,      // terracotta
-        secondary: 0xA66B47,    // terracotta dark
-        accent: 0x8B5A2B,       // brown
-        light: 0xE8DFD5,        // sand
-        dark: 0x5D3A1A,         // brown dark
-        sage: 0x87A878          // sage green
+        primary: 0x8B4A5E,      // burgundy
+        secondary: 0x6B3A49,    // burgundy dark
+        accent: 0x2D6A6A,       // petrol
+        light: 0xE0D0D0,        // rosa light
+        dark: 0x996B6B,         // rosa dark
+        petrol: 0x4A8B8B        // petrol light
     },
 
     /**
@@ -151,7 +151,7 @@ const Knots3D = {
             rotation = { x: 0, y: 0, z: 0 },
             color = this.colors.primary,
             animate = false,
-            tubeRadius = 0.12
+            tubeRadius = 0.18  // Thicker for ropy look
         } = options;
 
         // Scene setup
@@ -165,6 +165,7 @@ const Knots3D = {
         });
         renderer.setSize(size, size);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.physicallyCorrectLights = true;
         container.appendChild(renderer.domElement);
 
         // Get knot points based on type
@@ -189,32 +190,39 @@ const Knots3D = {
                 points = this.trefoilPoints(150, 1, rotation);
         }
 
-        // Create tube geometry from points
+        // Create tube geometry from points - more segments for smoothness
         const curve = new THREE.CatmullRomCurve3(points);
         curve.closed = true;
-        const geometry = new THREE.TubeGeometry(curve, 200, tubeRadius, 16, true);
+        const geometry = new THREE.TubeGeometry(curve, 300, tubeRadius, 24, true);
 
-        // Material with nice lighting
+        // Rope-like material - more matte, slight texture feel
         const material = new THREE.MeshStandardMaterial({
             color: color,
-            roughness: 0.4,
-            metalness: 0.1,
+            roughness: 0.7,      // More matte, like rope
+            metalness: 0.0,      // No metallic sheen
         });
 
         const mesh = new THREE.Mesh(geometry, material);
         scene.add(mesh);
 
-        // Lighting
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        // Better lighting for rope-like appearance
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
         scene.add(ambientLight);
 
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-        directionalLight.position.set(5, 5, 5);
-        scene.add(directionalLight);
+        // Main light - warm
+        const mainLight = new THREE.DirectionalLight(0xfff5e6, 1.0);
+        mainLight.position.set(5, 5, 5);
+        scene.add(mainLight);
 
-        const backLight = new THREE.DirectionalLight(0xffffff, 0.3);
-        backLight.position.set(-5, -5, -5);
-        scene.add(backLight);
+        // Fill light - cooler
+        const fillLight = new THREE.DirectionalLight(0xe6f0ff, 0.4);
+        fillLight.position.set(-3, 2, -3);
+        scene.add(fillLight);
+
+        // Rim light for definition
+        const rimLight = new THREE.DirectionalLight(0xffffff, 0.3);
+        rimLight.position.set(0, -5, -5);
+        scene.add(rimLight);
 
         // Animation loop
         let frameId;
