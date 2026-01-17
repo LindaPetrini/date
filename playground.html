@@ -16,7 +16,28 @@
     <main class="playground-container">
         <header class="playground-header">
             <h1 class="playground-title">play</h1>
-            <p class="playground-subtitle">no right answers (mostly)</p>
+            <p class="playground-subtitle">date me docs are boring. here's a playground instead.</p>
+            <p class="playground-description">get to know some things about me. for dating or otherwise.</p>
+
+            <!-- Disqualifiers hover box -->
+            <div class="disqualifiers-container">
+                <div class="disqualifiers-trigger">
+                    <span class="disqualifiers-label">obvious disqualifiers</span>
+                    <span class="disqualifiers-hint">(hover)</span>
+                </div>
+                <div class="disqualifiers-popup">
+                    <img src="assets/linda.jpg" alt="Linda" class="disqualifiers-pic" onerror="this.style.display='none'">
+                    <ul class="disqualifiers-list">
+                        <li>F looking for M</li>
+                        <li>29</li>
+                        <li>monogamous</li>
+                        <li>wants kids</li>
+                        <li>omnivore</li>
+                        <li>europe-based</li>
+                    </ul>
+                </div>
+            </div>
+
             <nav class="playground-nav">
                 <a href="index.html" class="nav-link">&larr; back to main</a>
             </nav>
@@ -560,11 +581,60 @@
         <section class="playground-end">
             <p>that's all for now.</p>
             <p class="end-note">if you enjoyed this, you might enjoy me.</p>
+
+            <!-- Compatibility score -->
+            <div class="score-section" id="score-section">
+                <div class="score-display">
+                    <span class="score-label">compatibility vibe:</span>
+                    <span class="score-value" id="score-value">--</span>
+                </div>
+                <p class="score-note" id="score-note"></p>
+            </div>
+
             <div class="share-section">
                 <button class="share-btn" id="share-results">share your answers with me</button>
                 <div class="share-output" id="share-output"></div>
             </div>
-            <p class="end-link"><a href="index.html">or say hello another way</a></p>
+
+            <div class="end-links">
+                <a href="#my-answers" class="end-link-btn" id="my-answers-link" onclick="document.getElementById('my-answers').open = true; return true;">see my answers</a>
+                <a href="index.html" class="end-link-btn">say hello another way</a>
+            </div>
+
+            <!-- My answers collapsible -->
+            <details class="my-answers-section" id="my-answers">
+                <summary>linda's answers</summary>
+                <div class="my-answers-content">
+                    <div class="my-answer"><strong>color:</strong> a muted teal, like the sea on a cloudy day</div>
+                    <div class="my-answer"><strong>pelvis:</strong> usually tilted, if I'm honest</div>
+                    <div class="my-answer"><strong>texture:</strong> linen in summer, wool in winter</div>
+                    <div class="my-answer"><strong>toes:</strong> yes — barefoot life</div>
+                    <div class="my-answer"><strong>music:</strong> 10/100 — I need silence to think</div>
+                    <div class="my-answer"><strong>nature:</strong> sea > forest > mountain > lake > river</div>
+                    <div class="my-answer"><strong>upside down:</strong> I love it. handstands are my meditation.</div>
+                    <div class="my-answer"><strong>AI:</strong> all of them except the $50 (this month)</div>
+                    <div class="my-answer"><strong>rooms:</strong> 35/100 — cozy but distinct spaces</div>
+                    <div class="my-answer"><strong>crying:</strong> ask, then maybe cry too</div>
+                    <div class="my-answer"><strong>spirituality:</strong> 75/100 — something's going on</div>
+                    <div class="my-answer"><strong>lead/follow:</strong> depends on context, but I lean follow</div>
+                    <div class="my-answer"><strong>therapy:</strong> 500+ hours, more $ than I want to calculate</div>
+                    <div class="my-answer"><strong>god:</strong> something like love, or presence</div>
+                    <div class="my-answer"><strong>food:</strong> cook, joy, ingredients — food is connection</div>
+                    <div class="my-answer"><strong>in the middle of the night I:</strong> write</div>
+                    <div class="my-answer"><strong>my pleasure is:</strong> simple — sun, movement, good conversation</div>
+                    <div class="my-answer"><strong>all parts of me:</strong> are welcome here</div>
+                </div>
+            </details>
+
+            <!-- Make your own collapsible -->
+            <details class="make-your-own">
+                <summary>make your own</summary>
+                <div class="make-your-own-content">
+                    <p>if you liked this, ask Claude to make you one.</p>
+                    <p><a href="https://github.com/lindapetrini/dateme-playground" target="_blank">github repo</a></p>
+                    <p class="make-your-own-note">i won't be offended if you don't cite me, but i'll be happy if you do — and i might end up finding more humans i'd like to meet.</p>
+                </div>
+            </details>
         </section>
 
         <footer class="playground-footer">

@@ -20,8 +20,26 @@ const CONTENT = {
     // =====================================================
     intro: {
         title: "play",
-        subtitle: "no right answers (mostly)",
-        pathHint: "suggested start"
+        subtitle: "date me docs are boring. here's a playground instead.",
+        description: "get to know some things about me. for dating or otherwise.",
+        pathHint: "suggested start",
+
+        // The hover/click disqualifiers box
+        disqualifiers: {
+            label: "obvious disqualifiers",
+            tooltip: "hover for the basics",
+            items: [
+                "F looking for M",
+                "29",
+                "monogamous",
+                "wants kids",
+                "omnivore",
+                "europe-based"
+            ]
+        },
+
+        // Your profile pic (put in assets/)
+        profilePic: "assets/linda.jpg"
     },
 
     // =====================================================
@@ -32,8 +50,53 @@ const CONTENT = {
         note: "if you enjoyed this, you might enjoy me.",
         shareButton: "share your answers with me",
         copyHint: "copy and paste this into an email to linda.petrini@gmail.com",
-        backLink: "or say hello another way"
+        backLink: "or say hello another way",
+
+        // Link to your own answers
+        myAnswersLink: "see my answers",
+        myAnswersUrl: "#my-answers", // change to actual URL or section
+
+        // Make your own section
+        makeYourOwn: {
+            title: "make your own",
+            text: "if you liked this, ask Claude to make you one.",
+            repoUrl: "https://github.com/lindapetrini/dateme-playground",
+            repoLabel: "github repo",
+            note: "i won't be offended if you don't cite me, but i'll be happy if you do — and i might end up finding more humans i'd like to meet."
+        }
     },
+
+    // =====================================================
+    // TOY ORDER - Change this array to reorder toys
+    // =====================================================
+    toyOrder: [
+        "color",      // 1
+        "body",       // 2
+        "shades",     // 3
+        "emotion",    // 4
+        "autocomplete", // 5
+        "texture",    // 6
+        "toes",       // 7
+        "sequence",   // 8
+        "images",     // 9
+        "message",    // 10
+        "music",      // 11
+        "nature",     // 12
+        "upside",     // 13
+        "ai",         // 14
+        "room",       // 15
+        "crying",     // 16
+        "reading",    // 17
+        "spirit",     // 18
+        "neuro",      // 19
+        "lead",       // 20
+        "therapy",    // 21
+        "god",        // 22
+        "food",       // 23
+        "precision",  // 24
+        "hold",       // 25
+        "fun"         // 26
+    ],
 
     // =====================================================
     // TOY 1: COLOR
@@ -475,6 +538,32 @@ const CONTENT = {
             "not-sure": "that's okay. neither am I sometimes.",
             no: "thank you for your honesty. I genuinely appreciate it."
         }
+    },
+
+    // =====================================================
+    // LINDA'S ANSWERS - Fill these in!
+    // =====================================================
+    myAnswers: {
+        color: "a muted teal, like the sea on a cloudy day",
+        body: "usually tilted, if I'm honest",
+        texture: "linen in summer, wool in winter",
+        toes: "yes — barefoot life",
+        music: "10/100 — I need silence to think",
+        nature: "sea > forest > mountain > lake > river",
+        upside: "I love it. handstands are my meditation.",
+        ai: "all of them except the $50 (this month)",
+        room: "35/100 — cozy but distinct spaces",
+        crying: "ask, then maybe cry too",
+        spirit: "75/100 — something's going on",
+        lead: "depends on the context, but I lean follow",
+        therapy: "500+ hours, more money than I want to calculate",
+        god: "something like love, or presence",
+        food: "cook, joy, ingredients — food is connection",
+        autocomplete: [
+            "in the middle of the night I write",
+            "my pleasure is simple — sun, movement, good conversation",
+            "all parts of me are welcome here"
+        ]
     }
 };
 

@@ -1292,6 +1292,111 @@ const Playground = {
                 // Clipboard might not be available, that's ok
             });
         });
+
+        // Calculate and show score
+        this.updateScore();
+    },
+
+    // ========== Scorecard ==========
+    updateScore() {
+        const scoreValue = document.getElementById('score-value');
+        const scoreNote = document.getElementById('score-note');
+
+        if (!scoreValue) return;
+
+        const r = this.responses;
+        let points = 0;
+        let maxPoints = 0;
+        let notes = [];
+
+        // Score based on Linda's preferences (edit these!)
+        // Each match adds points, mismatches subtract or add 0
+
+        // Music: Linda likes silence/quiet
+        if (r.music !== undefined) {
+            maxPoints += 10;
+            if (r.music < 35) { points += 10; notes.push("quiet person"); }
+            else if (r.music < 55) { points += 5; }
+        }
+
+        // Upside down: Linda loves it
+        if (r.upside) {
+            maxPoints += 10;
+            if (r.upside === 'love') { points += 10; notes.push("upside down buddy"); }
+            else if (r.upside === 'fine') { points += 5; }
+        }
+
+        // AI: Linda is very online
+        if (r.ai && r.ai.length > 0) {
+            maxPoints += 10;
+            if (r.ai.length >= 4) { points += 10; notes.push("AI nerd"); }
+            else if (r.ai.length >= 2) { points += 5; }
+        }
+
+        // Spirituality: Linda is spiritual
+        if (r.spirit !== undefined) {
+            maxPoints += 10;
+            if (r.spirit >= 55) { points += 10; notes.push("open to mystery"); }
+            else if (r.spirit >= 35) { points += 5; }
+        }
+
+        // Lead/follow: flexible is good
+        if (r.lead) {
+            maxPoints += 10;
+            if (r.lead === 'both' || r.lead === 'neither') { points += 10; }
+            else { points += 5; }
+        }
+
+        // Crying: emotional availability
+        if (r.crying) {
+            maxPoints += 10;
+            if (r.crying === 'cry' || r.crying === 'ask') { points += 10; notes.push("emotionally present"); }
+            else if (r.crying === 'hug') { points += 7; }
+            else { points += 3; }
+        }
+
+        // Nature: sea is Linda's fave
+        if (r.nature && r.nature.length > 0) {
+            maxPoints += 10;
+            if (r.nature[0] === 'sea') { points += 10; notes.push("sea lover"); }
+            else if (r.nature[0] === 'forest') { points += 8; }
+            else { points += 5; }
+        }
+
+        // Food: cooking joy
+        if (r.food && r.food.length > 0) {
+            maxPoints += 10;
+            if (r.food.includes('joy') && r.food.includes('cook')) { points += 10; notes.push("cooking together"); }
+            else if (r.food.includes('ingredients')) { points += 7; }
+            else { points += 3; }
+        }
+
+        // Calculate percentage
+        if (maxPoints === 0) {
+            scoreValue.textContent = "--";
+            scoreNote.textContent = "answer some things first";
+            return;
+        }
+
+        const percentage = Math.round((points / maxPoints) * 100);
+
+        // Fun labels instead of numbers
+        let label;
+        if (percentage >= 85) label = "intriguing";
+        else if (percentage >= 70) label = "promising";
+        else if (percentage >= 50) label = "curious";
+        else if (percentage >= 30) label = "different";
+        else label = "wildcard";
+
+        scoreValue.textContent = label;
+
+        // Show one random note
+        if (notes.length > 0) {
+            const randomNote = notes[Math.floor(Math.random() * notes.length)];
+            scoreNote.textContent = randomNote;
+        } else {
+            scoreNote.textContent = "";
+        }
     },
 
     generateSummary() {
