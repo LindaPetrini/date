@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playground - Linda</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/playground.css">
+</head>
+<body>
+    <div class="background-decoration"></div>
+
+    <main class="playground-container">
+        <header class="playground-header">
+            <h1 class="playground-title">play</h1>
+            <p class="playground-subtitle">no right answers (mostly)</p>
+            <nav class="playground-nav">
+                <a href="index.html" class="nav-link">&larr; back to main</a>
+            </nav>
+        </header>
+
+        <!-- Suggested path indicator -->
+        <div class="path-hint">
+            <span class="path-text">suggested start</span>
+            <span class="path-arrow">&darr;</span>
+        </div>
+
+        <!-- Toy 1: Color Maker -->
+        <section class="toy" id="toy-color" data-order="1">
+            <div class="toy-header">
+                <span class="toy-number">01</span>
+                <h2>make a color you like</h2>
+            </div>
+            <div class="toy-content">
+                <div class="color-preview" id="color-preview"></div>
+                <div class="color-sliders">
+                    <div class="slider-group">
+                        <label>hue</label>
+                        <input type="range" id="hue-slider" min="0" max="360" value="180">
+                    </div>
+                    <div class="slider-group">
+                        <label>saturation</label>
+                        <input type="range" id="sat-slider" min="0" max="100" value="50">
+                    </div>
+                    <div class="slider-group">
+                        <label>lightness</label>
+                        <input type="range" id="light-slider" min="0" max="100" value="50">
+                    </div>
+                </div>
+                <button class="toy-action" id="save-color">this one</button>
+                <div class="color-saved" id="color-saved"></div>
+            </div>
+        </section>
+
+        <!-- Toy 2: Body Check -->
+        <section class="toy" id="toy-body" data-order="2">
+            <div class="toy-header">
+                <span class="toy-number">02</span>
+                <h2>where is your pelvis pointing right now?</h2>
+            </div>
+            <div class="toy-content">
+                <div class="body-options">
+                    <button class="body-option" data-answer="forward">forward, like a good citizen</button>
+                    <button class="body-option" data-answer="tucked">tucked under, protecting something</button>
+                    <button class="body-option" data-answer="tilted">tilted to one side</button>
+                    <button class="body-option" data-answer="back">pushed back, perhaps in a chair</button>
+                    <button class="body-option" data-answer="unsure">I genuinely don't know</button>
+                </div>
+                <div class="body-response" id="body-response"></div>
+            </div>
+        </section>
+
+        <!-- Toy 3: Shade Order -->
+        <section class="toy" id="toy-shades" data-order="3">
+            <div class="toy-header">
+                <span class="toy-number">03</span>
+                <h2>order these by brightness</h2>
+                <p class="toy-hint">darkest to lightest. drag or click to swap.</p>
+            </div>
+            <div class="toy-content">
+                <div class="shade-container" id="shade-container"></div>
+                <button class="toy-action" id="check-shades">check</button>
+                <div class="shade-result" id="shade-result"></div>
+            </div>
+        </section>
+
+        <!-- Toy 4: Emotion or Not -->
+        <section class="toy" id="toy-emotion" data-order="4">
+            <div class="toy-header">
+                <span class="toy-number">04</span>
+                <h2>is this a feeling?</h2>
+                <p class="toy-hint">in the nonviolent communication sense</p>
+            </div>
+            <div class="toy-content">
+                <div class="emotion-card" id="emotion-card">
+                    <p class="emotion-text" id="emotion-text"></p>
+                </div>
+                <div class="emotion-buttons">
+                    <button class="emotion-btn" id="emotion-yes">yes, a feeling</button>
+                    <button class="emotion-btn" id="emotion-no">no, something else</button>
+                </div>
+                <div class="emotion-feedback" id="emotion-feedback"></div>
+                <div class="emotion-score">
+                    <span id="emotion-correct">0</span> / <span id="emotion-total">0</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Toy 5: Autocomplete -->
+        <section class="toy" id="toy-autocomplete" data-order="5">
+            <div class="toy-header">
+                <span class="toy-number">05</span>
+                <h2>complete these</h2>
+            </div>
+            <div class="toy-content">
+                <div class="autocomplete-prompts">
+                    <div class="autocomplete-item">
+                        <span class="prompt-start">in the middle of the night I</span>
+                        <input type="text" class="prompt-input-inline" id="auto-1" placeholder="...">
+                    </div>
+                    <div class="autocomplete-item">
+                        <span class="prompt-start">my pleasure is</span>
+                        <input type="text" class="prompt-input-inline" id="auto-2" placeholder="...">
+                    </div>
+                    <div class="autocomplete-item">
+                        <span class="prompt-start">all parts of me</span>
+                        <input type="text" class="prompt-input-inline" id="auto-3" placeholder="...">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Toy 6: Texture Picker -->
+        <section class="toy" id="toy-texture" data-order="6">
+            <div class="toy-header">
+                <span class="toy-number">06</span>
+                <h2>pick a texture</h2>
+            </div>
+            <div class="toy-content">
+                <div class="texture-grid" id="texture-grid">
+                    <div class="texture-option" data-texture="linen" title="linen"></div>
+                    <div class="texture-option" data-texture="wool" title="wool"></div>
+                    <div class="texture-option" data-texture="silk" title="silk"></div>
+                    <div class="texture-option" data-texture="stone" title="stone"></div>
+                    <div class="texture-option" data-texture="wood" title="wood"></div>
+                    <div class="texture-option" data-texture="water" title="water"></div>
+                </div>
+                <div class="texture-chosen" id="texture-chosen"></div>
+            </div>
+        </section>
+
+        <!-- Toy 7: Toe Test -->
+        <section class="toy" id="toy-toes" data-order="7">
+            <div class="toy-header">
+                <span class="toy-number">07</span>
+                <h2>can you separate all of your toes?</h2>
+                <p class="toy-hint">like, spread them apart individually</p>
+            </div>
+            <div class="toy-content">
+                <div class="toe-options">
+                    <button class="toe-option" data-answer="yes">yes, easily</button>
+                    <button class="toe-option" data-answer="some">some of them</button>
+                    <button class="toe-option" data-answer="no">not really</button>
+                    <button class="toe-option" data-answer="trying">hold on, I'm trying right now</button>
+                </div>
+                <div class="toe-response" id="toe-response"></div>
+            </div>
+        </section>
+
+        <!-- Toy 8: Sequence -->
+        <section class="toy" id="toy-sequence" data-order="8">
+            <div class="toy-header">
+                <span class="toy-number">08</span>
+                <h2>what comes next?</h2>
+            </div>
+            <div class="toy-content">
+                <div class="sequence-display" id="sequence-display"></div>
+                <div class="sequence-options" id="sequence-options"></div>
+                <div class="sequence-feedback" id="sequence-feedback"></div>
+            </div>
+        </section>
+
+        <!-- Toy 9: Choose an image -->
+        <section class="toy" id="toy-images" data-order="9">
+            <div class="toy-header">
+                <span class="toy-number">09</span>
+                <h2>pick one</h2>
+            </div>
+            <div class="toy-content">
+                <div class="image-grid">
+                    <canvas class="image-option" id="image-1" width="120" height="120"></canvas>
+                    <canvas class="image-option" id="image-2" width="120" height="120"></canvas>
+                    <canvas class="image-option" id="image-3" width="120" height="120"></canvas>
+                </div>
+                <div class="image-chosen" id="image-chosen"></div>
+            </div>
+        </section>
+
+        <!-- Toy 10: Message preference -->
+        <section class="toy" id="toy-message" data-order="10">
+            <div class="toy-header">
+                <span class="toy-number">10</span>
+                <h2>which would you rather receive?</h2>
+            </div>
+            <div class="toy-content">
+                <div class="message-options">
+                    <button class="message-option" data-choice="direct">"I need some time alone tonight."</button>
+                    <button class="message-option" data-choice="soft">"I'm feeling a bit drained, would it be okay if we had a quiet evening apart?"</button>
+                </div>
+                <div class="message-response" id="message-response"></div>
+            </div>
+        </section>
+
+        <!-- Toy 11: Are you having fun? -->
+        <section class="toy" id="toy-fun" data-order="11">
+            <div class="toy-header">
+                <span class="toy-number">11</span>
+                <h2>are you having fun?</h2>
+            </div>
+            <div class="toy-content">
+                <div class="fun-options">
+                    <button class="fun-option" data-answer="yes">yes</button>
+                    <button class="fun-option" data-answer="kind-of">kind of</button>
+                    <button class="fun-option" data-answer="not-sure">I'm not sure what this is</button>
+                    <button class="fun-option" data-answer="no">no</button>
+                </div>
+                <div class="fun-response" id="fun-response"></div>
+            </div>
+        </section>
+
+        <!-- End -->
+        <section class="playground-end">
+            <p>that's all for now.</p>
+            <p class="end-note">if you enjoyed this, you might enjoy me. <a href="index.html">say hello?</a></p>
+        </section>
+
+        <footer class="playground-footer">
+            <a href="https://lindapetrini.com">lindapetrini.com</a>
+        </footer>
+    </main>
+
+    <script src="scripts/playground.js"></script>
+</body>
+</html>

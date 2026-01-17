@@ -1,0 +1,761 @@
+/**
+ * Playground Styles
+ * A scattered collection of interactive toys
+ */
+
+/* Layout */
+.playground-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+}
+
+.playground-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--color-rosa-light);
+}
+
+.playground-title {
+    font-family: var(--font-display);
+    font-size: 2.5rem;
+    color: var(--color-burgundy);
+    margin-bottom: 0.5rem;
+    font-weight: 400;
+}
+
+.playground-subtitle {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--color-petrol);
+    opacity: 0.8;
+}
+
+.playground-nav {
+    margin-top: 1.5rem;
+}
+
+.nav-link {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--color-petrol);
+    text-decoration: none;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.nav-link:hover {
+    opacity: 1;
+}
+
+/* Path hint */
+.path-hint {
+    text-align: center;
+    margin-bottom: 2rem;
+    opacity: 0.5;
+}
+
+.path-text {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-petrol);
+}
+
+.path-arrow {
+    display: block;
+    font-size: 1.2rem;
+    color: var(--color-petrol);
+    animation: gentle-bounce 2s ease-in-out infinite;
+}
+
+@keyframes gentle-bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(4px); }
+}
+
+/* Individual Toy */
+.toy {
+    background: var(--color-cream);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    border: 1px solid var(--color-rosa-light);
+}
+
+.toy-header {
+    margin-bottom: 1.25rem;
+}
+
+.toy-number {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--color-petrol);
+    opacity: 0.5;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.toy-header h2 {
+    font-family: var(--font-body);
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: var(--color-burgundy-dark);
+    margin: 0;
+}
+
+.toy-hint {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-text);
+    opacity: 0.6;
+    margin-top: 0.25rem;
+}
+
+.toy-content {
+    /* Container for toy interactions */
+}
+
+.toy-action {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    padding: 0.5rem 1rem;
+    background: var(--color-petrol);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 1rem;
+}
+
+.toy-action:hover {
+    background: var(--color-petrol-light);
+}
+
+/* Toy 1: Color Maker */
+.color-preview {
+    width: 100%;
+    height: 100px;
+    border-radius: 8px;
+    background: hsl(180, 50%, 50%);
+    margin-bottom: 1rem;
+    transition: background 0.1s;
+}
+
+.color-sliders {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.slider-group {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.slider-group label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-text);
+    width: 70px;
+    opacity: 0.7;
+}
+
+.slider-group input[type="range"] {
+    flex: 1;
+    height: 6px;
+    -webkit-appearance: none;
+    background: var(--color-rosa-light);
+    border-radius: 3px;
+    outline: none;
+}
+
+.slider-group input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    background: var(--color-burgundy);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.color-saved {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--color-petrol);
+    margin-top: 0.75rem;
+    min-height: 1.2em;
+}
+
+/* Toy 2: Body Check */
+.body-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.body-option {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    padding: 0.75rem 1rem;
+    background: transparent;
+    border: 1px solid var(--color-rosa-light);
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+    color: var(--color-text);
+}
+
+.body-option:hover {
+    border-color: var(--color-petrol);
+    background: rgba(45, 106, 106, 0.05);
+}
+
+.body-option.selected {
+    border-color: var(--color-petrol);
+    background: rgba(45, 106, 106, 0.1);
+}
+
+.body-response {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 0.9rem;
+    color: var(--color-petrol);
+    margin-top: 1rem;
+    min-height: 1.5em;
+}
+
+/* Toy 3: Shade Order */
+.shade-container {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+
+.shade-box {
+    width: 50px;
+    height: 50px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 2px solid transparent;
+}
+
+.shade-box:hover {
+    transform: scale(1.05);
+}
+
+.shade-box.selected {
+    border-color: var(--color-burgundy);
+    box-shadow: 0 0 0 2px var(--color-burgundy);
+}
+
+.shade-box.correct {
+    border-color: var(--color-petrol);
+}
+
+.shade-box.incorrect {
+    border-color: var(--color-burgundy);
+}
+
+.shade-result {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--color-petrol);
+    text-align: center;
+    min-height: 1.2em;
+}
+
+/* Toy 4: Emotion or Not */
+.emotion-card {
+    background: var(--color-rosa-light);
+    padding: 1.5rem;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.emotion-text {
+    font-family: var(--font-body);
+    font-size: 1.1rem;
+    color: var(--color-burgundy-dark);
+    margin: 0;
+}
+
+.emotion-buttons {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+}
+
+.emotion-btn {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    padding: 0.6rem 1.2rem;
+    background: transparent;
+    border: 1px solid var(--color-petrol);
+    border-radius: 4px;
+    color: var(--color-petrol);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.emotion-btn:hover {
+    background: var(--color-petrol);
+    color: white;
+}
+
+.emotion-feedback {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    text-align: center;
+    margin-top: 1rem;
+    min-height: 2.5em;
+    color: var(--color-text);
+}
+
+.emotion-score {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-align: center;
+    color: var(--color-petrol);
+    opacity: 0.7;
+    margin-top: 0.5rem;
+}
+
+/* Toy 5: Autocomplete */
+.autocomplete-prompts {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.autocomplete-item {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem;
+}
+
+.prompt-start {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: var(--color-burgundy-dark);
+}
+
+.prompt-input-inline {
+    flex: 1;
+    min-width: 150px;
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 1rem;
+    padding: 0.25rem 0.5rem;
+    border: none;
+    border-bottom: 1px solid var(--color-rosa);
+    background: transparent;
+    color: var(--color-petrol);
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.prompt-input-inline:focus {
+    border-color: var(--color-petrol);
+}
+
+.prompt-input-inline::placeholder {
+    color: var(--color-rosa);
+    opacity: 0.7;
+}
+
+/* Toy 6: Texture Picker */
+.texture-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 1rem;
+}
+
+.texture-option {
+    aspect-ratio: 1;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 2px solid transparent;
+}
+
+.texture-option:hover {
+    transform: scale(1.03);
+}
+
+.texture-option.selected {
+    border-color: var(--color-petrol);
+    box-shadow: 0 0 0 2px var(--color-petrol);
+}
+
+/* Texture patterns using CSS */
+.texture-option[data-texture="linen"] {
+    background:
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 2px,
+            rgba(139, 74, 94, 0.1) 2px,
+            rgba(139, 74, 94, 0.1) 4px
+        ),
+        repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 2px,
+            rgba(139, 74, 94, 0.1) 2px,
+            rgba(139, 74, 94, 0.1) 4px
+        ),
+        #F5EDE8;
+}
+
+.texture-option[data-texture="wool"] {
+    background:
+        radial-gradient(circle at 25% 25%, rgba(139, 74, 94, 0.15) 1px, transparent 1px),
+        radial-gradient(circle at 75% 75%, rgba(139, 74, 94, 0.15) 1px, transparent 1px),
+        radial-gradient(circle at 50% 50%, rgba(139, 74, 94, 0.1) 2px, transparent 2px),
+        #E8DDD5;
+    background-size: 8px 8px, 8px 8px, 12px 12px;
+}
+
+.texture-option[data-texture="silk"] {
+    background: linear-gradient(
+        135deg,
+        #F0E6E0 0%,
+        #FAF5F0 25%,
+        #E8DED8 50%,
+        #FAF5F0 75%,
+        #F0E6E0 100%
+    );
+}
+
+.texture-option[data-texture="stone"] {
+    background:
+        radial-gradient(ellipse at 30% 40%, rgba(100, 100, 100, 0.1) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 60%, rgba(80, 80, 80, 0.1) 0%, transparent 40%),
+        radial-gradient(ellipse at 50% 80%, rgba(90, 90, 90, 0.08) 0%, transparent 30%),
+        #D5D0CC;
+}
+
+.texture-option[data-texture="wood"] {
+    background:
+        repeating-linear-gradient(
+            90deg,
+            transparent 0px,
+            transparent 20px,
+            rgba(139, 90, 43, 0.1) 20px,
+            rgba(139, 90, 43, 0.1) 22px
+        ),
+        repeating-linear-gradient(
+            85deg,
+            transparent 0px,
+            rgba(139, 90, 43, 0.05) 100px
+        ),
+        #DEC8A8;
+}
+
+.texture-option[data-texture="water"] {
+    background:
+        radial-gradient(ellipse at 30% 30%, rgba(45, 106, 106, 0.2) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 70%, rgba(45, 106, 106, 0.15) 0%, transparent 40%),
+        linear-gradient(180deg, #C5DAD8 0%, #A8C8C8 100%);
+}
+
+.texture-chosen {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--color-petrol);
+    text-align: center;
+    min-height: 1.2em;
+}
+
+/* Toy 7: Toe Test */
+.toe-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.toe-option {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    padding: 0.75rem 1rem;
+    background: transparent;
+    border: 1px solid var(--color-rosa-light);
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+    color: var(--color-text);
+}
+
+.toe-option:hover {
+    border-color: var(--color-petrol);
+    background: rgba(45, 106, 106, 0.05);
+}
+
+.toe-option.selected {
+    border-color: var(--color-petrol);
+    background: rgba(45, 106, 106, 0.1);
+}
+
+.toe-response {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 0.9rem;
+    color: var(--color-petrol);
+    margin-top: 1rem;
+    min-height: 1.5em;
+}
+
+/* Toy 8: Sequence */
+.sequence-display {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.sequence-item {
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 1.1rem;
+    background: var(--color-rosa-light);
+    border-radius: 6px;
+    color: var(--color-burgundy-dark);
+}
+
+.sequence-item.mystery {
+    background: var(--color-petrol);
+    color: white;
+    font-size: 1.2rem;
+}
+
+.sequence-options {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.sequence-option {
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 1.1rem;
+    background: transparent;
+    border: 1px solid var(--color-rosa);
+    border-radius: 6px;
+    color: var(--color-burgundy-dark);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.sequence-option:hover {
+    border-color: var(--color-petrol);
+    background: rgba(45, 106, 106, 0.1);
+}
+
+.sequence-feedback {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    text-align: center;
+    margin-top: 1rem;
+    color: var(--color-petrol);
+    min-height: 1.5em;
+}
+
+/* End section */
+.playground-end {
+    text-align: center;
+    padding: 3rem 1rem;
+    margin-top: 2rem;
+}
+
+.playground-end p {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: var(--color-burgundy-dark);
+    margin: 0.5rem 0;
+}
+
+.end-note {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.end-note a {
+    color: var(--color-petrol);
+}
+
+.playground-footer {
+    text-align: center;
+    padding: 2rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+}
+
+.playground-footer a {
+    color: var(--color-petrol);
+    opacity: 0.7;
+}
+
+/* Toy 9: Image Choice */
+.image-grid {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+
+.image-option {
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 2px solid transparent;
+}
+
+.image-option:hover {
+    transform: scale(1.03);
+}
+
+.image-option.selected {
+    border-color: var(--color-petrol);
+    box-shadow: 0 0 0 2px var(--color-petrol);
+}
+
+.image-chosen {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--color-petrol);
+    text-align: center;
+    min-height: 1.2em;
+}
+
+/* Toy 10: Message Preference */
+.message-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.message-option {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    padding: 1rem;
+    background: transparent;
+    border: 1px solid var(--color-rosa-light);
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+    color: var(--color-text);
+    line-height: 1.5;
+}
+
+.message-option:hover {
+    border-color: var(--color-petrol);
+    background: rgba(45, 106, 106, 0.05);
+}
+
+.message-option.selected {
+    border-color: var(--color-petrol);
+    background: rgba(45, 106, 106, 0.1);
+}
+
+.message-response {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 0.9rem;
+    color: var(--color-petrol);
+    margin-top: 1rem;
+    min-height: 1.5em;
+}
+
+/* Toy 11: Fun Question */
+.fun-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.fun-option {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    padding: 0.5rem 1rem;
+    background: transparent;
+    border: 1px solid var(--color-rosa-light);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--color-text);
+}
+
+.fun-option:hover {
+    border-color: var(--color-petrol);
+    background: rgba(45, 106, 106, 0.05);
+}
+
+.fun-option.selected {
+    border-color: var(--color-petrol);
+    background: rgba(45, 106, 106, 0.1);
+}
+
+.fun-response {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    color: var(--color-petrol);
+    text-align: center;
+    margin-top: 1rem;
+    min-height: 1.5em;
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+    .playground-container {
+        padding: 1.5rem 1rem 3rem;
+    }
+
+    .playground-title {
+        font-size: 2rem;
+    }
+
+    .toy {
+        padding: 1.25rem;
+    }
+
+    .texture-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .shade-box {
+        width: 40px;
+        height: 40px;
+    }
+
+    .sequence-item,
+    .sequence-option {
+        width: 38px;
+        height: 38px;
+        font-size: 1rem;
+    }
+}

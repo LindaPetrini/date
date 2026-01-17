@@ -818,6 +818,18 @@ body {
     text-decoration: underline;
 }
 
+.footer .playground-link {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--color-petrol);
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.footer .playground-link:hover {
+    opacity: 1;
+}
+
 /* Prompt Sections */
 .prompt-section {
     position: fixed;
