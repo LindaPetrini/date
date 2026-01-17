@@ -29,6 +29,11 @@ const Playground = {
         this.initSpiritSlider();
         this.initNeuroQuiz();
         this.initLeadFollow();
+        this.initTherapy();
+        this.initGod();
+        this.initFood();
+        this.initPrecision();
+        this.initHold();
         this.initFunQuestion();
         this.initShare();
     },
@@ -1124,6 +1129,202 @@ const Playground = {
         }
     },
 
+    // ========== Toy 21: Therapy ==========
+    initTherapy() {
+        const hoursInput = document.getElementById('therapy-hours');
+        const moneyInput = document.getElementById('therapy-money');
+        const response = document.getElementById('therapy-response');
+
+        const updateResponse = () => {
+            const hours = parseInt(hoursInput.value) || 0;
+            const money = parseInt(moneyInput.value) || 0;
+
+            this.responses.therapyHours = hours;
+            this.responses.therapyMoney = money;
+            this.saveResponses();
+
+            if (hours === 0 && money === 0) {
+                response.textContent = "";
+            } else if (hours > 500) {
+                response.textContent = "you've done the work.";
+            } else if (hours > 100) {
+                response.textContent = "significant investment in yourself.";
+            } else if (hours > 0) {
+                response.textContent = "noted.";
+            }
+        };
+
+        hoursInput.addEventListener('change', updateResponse);
+        moneyInput.addEventListener('change', updateResponse);
+
+        if (this.responses.therapyHours) hoursInput.value = this.responses.therapyHours;
+        if (this.responses.therapyMoney) moneyInput.value = this.responses.therapyMoney;
+        if (this.responses.therapyHours || this.responses.therapyMoney) updateResponse();
+    },
+
+    // ========== Toy 22: God ==========
+    initGod() {
+        const input = document.getElementById('god-input');
+        const response = document.getElementById('god-response');
+
+        input.addEventListener('blur', () => {
+            const value = input.value.trim();
+            if (value) {
+                this.responses.god = value;
+                this.saveResponses();
+                response.textContent = "noted.";
+            }
+        });
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                input.blur();
+            }
+        });
+
+        if (this.responses.god) {
+            input.value = this.responses.god;
+            response.textContent = "noted.";
+        }
+    },
+
+    // ========== Toy 23: Food ==========
+    initFood() {
+        const checkboxes = document.querySelectorAll('.food-option input[type="checkbox"]');
+        const response = document.getElementById('food-response');
+
+        const updateResponse = () => {
+            const checked = [...checkboxes].filter(cb => cb.checked).map(cb => cb.dataset.item);
+            this.responses.food = checked;
+            this.saveResponses();
+
+            checkboxes.forEach(cb => {
+                cb.closest('.food-option').classList.toggle('checked', cb.checked);
+            });
+
+            if (checked.length === 0) {
+                response.textContent = "";
+            } else if (checked.includes('joy') && checked.includes('cook')) {
+                response.textContent = "we could cook together.";
+            } else if (checked.includes('fuel') && !checked.includes('joy')) {
+                response.textContent = "functional approach.";
+            } else if (checked.includes('ingredients')) {
+                response.textContent = "quality matters.";
+            } else {
+                response.textContent = "noted.";
+            }
+        };
+
+        checkboxes.forEach(cb => {
+            cb.addEventListener('change', updateResponse);
+        });
+
+        if (this.responses.food) {
+            this.responses.food.forEach(item => {
+                const cb = document.querySelector(`.food-option input[data-item="${item}"]`);
+                if (cb) {
+                    cb.checked = true;
+                    cb.closest('.food-option').classList.add('checked');
+                }
+            });
+            updateResponse();
+        }
+    },
+
+    // ========== Toy 24: Precision ==========
+    initPrecision() {
+        const slider = document.getElementById('precision-slider');
+        const valueDiv = document.getElementById('precision-value');
+        const checkBtn = document.getElementById('check-precision');
+        const response = document.getElementById('precision-response');
+
+        slider.addEventListener('input', () => {
+            valueDiv.textContent = slider.value;
+        });
+
+        checkBtn.addEventListener('click', () => {
+            const value = parseInt(slider.value);
+            this.responses.precision = value;
+            this.saveResponses();
+
+            if (value === 50) {
+                response.textContent = "perfect. exactly 50.";
+            } else if (value >= 49 && value <= 51) {
+                response.textContent = `${value}. so close.`;
+            } else if (value >= 45 && value <= 55) {
+                response.textContent = `${value}. close enough?`;
+            } else {
+                response.textContent = `${value}. not quite the middle.`;
+            }
+        });
+
+        if (this.responses.precision !== undefined) {
+            slider.value = this.responses.precision;
+            valueDiv.textContent = this.responses.precision;
+            if (this.responses.precision === 50) {
+                response.textContent = "perfect. exactly 50.";
+            } else {
+                response.textContent = `you got ${this.responses.precision}.`;
+            }
+        }
+    },
+
+    // ========== Toy 25: Hold ==========
+    initHold() {
+        const button = document.getElementById('hold-button');
+        const timerSpan = document.getElementById('hold-timer');
+        const response = document.getElementById('hold-response');
+
+        let startTime = null;
+        let interval = null;
+        let completed = false;
+
+        const startHold = () => {
+            if (completed) return;
+            startTime = Date.now();
+            button.classList.add('holding');
+
+            interval = setInterval(() => {
+                const elapsed = (Date.now() - startTime) / 1000;
+                timerSpan.textContent = `${elapsed.toFixed(1)}s`;
+
+                if (elapsed >= 10) {
+                    endHold(true);
+                }
+            }, 100);
+        };
+
+        const endHold = (success = false) => {
+            clearInterval(interval);
+            button.classList.remove('holding');
+            const elapsed = (Date.now() - startTime) / 1000;
+
+            if (success || elapsed >= 10) {
+                completed = true;
+                timerSpan.textContent = "10.0s";
+                response.textContent = "patience. you have it.";
+                this.responses.hold = 'completed';
+            } else {
+                timerSpan.textContent = `${elapsed.toFixed(1)}s`;
+                response.textContent = `${elapsed.toFixed(1)} seconds. try again?`;
+                this.responses.hold = elapsed.toFixed(1);
+            }
+            this.saveResponses();
+        };
+
+        button.addEventListener('mousedown', startHold);
+        button.addEventListener('touchstart', (e) => { e.preventDefault(); startHold(); });
+        button.addEventListener('mouseup', () => { if (!completed && startTime) endHold(); });
+        button.addEventListener('mouseleave', () => { if (!completed && startTime) endHold(); });
+        button.addEventListener('touchend', () => { if (!completed && startTime) endHold(); });
+
+        if (this.responses.hold === 'completed') {
+            completed = true;
+            timerSpan.textContent = "10.0s";
+            response.textContent = "patience. you have it.";
+        }
+    },
+
     // ========== Share Results ==========
     initShare() {
         const btn = document.getElementById('share-results');
@@ -1220,6 +1421,26 @@ const Playground = {
 
         if (r.lead) {
             lines.push(`lead/follow: ${r.lead}`);
+        }
+
+        if (r.therapyHours || r.therapyMoney) {
+            lines.push(`therapy: ${r.therapyHours || 0} hours, $${r.therapyMoney || 0}`);
+        }
+
+        if (r.god) {
+            lines.push(`god/source: "${r.god}"`);
+        }
+
+        if (r.food && r.food.length > 0) {
+            lines.push(`food: ${r.food.join(', ')}`);
+        }
+
+        if (r.precision !== undefined) {
+            lines.push(`precision slider: ${r.precision} (target: 50)`);
+        }
+
+        if (r.hold) {
+            lines.push(`hold button: ${r.hold}`);
         }
 
         if (r.fun) {

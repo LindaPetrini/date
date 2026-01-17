@@ -443,10 +443,106 @@
             </div>
         </section>
 
-        <!-- Toy 21: Are you having fun? (moved to end) -->
-        <section class="toy" id="toy-fun" data-order="21">
+        <!-- Toy 21: Therapy -->
+        <section class="toy" id="toy-therapy" data-order="21">
             <div class="toy-header">
                 <span class="toy-number">21</span>
+                <h2>therapy</h2>
+            </div>
+            <div class="toy-content">
+                <div class="therapy-inputs">
+                    <div class="therapy-row">
+                        <span class="therapy-label">hours spent in therapy (lifetime estimate)</span>
+                        <input type="number" id="therapy-hours" class="therapy-input" placeholder="0" min="0">
+                    </div>
+                    <div class="therapy-row">
+                        <span class="therapy-label">money spent on therapy (rough $)</span>
+                        <input type="number" id="therapy-money" class="therapy-input" placeholder="0" min="0">
+                    </div>
+                </div>
+                <div class="therapy-response" id="therapy-response"></div>
+            </div>
+        </section>
+
+        <!-- Toy 22: God -->
+        <section class="toy" id="toy-god" data-order="22">
+            <div class="toy-header">
+                <span class="toy-number">22</span>
+                <h2>if you had to name it</h2>
+                <p class="toy-hint">god, the universe, source, nothing, consciousness, love, physics...</p>
+            </div>
+            <div class="toy-content">
+                <input type="text" id="god-input" class="god-input" placeholder="I call it..." maxlength="100">
+                <div class="god-response" id="god-response"></div>
+            </div>
+        </section>
+
+        <!-- Toy 23: Food -->
+        <section class="toy" id="toy-food" data-order="23">
+            <div class="toy-header">
+                <span class="toy-number">23</span>
+                <h2>food</h2>
+            </div>
+            <div class="toy-content">
+                <div class="food-options">
+                    <label class="food-option">
+                        <input type="checkbox" data-item="cook">
+                        <span>I cook most of my meals</span>
+                    </label>
+                    <label class="food-option">
+                        <input type="checkbox" data-item="ingredients">
+                        <span>I care about ingredient quality</span>
+                    </label>
+                    <label class="food-option">
+                        <input type="checkbox" data-item="restrictions">
+                        <span>I have dietary restrictions</span>
+                    </label>
+                    <label class="food-option">
+                        <input type="checkbox" data-item="joy">
+                        <span>cooking brings me joy</span>
+                    </label>
+                    <label class="food-option">
+                        <input type="checkbox" data-item="fuel">
+                        <span>food is mostly fuel to me</span>
+                    </label>
+                </div>
+                <div class="food-response" id="food-response"></div>
+            </div>
+        </section>
+
+        <!-- Toy 24: Slider precision -->
+        <section class="toy" id="toy-precision" data-order="24">
+            <div class="toy-header">
+                <span class="toy-number">24</span>
+                <h2>put the slider exactly in the middle</h2>
+            </div>
+            <div class="toy-content">
+                <input type="range" id="precision-slider" min="0" max="100" value="30" class="precision-slider">
+                <div class="precision-value" id="precision-value"></div>
+                <button class="toy-action" id="check-precision">check</button>
+                <div class="precision-response" id="precision-response"></div>
+            </div>
+        </section>
+
+        <!-- Toy 25: Hold button -->
+        <section class="toy" id="toy-hold" data-order="25">
+            <div class="toy-header">
+                <span class="toy-number">25</span>
+                <h2>hold this for 10 seconds</h2>
+            </div>
+            <div class="toy-content">
+                <button class="hold-button" id="hold-button">
+                    <span class="hold-text">hold</span>
+                    <span class="hold-timer" id="hold-timer">0.0s</span>
+                </button>
+                <div class="hold-response" id="hold-response"></div>
+            </div>
+        </section>
+
+        <!-- Toy 26: Are you having fun? (end) -->
+        <section class="toy" id="toy-fun" data-order="26">
+            <div class="toy-header">
+                <span class="toy-number">26</span>
                 <h2>are you having fun?</h2>
             </div>
             <div class="toy-content">

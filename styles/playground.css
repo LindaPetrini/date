@@ -1251,6 +1251,228 @@
     min-height: 1.5em;
 }
 
+/* Toy 21: Therapy */
+.therapy-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.therapy-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.therapy-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-text);
+    opacity: 0.7;
+}
+
+.therapy-input {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    padding: 0.5rem;
+    border: 1px solid var(--color-rosa-light);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--color-text);
+    width: 150px;
+}
+
+.therapy-input:focus {
+    outline: none;
+    border-color: var(--color-petrol);
+}
+
+.therapy-response {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 0.9rem;
+    color: var(--color-petrol);
+    margin-top: 1rem;
+    min-height: 1.5em;
+}
+
+/* Toy 22: God */
+.god-input {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    padding: 0.75rem;
+    border: 1px solid var(--color-rosa-light);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--color-text);
+    width: 100%;
+}
+
+.god-input:focus {
+    outline: none;
+    border-color: var(--color-petrol);
+}
+
+.god-input::placeholder {
+    color: var(--color-rosa);
+    font-style: italic;
+}
+
+.god-response {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 0.9rem;
+    color: var(--color-petrol);
+    margin-top: 1rem;
+    min-height: 1.5em;
+}
+
+/* Toy 23: Food */
+.food-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.food-option {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    padding: 0.6rem 0.75rem;
+    background: transparent;
+    border: 1px solid var(--color-rosa-light);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.food-option:hover {
+    border-color: var(--color-petrol);
+    background: rgba(45, 106, 106, 0.05);
+}
+
+.food-option input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--color-petrol);
+    cursor: pointer;
+}
+
+.food-option.checked {
+    border-color: var(--color-petrol);
+    background: rgba(45, 106, 106, 0.1);
+}
+
+.food-response {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 0.9rem;
+    color: var(--color-petrol);
+    margin-top: 1rem;
+    min-height: 1.5em;
+}
+
+/* Toy 24: Precision slider */
+.precision-slider {
+    width: 100%;
+    height: 8px;
+    -webkit-appearance: none;
+    background: var(--color-rosa-light);
+    border-radius: 4px;
+    outline: none;
+}
+
+.precision-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    background: var(--color-burgundy);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.precision-value {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--color-text);
+    opacity: 0.5;
+    text-align: center;
+    margin: 0.5rem 0;
+    min-height: 1.2em;
+}
+
+.precision-response {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 0.9rem;
+    color: var(--color-petrol);
+    text-align: center;
+    margin-top: 0.5rem;
+    min-height: 1.5em;
+}
+
+/* Toy 25: Hold button */
+.hold-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto;
+    background: var(--color-rosa-light);
+    border: 2px solid var(--color-rosa);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+}
+
+.hold-button:hover {
+    border-color: var(--color-petrol);
+}
+
+.hold-button:active,
+.hold-button.holding {
+    background: var(--color-petrol);
+    border-color: var(--color-petrol);
+}
+
+.hold-button:active .hold-text,
+.hold-button.holding .hold-text {
+    color: white;
+}
+
+.hold-button:active .hold-timer,
+.hold-button.holding .hold-timer {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.hold-text {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--color-text);
+}
+
+.hold-timer {
+    font-family: var(--font-mono);
+    font-size: 1.2rem;
+    color: var(--color-petrol);
+    margin-top: 0.25rem;
+}
+
+.hold-response {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 0.9rem;
+    color: var(--color-petrol);
+    text-align: center;
+    margin-top: 1rem;
+    min-height: 1.5em;
+}
+
 /* Mobile adjustments */
 @media (max-width: 480px) {
     .playground-container {
