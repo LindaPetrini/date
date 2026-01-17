@@ -98,21 +98,14 @@ const Playground = {
     initBodyCheck() {
         const options = document.querySelectorAll('.body-option');
         const response = document.getElementById('body-response');
-
-        const responses = {
-            forward: "interesting. most people don't think about it at all.",
-            tucked: "that's a common protective posture. nothing wrong with it.",
-            tilted: "bodies find their own balance. thanks for noticing.",
-            back: "the chair shapes us more than we shape it.",
-            unsure: "that's honest. most people have no idea where their pelvis is."
-        };
+        const C = CONTENT.body;
 
         options.forEach(btn => {
             btn.addEventListener('click', () => {
                 options.forEach(b => b.classList.remove('selected'));
                 btn.classList.add('selected');
                 const answer = btn.dataset.answer;
-                response.textContent = responses[answer];
+                response.textContent = C.responses[answer];
                 this.responses.body = answer;
                 this.saveResponses();
             });
@@ -123,7 +116,7 @@ const Playground = {
             const saved = document.querySelector(`.body-option[data-answer="${this.responses.body}"]`);
             if (saved) {
                 saved.classList.add('selected');
-                response.textContent = responses[this.responses.body];
+                response.textContent = C.responses[this.responses.body];
             }
         }
     },
@@ -189,10 +182,10 @@ const Playground = {
             }
 
             if (correct) {
-                result.textContent = "perfect. you have good eyes.";
+                result.textContent = CONTENT.shades.responses.correct;
                 result.style.color = 'var(--color-petrol)';
             } else {
-                result.textContent = "not quite. want to try again?";
+                result.textContent = CONTENT.shades.responses.incorrect;
                 result.style.color = 'var(--color-burgundy)';
             }
 
@@ -329,13 +322,7 @@ const Playground = {
     initToeTest() {
         const options = document.querySelectorAll('.toe-option');
         const response = document.getElementById('toe-response');
-
-        const responses = {
-            yes: "that's actually rare. good proprioception.",
-            some: "the big toe is usually easiest. the little one... less so.",
-            no: "most people can't. our feet spend too much time in shoes.",
-            trying: "I appreciate the commitment to empirical investigation."
-        };
+        const C = CONTENT.toes;
 
         const proofSection = document.getElementById('toe-proof');
         const uploadInput = document.getElementById('toe-upload');
@@ -346,7 +333,7 @@ const Playground = {
                 options.forEach(b => b.classList.remove('selected'));
                 btn.classList.add('selected');
                 const answer = btn.dataset.answer;
-                response.textContent = responses[answer];
+                response.textContent = C.responses[answer];
                 this.responses.toes = answer;
                 this.saveResponses();
 
@@ -381,7 +368,7 @@ const Playground = {
             const saved = document.querySelector(`.toe-option[data-answer="${this.responses.toes}"]`);
             if (saved) {
                 saved.classList.add('selected');
-                response.textContent = responses[this.responses.toes];
+                response.textContent = C.responses[this.responses.toes];
                 if (['yes', 'some', 'trying'].includes(this.responses.toes)) {
                     proofSection.classList.add('show');
                 }
@@ -440,12 +427,12 @@ const Playground = {
 
             btn.addEventListener('click', () => {
                 if (num === puzzle.answer) {
-                    feedback.textContent = "yes. you see the pattern.";
+                    feedback.textContent = CONTENT.sequence.responses.correct;
                     feedback.style.color = 'var(--color-petrol)';
                     mystery.textContent = num;
                     mystery.classList.remove('mystery');
                 } else {
-                    feedback.textContent = "not that one. look again?";
+                    feedback.textContent = CONTENT.sequence.responses.incorrect;
                     feedback.style.color = 'var(--color-burgundy)';
                 }
 
@@ -600,18 +587,14 @@ const Playground = {
     initMessagePreference() {
         const options = document.querySelectorAll('.message-option');
         const response = document.getElementById('message-response');
-
-        const responses = {
-            direct: "you like clarity. me too.",
-            soft: "you appreciate the care in how things are said."
-        };
+        const C = CONTENT.message;
 
         options.forEach(btn => {
             btn.addEventListener('click', () => {
                 options.forEach(b => b.classList.remove('selected'));
                 btn.classList.add('selected');
                 const choice = btn.dataset.choice;
-                response.textContent = responses[choice];
+                response.textContent = C.responses[choice];
                 this.responses.message = choice;
                 this.saveResponses();
             });
@@ -622,7 +605,7 @@ const Playground = {
             const saved = document.querySelector(`.message-option[data-choice="${this.responses.message}"]`);
             if (saved) {
                 saved.classList.add('selected');
-                response.textContent = responses[this.responses.message];
+                response.textContent = C.responses[this.responses.message];
             }
         }
     },
@@ -631,20 +614,14 @@ const Playground = {
     initFunQuestion() {
         const options = document.querySelectorAll('.fun-option');
         const response = document.getElementById('fun-response');
-
-        const responses = {
-            'yes': "good. that was the point.",
-            'kind-of': "fair enough. not everything lands.",
-            'not-sure': "that's okay. neither am I sometimes.",
-            'no': "thank you for your honesty. I genuinely appreciate it."
-        };
+        const C = CONTENT.fun;
 
         options.forEach(btn => {
             btn.addEventListener('click', () => {
                 options.forEach(b => b.classList.remove('selected'));
                 btn.classList.add('selected');
                 const answer = btn.dataset.answer;
-                response.textContent = responses[answer];
+                response.textContent = C.responses[answer];
                 this.responses.fun = answer;
                 this.saveResponses();
             });
@@ -655,7 +632,7 @@ const Playground = {
             const saved = document.querySelector(`.fun-option[data-answer="${this.responses.fun}"]`);
             if (saved) {
                 saved.classList.add('selected');
-                response.textContent = responses[this.responses.fun];
+                response.textContent = C.responses[this.responses.fun];
             }
         }
     },
@@ -664,19 +641,20 @@ const Playground = {
     initMusicDial() {
         const dial = document.getElementById('music-dial');
         const response = document.getElementById('music-response');
+        const C = CONTENT.music;
 
         const updateResponse = (value) => {
             let text;
             if (value < 15) {
-                text = "silence. I like you.";
+                text = C.responses[0];
             } else if (value < 35) {
-                text = "quiet background. gentle.";
+                text = C.responses[25];
             } else if (value < 55) {
-                text = "moderate. fair enough.";
+                text = C.responses[50];
             } else if (value < 75) {
-                text = "you like your music present.";
+                text = C.responses[75];
             } else {
-                text = "loud. we might have to negotiate.";
+                text = C.responses[100];
             }
             response.textContent = text;
         };
@@ -749,16 +727,7 @@ const Playground = {
             const order = [...container.querySelectorAll('.rank-item')].map(i => i.dataset.item);
             this.responses.nature = order;
             this.saveResponses();
-
-            // Comment based on top choice
-            const comments = {
-                sea: "the sea. endless, wild. I understand.",
-                mountain: "mountains. solid ground, big views.",
-                lake: "a lake. still and reflecting.",
-                river: "rivers. always moving somewhere.",
-                forest: "forest. enclosed, alive, mysterious."
-            };
-            response.textContent = comments[order[0]];
+            response.textContent = CONTENT.nature.responses[order[0]];
         });
 
         // Restore if saved
@@ -768,15 +737,7 @@ const Playground = {
                 const item = container.querySelector(`[data-item="${itemName}"]`);
                 if (item) container.appendChild(item);
             });
-
-            const comments = {
-                sea: "the sea. endless, wild. I understand.",
-                mountain: "mountains. solid ground, big views.",
-                lake: "a lake. still and reflecting.",
-                river: "rivers. always moving somewhere.",
-                forest: "forest. enclosed, alive, mysterious."
-            };
-            response.textContent = comments[order[0]];
+            response.textContent = CONTENT.nature.responses[order[0]];
         }
     },
 
@@ -784,21 +745,14 @@ const Playground = {
     initUpsideDown() {
         const options = document.querySelectorAll('.upside-option');
         const response = document.getElementById('upside-response');
-
-        const responses = {
-            'love': "me too. handstands, hanging, all of it.",
-            'fine': "practical. blood to the head is fine sometimes.",
-            'uncomfortable': "your vestibular system has opinions.",
-            'never': "fair. it's not for everyone.",
-            'when': "that's the real question. childhood? yoga? falling?"
-        };
+        const C = CONTENT.upside;
 
         options.forEach(btn => {
             btn.addEventListener('click', () => {
                 options.forEach(b => b.classList.remove('selected'));
                 btn.classList.add('selected');
                 const answer = btn.dataset.answer;
-                response.textContent = responses[answer];
+                response.textContent = C.responses[answer];
                 this.responses.upside = answer;
                 this.saveResponses();
             });
@@ -809,7 +763,7 @@ const Playground = {
             const saved = document.querySelector(`.upside-option[data-answer="${this.responses.upside}"]`);
             if (saved) {
                 saved.classList.add('selected');
-                response.textContent = responses[this.responses.upside];
+                response.textContent = C.responses[this.responses.upside];
             }
         }
     },
@@ -818,6 +772,7 @@ const Playground = {
     initAIQuiz() {
         const checkboxes = document.querySelectorAll('.ai-option input[type="checkbox"]');
         const response = document.getElementById('ai-response');
+        const C = CONTENT.ai;
 
         const updateResponse = () => {
             const checked = [...checkboxes].filter(cb => cb.checked).map(cb => cb.dataset.item);
@@ -833,15 +788,15 @@ const Playground = {
             if (checked.length === 0) {
                 response.textContent = "";
             } else if (checked.length >= 4) {
-                response.textContent = "oh. you're one of us.";
+                response.textContent = C.responses.many;
             } else if (checked.includes('polite')) {
-                response.textContent = "the politeness matters, I think.";
+                response.textContent = C.responses.polite;
             } else if (checked.includes('sentient')) {
-                response.textContent = "an interesting position to hold.";
+                response.textContent = C.responses.sentient;
             } else if (checked.includes('autoencoder')) {
-                response.textContent = "technical foundations. nice.";
+                response.textContent = C.responses.autoencoder;
             } else {
-                response.textContent = "noted.";
+                response.textContent = C.responses.default;
             }
         };
 
@@ -866,19 +821,20 @@ const Playground = {
     initRoomSlider() {
         const dial = document.getElementById('room-dial');
         const response = document.getElementById('room-response');
+        const C = CONTENT.room;
 
         const updateResponse = (value) => {
             let text;
             if (value < 20) {
-                text = "one room. everything within reach. I get it.";
+                text = C.responses[0];
             } else if (value < 40) {
-                text = "cozy. a few distinct spaces but close together.";
+                text = C.responses[25];
             } else if (value < 60) {
-                text = "balanced. room to spread out but not too much.";
+                text = C.responses[50];
             } else if (value < 80) {
-                text = "you like having space to yourself.";
+                text = C.responses[75];
             } else {
-                text = "a room for each mood. ambitious.";
+                text = C.responses[100];
             }
             response.textContent = text;
         };
@@ -902,21 +858,14 @@ const Playground = {
     initCryingScenario() {
         const options = document.querySelectorAll('.scenario-option');
         const response = document.getElementById('crying-response');
-
-        const responses = {
-            'hug': "physical comfort first. warm.",
-            'ask': "checking in before acting. respectful.",
-            'space': "not everyone wants to be seen crying. you know this.",
-            'cry': "emotional contagion. you feel things.",
-            'depends': "context matters. that's fair."
-        };
+        const C = CONTENT.crying;
 
         options.forEach(btn => {
             btn.addEventListener('click', () => {
                 options.forEach(b => b.classList.remove('selected'));
                 btn.classList.add('selected');
                 const answer = btn.dataset.answer;
-                response.textContent = responses[answer];
+                response.textContent = C.responses[answer];
                 this.responses.crying = answer;
                 this.saveResponses();
             });
@@ -926,7 +875,7 @@ const Playground = {
             const saved = document.querySelector(`.scenario-option[data-answer="${this.responses.crying}"]`);
             if (saved) {
                 saved.classList.add('selected');
-                response.textContent = responses[this.responses.crying];
+                response.textContent = C.responses[this.responses.crying];
             }
         }
     },
@@ -1020,19 +969,20 @@ const Playground = {
     initSpiritSlider() {
         const dial = document.getElementById('spirit-dial');
         const response = document.getElementById('spirit-response');
+        const C = CONTENT.spirit;
 
         const updateResponse = (value) => {
             let text;
             if (value < 15) {
-                text = "pure materialism. physics all the way down.";
+                text = C.responses[0];
             } else if (value < 35) {
-                text = "mostly materialist. open to mystery though.";
+                text = C.responses[25];
             } else if (value < 55) {
-                text = "agnostic zone. not sure, and okay with that.";
+                text = C.responses[50];
             } else if (value < 75) {
-                text = "something's going on. you feel it.";
+                text = C.responses[75];
             } else {
-                text = "believer. there's more to this.";
+                text = C.responses[100];
             }
             response.textContent = text;
         };
@@ -1056,6 +1006,7 @@ const Playground = {
     initNeuroQuiz() {
         const checkboxes = document.querySelectorAll('.neuro-option input[type="checkbox"]');
         const response = document.getElementById('neuro-response');
+        const C = CONTENT.neuro;
 
         const updateResponse = () => {
             const checked = [...checkboxes].filter(cb => cb.checked).map(cb => cb.dataset.item);
@@ -1067,17 +1018,17 @@ const Playground = {
             });
 
             if (checked.includes('normal') && checked.length === 1) {
-                response.textContent = "normal. sure.";
+                response.textContent = C.responses.normal;
             } else if (checked.length === 0) {
                 response.textContent = "";
             } else if (checked.length >= 4) {
-                response.textContent = "your brain is interesting.";
+                response.textContent = C.responses.many;
             } else if (checked.includes('swings')) {
-                response.textContent = "swings are great. vestibular joy.";
+                response.textContent = C.responses.swings;
             } else if (checked.includes('hyperfocus')) {
-                response.textContent = "hyperfocus is a superpower (and a curse).";
+                response.textContent = C.responses.hyperfocus;
             } else {
-                response.textContent = "noted.";
+                response.textContent = C.responses.default;
             }
         };
 
@@ -1101,20 +1052,14 @@ const Playground = {
     initLeadFollow() {
         const options = document.querySelectorAll('.lead-option');
         const response = document.getElementById('lead-response');
-
-        const responses = {
-            'lead': "you like to steer. good to know.",
-            'follow': "you like to be taken somewhere. noted.",
-            'both': "context-dependent. flexible.",
-            'neither': "collaborative. building together."
-        };
+        const C = CONTENT.lead;
 
         options.forEach(btn => {
             btn.addEventListener('click', () => {
                 options.forEach(b => b.classList.remove('selected'));
                 btn.classList.add('selected');
                 const answer = btn.dataset.answer;
-                response.textContent = responses[answer];
+                response.textContent = C.responses[answer];
                 this.responses.lead = answer;
                 this.saveResponses();
             });
@@ -1124,7 +1069,7 @@ const Playground = {
             const saved = document.querySelector(`.lead-option[data-answer="${this.responses.lead}"]`);
             if (saved) {
                 saved.classList.add('selected');
-                response.textContent = responses[this.responses.lead];
+                response.textContent = C.responses[this.responses.lead];
             }
         }
     },
@@ -1134,6 +1079,7 @@ const Playground = {
         const hoursInput = document.getElementById('therapy-hours');
         const moneyInput = document.getElementById('therapy-money');
         const response = document.getElementById('therapy-response');
+        const C = CONTENT.therapy;
 
         const updateResponse = () => {
             const hours = parseInt(hoursInput.value) || 0;
@@ -1146,11 +1092,11 @@ const Playground = {
             if (hours === 0 && money === 0) {
                 response.textContent = "";
             } else if (hours > 500) {
-                response.textContent = "you've done the work.";
+                response.textContent = C.responses.lots;
             } else if (hours > 100) {
-                response.textContent = "significant investment in yourself.";
+                response.textContent = C.responses.some;
             } else if (hours > 0) {
-                response.textContent = "noted.";
+                response.textContent = C.responses.default;
             }
         };
 
@@ -1166,13 +1112,14 @@ const Playground = {
     initGod() {
         const input = document.getElementById('god-input');
         const response = document.getElementById('god-response');
+        const C = CONTENT.god;
 
         input.addEventListener('blur', () => {
             const value = input.value.trim();
             if (value) {
                 this.responses.god = value;
                 this.saveResponses();
-                response.textContent = "noted.";
+                response.textContent = C.response;
             }
         });
 
@@ -1184,7 +1131,7 @@ const Playground = {
 
         if (this.responses.god) {
             input.value = this.responses.god;
-            response.textContent = "noted.";
+            response.textContent = C.response;
         }
     },
 
@@ -1192,6 +1139,7 @@ const Playground = {
     initFood() {
         const checkboxes = document.querySelectorAll('.food-option input[type="checkbox"]');
         const response = document.getElementById('food-response');
+        const C = CONTENT.food;
 
         const updateResponse = () => {
             const checked = [...checkboxes].filter(cb => cb.checked).map(cb => cb.dataset.item);
@@ -1205,13 +1153,13 @@ const Playground = {
             if (checked.length === 0) {
                 response.textContent = "";
             } else if (checked.includes('joy') && checked.includes('cook')) {
-                response.textContent = "we could cook together.";
+                response.textContent = C.responses.cookJoy;
             } else if (checked.includes('fuel') && !checked.includes('joy')) {
-                response.textContent = "functional approach.";
+                response.textContent = C.responses.fuel;
             } else if (checked.includes('ingredients')) {
-                response.textContent = "quality matters.";
+                response.textContent = C.responses.ingredients;
             } else {
-                response.textContent = "noted.";
+                response.textContent = C.responses.default;
             }
         };
 
@@ -1237,6 +1185,7 @@ const Playground = {
         const valueDiv = document.getElementById('precision-value');
         const checkBtn = document.getElementById('check-precision');
         const response = document.getElementById('precision-response');
+        const C = CONTENT.precision;
 
         slider.addEventListener('input', () => {
             valueDiv.textContent = slider.value;
@@ -1248,13 +1197,13 @@ const Playground = {
             this.saveResponses();
 
             if (value === 50) {
-                response.textContent = "perfect. exactly 50.";
+                response.textContent = C.responses.perfect;
             } else if (value >= 49 && value <= 51) {
-                response.textContent = `${value}. so close.`;
+                response.textContent = C.responses.close.replace('{value}', value);
             } else if (value >= 45 && value <= 55) {
-                response.textContent = `${value}. close enough?`;
+                response.textContent = C.responses.near.replace('{value}', value);
             } else {
-                response.textContent = `${value}. not quite the middle.`;
+                response.textContent = C.responses.off.replace('{value}', value);
             }
         });
 
@@ -1262,9 +1211,9 @@ const Playground = {
             slider.value = this.responses.precision;
             valueDiv.textContent = this.responses.precision;
             if (this.responses.precision === 50) {
-                response.textContent = "perfect. exactly 50.";
+                response.textContent = C.responses.perfect;
             } else {
-                response.textContent = `you got ${this.responses.precision}.`;
+                response.textContent = C.responses.restored.replace('{value}', this.responses.precision);
             }
         }
     },
@@ -1274,6 +1223,7 @@ const Playground = {
         const button = document.getElementById('hold-button');
         const timerSpan = document.getElementById('hold-timer');
         const response = document.getElementById('hold-response');
+        const C = CONTENT.hold;
 
         let startTime = null;
         let interval = null;
@@ -1302,11 +1252,11 @@ const Playground = {
             if (success || elapsed >= 10) {
                 completed = true;
                 timerSpan.textContent = "10.0s";
-                response.textContent = "patience. you have it.";
+                response.textContent = C.responses.complete;
                 this.responses.hold = 'completed';
             } else {
                 timerSpan.textContent = `${elapsed.toFixed(1)}s`;
-                response.textContent = `${elapsed.toFixed(1)} seconds. try again?`;
+                response.textContent = C.responses.incomplete.replace('{seconds}', elapsed.toFixed(1));
                 this.responses.hold = elapsed.toFixed(1);
             }
             this.saveResponses();
@@ -1321,7 +1271,7 @@ const Playground = {
         if (this.responses.hold === 'completed') {
             completed = true;
             timerSpan.textContent = "10.0s";
-            response.textContent = "patience. you have it.";
+            response.textContent = C.responses.complete;
         }
     },
 
@@ -1334,7 +1284,7 @@ const Playground = {
             const summary = this.generateSummary();
             output.innerHTML = `
                 <pre>${summary}</pre>
-                <p class="copy-hint">copy and paste this into an email to linda.petrini@gmail.com</p>
+                <p class="copy-hint">${CONTENT.end.copyHint}</p>
             `;
 
             // Also copy to clipboard
