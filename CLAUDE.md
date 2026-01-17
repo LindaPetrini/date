@@ -1,34 +1,42 @@
-# Date Me Doc - Linda Petrini
+# Date Me Doc - Linda
 
 ## Project Overview
-A personal "date me" website with an interactive knot puzzle mechanic that progressively reveals deeper content about Linda as potential matches solve increasingly challenging spatial reasoning puzzles.
+A personal "date me" website with interactive 3D knot puzzles that progressively reveal content. The design philosophy centers on feminine energy: leading with feelings rather than accomplishments, creating space for curiosity rather than listing requirements.
 
 ## Design Philosophy
-- **Metaphor**: Knots represent the complexity of relationships - working through them to reach understanding
-- **Filter**: The puzzles naturally filter for people who enjoy intellectual challenges and spatial thinking
-- **Progressive reveal**: Basic info visible, deeper desires/manifestation doc gated behind puzzles
+- **Feminine energy**: Soft, inviting, receptive. Not a resume or shopping list.
+- **Mystery over explicitness**: Leave room for discovery through conversation
+- **Filter through engagement**: The puzzles attract people who enjoy spatial thinking and are willing to invest effort
+- **Safety first**: No detailed location info, routines, or overly identifying details
 
 ## Aesthetic
-Blend of two styles:
-1. **Warm & elegant** (from lindapetrini.com): Dusty rose (#D9A3A3), cream, burgundy (#914F62), serif fonts (Cinzel Decorative, Playfair Display)
-2. **Interactive/playful**: Terminal-like elements for puzzle sections, green accents (#50C878) for interactive bits
+Warm earth tones palette:
+- Sand (#E8DFD5) - main background
+- Cream (#FAF8F5) - card backgrounds
+- Terracotta (#C17F59) - primary accent
+- Brown (#8B5A2B) - secondary accent
+- Sage (#87A878) - interactive elements, success states
+
+Typography: Cinzel Decorative (display), Playfair Display (body), JetBrains Mono (terminal/interactive)
 
 ## Puzzle Progression
-1. **Stage 1 - Visual Rotation**: Show a knot, identify which of 4 options is the same knot from a different angle (easiest)
-2. **Stage 2 - Knot Equivalence**: Are these two knots the same or different? (medium)
-3. **Stage 3 - Unknotting Challenge**: Can this knot be untangled without cutting? (hardest)
+1. **Perspective**: Identify same knot from different angle (trefoil recognition)
+2. **Equivalence**: Are two knots actually the same? (trefoil in different orientations)
+3. **Unknotting**: Can this tangle be undone? (complex-looking unknot)
+
+All puzzles use Three.js for realistic 3D tube-based knot rendering with animation.
 
 ## Content Structure
-- **Visible**: Basic intro, age, looking for, surface-level about me
-- **After Puzzle 1**: More about me, values, lifestyle
-- **After Puzzle 2**: Ideal day, what I'm looking for in a partner
-- **After Puzzle 3**: Manifestation doc, contact information
+- **Visible**: Brief intro - feelings, not resume. Age, relationship goals.
+- **After Puzzle 1**: Values, two sides (mind/body), what she's explored
+- **After Puzzle 2**: Texture of days, things to share, dealbreakers
+- **After Puzzle 3**: Invitation to connect, contact info
 
 ## Tech Stack
-- Pure HTML/CSS/JavaScript (deployable to GitHub Pages)
-- SVG-based knot visualizations
+- Pure HTML/CSS/JavaScript
+- Three.js for 3D knot rendering
 - localStorage for progress persistence
-- No build step required
+- Deployable to GitHub Pages
 
 ## File Structure
 ```
@@ -38,22 +46,20 @@ dating/
 ├── styles/
 │   └── main.css       # All styles
 ├── scripts/
-│   ├── main.js        # Core app logic
-│   ├── puzzles.js     # Puzzle definitions and logic
-│   └── knots.js       # Knot SVG generation
+│   ├── main.js        # Core app logic, state, progress
+│   ├── puzzles.js     # Puzzle definitions and checking
+│   └── knots3d.js     # Three.js knot generation
 └── assets/
-    └── knots/         # Pre-made knot SVGs if needed
+    └── knots/         # (unused - knots are generated)
 ```
 
-## Development Notes
-- Test puzzles for appropriate difficulty
-- Ensure mobile responsiveness
-- Knots should be visually clear and distinguishable
-- Consider color-blind friendly design for puzzle feedback
+## Testing Commands
+In browser console:
+- `resetProgress()` - Start fresh
+- `saveProgress(3)` then refresh - See all content
 
-## Key User Info
-- Linda, 29, Italian/Russian
-- Mathematician, AI researcher
-- Values: curiosity, attunement, honesty, alignment
-- Looking for: monogamous life partner, wants 3-4 kids
-- Teaches acroyoga, semi-nomadic lifestyle
+## Key Principles for Content
+- Lead with feelings, not skills
+- Show softness and openness with discernment
+- Don't paint too specific a picture of the ideal partner
+- Stay in attracting/receiving energy, not going/getting
