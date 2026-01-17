@@ -72,10 +72,12 @@ const CONTENT = {
     toyOrder: [
         "texture",    // 6
         "body",       // 2
+        "day",        // 28 - assemble a day
         "shades",     // 3
         "autocomplete", // 5
         "ai",         // 14
         "toes",       // 7
+        "embodiment", // 29 - learning with body
         "sequence",   // 8
         "images",     // 9
         "message",    // 10
@@ -95,6 +97,7 @@ const CONTENT = {
         "therapy",    // 21
         "god",        // 22
         "food",       // 23
+        "patterns",   // 30 - meeting someone interesting
         "meta",       // 27
         "fun"         // 26
     ],
@@ -541,6 +544,71 @@ const CONTENT = {
             "not-sure": "that's okay. neither am I sometimes.",
             no: "thank you for your honesty. I genuinely appreciate it."
         }
+    },
+
+    // =====================================================
+    // TOY 28: ASSEMBLE A DAY
+    // =====================================================
+    day: {
+        title: "assemble a good day",
+        hint: "no ideal, just what feels right",
+        phases: {
+            morning: [
+                "slow start, minimal talking",
+                "movement first",
+                "coffee + reading",
+                "jump straight into work"
+            ],
+            afternoon: [
+                "focused solo work",
+                "wandering with no plan",
+                "making something with hands",
+                "long conversation"
+            ],
+            evening: [
+                "cooking together",
+                "being around people",
+                "quiet parallel time",
+                "one intense activity"
+            ],
+            night: [
+                "early sleep",
+                "music, lights low",
+                "talking until too late",
+                "alone with thoughts"
+            ]
+        },
+        response: "interesting. this tells me more than you think."
+    },
+
+    // =====================================================
+    // TOY 29: EMBODIMENT
+    // =====================================================
+    embodiment: {
+        title: "how do you learn a physical thing?",
+        options: [
+            "by copying someone",
+            "by trying and failing",
+            "by understanding the mechanics",
+            "by being guided",
+            "I tend to avoid physical learning"
+        ],
+        response: "noted."
+    },
+
+    // =====================================================
+    // TOY 30: PATTERNS
+    // =====================================================
+    patterns: {
+        title: "what usually happens when you meet someone interesting?",
+        options: [
+            "we talk for hours",
+            "we do something together",
+            "we disappear and reappear",
+            "we overthink it",
+            "it really varies"
+        ],
+        response: "patterns are funny things."
     },
 
     // =====================================================

@@ -1031,6 +1031,147 @@
     min-height: 1.5em;
 }
 
+/* Assemble a Day */
+.day-phases {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.day-phase {
+    border-bottom: 1px solid var(--color-rosa-light);
+    padding-bottom: 1rem;
+}
+
+.day-phase:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.phase-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-petrol);
+    opacity: 0.7;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.phase-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.phase-option {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    padding: 0.4rem 0.75rem;
+    background: transparent;
+    border: 1px solid var(--color-rosa-light);
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--color-text);
+}
+
+.phase-option:hover {
+    border-color: var(--color-petrol);
+    background: rgba(45, 106, 106, 0.05);
+}
+
+.phase-option.selected {
+    border-color: var(--color-petrol);
+    background: rgba(45, 106, 106, 0.1);
+}
+
+.day-response {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    color: var(--color-petrol);
+    text-align: center;
+    margin-top: 1rem;
+    min-height: 1.5em;
+}
+
+/* Embodiment */
+.embodiment-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.embodiment-option {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    padding: 0.6rem 1rem;
+    background: transparent;
+    border: 1px solid var(--color-rosa-light);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--color-text);
+    text-align: left;
+}
+
+.embodiment-option:hover {
+    border-color: var(--color-petrol);
+    background: rgba(45, 106, 106, 0.05);
+}
+
+.embodiment-option.selected {
+    border-color: var(--color-petrol);
+    background: rgba(45, 106, 106, 0.1);
+}
+
+.embodiment-response {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    color: var(--color-petrol);
+    text-align: center;
+    margin-top: 1rem;
+    min-height: 1.5em;
+}
+
+/* Patterns */
+.patterns-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.patterns-option {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    padding: 0.6rem 1rem;
+    background: transparent;
+    border: 1px solid var(--color-rosa-light);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--color-text);
+    text-align: left;
+}
+
+.patterns-option:hover {
+    border-color: var(--color-petrol);
+    background: rgba(45, 106, 106, 0.05);
+}
+
+.patterns-option.selected {
+    border-color: var(--color-petrol);
+    background: rgba(45, 106, 106, 0.1);
+}
+
+.patterns-response {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    color: var(--color-petrol);
+    text-align: center;
+    margin-top: 1rem;
+    min-height: 1.5em;
+}
+
 /* Toy 7 extension: Toe proof */
 .toe-proof {
     margin-top: 1.5rem;

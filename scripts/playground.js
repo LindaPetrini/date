@@ -37,6 +37,9 @@ const Playground = {
         this.initHold();
         this.initFunQuestion();
         this.initMeta();
+        this.initDay();
+        this.initEmbodiment();
+        this.initPatterns();
         this.initShare();
     },
 
@@ -75,7 +78,10 @@ const Playground = {
             precision: document.getElementById('toy-precision'),
             hold: document.getElementById('toy-hold'),
             fun: document.getElementById('toy-fun'),
-            meta: document.getElementById('toy-meta')
+            meta: document.getElementById('toy-meta'),
+            day: document.getElementById('toy-day'),
+            embodiment: document.getElementById('toy-embodiment'),
+            patterns: document.getElementById('toy-patterns')
         };
 
         // Reorder toys after the path hint
@@ -719,6 +725,111 @@ const Playground = {
             if (saved) {
                 saved.classList.add('selected');
                 response.textContent = C.responses[this.responses.meta];
+            }
+        }
+    },
+
+    // ========== Toy 28: Assemble a Day ==========
+    initDay() {
+        const phases = document.querySelectorAll('.day-phase');
+        const response = document.getElementById('day-response');
+        const C = CONTENT.day;
+
+        if (!C || !phases.length) return;
+
+        phases.forEach(phase => {
+            const phaseName = phase.dataset.phase;
+            const options = phase.querySelectorAll('.phase-option');
+
+            options.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Deselect others in this phase
+                    options.forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+
+                    // Save
+                    if (!this.responses.day) this.responses.day = {};
+                    this.responses.day[phaseName] = btn.dataset.value;
+                    this.saveResponses();
+
+                    // Show response when all phases selected
+                    const allSelected = ['morning', 'afternoon', 'evening', 'night'].every(
+                        p => this.responses.day && this.responses.day[p]
+                    );
+                    if (allSelected) {
+                        response.textContent = C.response;
+                    }
+                });
+            });
+        });
+
+        // Restore if saved
+        if (this.responses.day) {
+            Object.entries(this.responses.day).forEach(([phaseName, value]) => {
+                const btn = document.querySelector(`.day-phase[data-phase="${phaseName}"] .phase-option[data-value="${value}"]`);
+                if (btn) btn.classList.add('selected');
+            });
+            const allSelected = ['morning', 'afternoon', 'evening', 'night'].every(
+                p => this.responses.day && this.responses.day[p]
+            );
+            if (allSelected) {
+                response.textContent = C.response;
+            }
+        }
+    },
+
+    // ========== Toy 29: Embodiment ==========
+    initEmbodiment() {
+        const options = document.querySelectorAll('.embodiment-option');
+        const response = document.getElementById('embodiment-response');
+        const C = CONTENT.embodiment;
+
+        if (!C) return;
+
+        options.forEach(btn => {
+            btn.addEventListener('click', () => {
+                options.forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                response.textContent = C.response;
+                this.responses.embodiment = btn.dataset.answer;
+                this.saveResponses();
+            });
+        });
+
+        // Restore if saved
+        if (this.responses.embodiment) {
+            const saved = document.querySelector(`.embodiment-option[data-answer="${this.responses.embodiment}"]`);
+            if (saved) {
+                saved.classList.add('selected');
+                response.textContent = C.response;
+            }
+        }
+    },
+
+    // ========== Toy 30: Patterns ==========
+    initPatterns() {
+        const options = document.querySelectorAll('.patterns-option');
+        const response = document.getElementById('patterns-response');
+        const C = CONTENT.patterns;
+
+        if (!C) return;
+
+        options.forEach(btn => {
+            btn.addEventListener('click', () => {
+                options.forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                response.textContent = C.response;
+                this.responses.patterns = btn.dataset.answer;
+                this.saveResponses();
+            });
+        });
+
+        // Restore if saved
+        if (this.responses.patterns) {
+            const saved = document.querySelector(`.patterns-option[data-answer="${this.responses.patterns}"]`);
+            if (saved) {
+                saved.classList.add('selected');
+                response.textContent = C.response;
             }
         }
     },
