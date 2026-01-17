@@ -167,6 +167,14 @@
                     <button class="toe-option" data-answer="trying">hold on, I'm trying right now</button>
                 </div>
                 <div class="toe-response" id="toe-response"></div>
+                <div class="toe-proof" id="toe-proof">
+                    <p class="proof-invite">prove it?</p>
+                    <label class="upload-btn">
+                        <input type="file" id="toe-upload" accept="image/*" hidden>
+                        <span>upload toe pic</span>
+                    </label>
+                    <div class="toe-preview" id="toe-preview"></div>
+                </div>
             </div>
         </section>
 
@@ -214,10 +222,101 @@
             </div>
         </section>
 
-        <!-- Toy 11: Are you having fun? -->
-        <section class="toy" id="toy-fun" data-order="11">
+        <!-- Toy 11: Music dial -->
+        <section class="toy" id="toy-music" data-order="11">
             <div class="toy-header">
                 <span class="toy-number">11</span>
+                <h2>music volume when working</h2>
+            </div>
+            <div class="toy-content">
+                <div class="dial-container">
+                    <span class="dial-label">silence</span>
+                    <input type="range" id="music-dial" min="0" max="100" value="50" class="dial-slider">
+                    <span class="dial-label">loud</span>
+                </div>
+                <div class="dial-response" id="music-response"></div>
+            </div>
+        </section>
+
+        <!-- Toy 12: Nature ranking -->
+        <section class="toy" id="toy-nature" data-order="12">
+            <div class="toy-header">
+                <span class="toy-number">12</span>
+                <h2>rank these (best to worst)</h2>
+            </div>
+            <div class="toy-content">
+                <div class="rank-container" id="nature-rank">
+                    <div class="rank-item" data-item="sea" draggable="true">sea</div>
+                    <div class="rank-item" data-item="mountain" draggable="true">mountain</div>
+                    <div class="rank-item" data-item="lake" draggable="true">lake</div>
+                    <div class="rank-item" data-item="river" draggable="true">river</div>
+                    <div class="rank-item" data-item="forest" draggable="true">forest</div>
+                </div>
+                <p class="rank-hint">drag to reorder</p>
+                <button class="toy-action" id="save-nature">this order</button>
+                <div class="rank-response" id="nature-response"></div>
+            </div>
+        </section>
+
+        <!-- Toy 13: Upside down -->
+        <section class="toy" id="toy-upside" data-order="13">
+            <div class="toy-header">
+                <span class="toy-number">13</span>
+                <h2>how do you feel about being upside down?</h2>
+            </div>
+            <div class="toy-content">
+                <div class="upside-options">
+                    <button class="upside-option" data-answer="love">I love it</button>
+                    <button class="upside-option" data-answer="fine">it's fine</button>
+                    <button class="upside-option" data-answer="uncomfortable">uncomfortable</button>
+                    <button class="upside-option" data-answer="never">I actively avoid it</button>
+                    <button class="upside-option" data-answer="when">when was the last time I was upside down?</button>
+                </div>
+                <div class="upside-response" id="upside-response"></div>
+            </div>
+        </section>
+
+        <!-- Toy 14: AI quiz -->
+        <section class="toy" id="toy-ai" data-order="14">
+            <div class="toy-header">
+                <span class="toy-number">14</span>
+                <h2>select all that apply</h2>
+            </div>
+            <div class="toy-content">
+                <div class="ai-options">
+                    <label class="ai-option">
+                        <input type="checkbox" data-item="autoencoder">
+                        <span>I know what an autoencoder is</span>
+                    </label>
+                    <label class="ai-option">
+                        <input type="checkbox" data-item="polite">
+                        <span>I say please and thank you to AI</span>
+                    </label>
+                    <label class="ai-option">
+                        <input type="checkbox" data-item="credits">
+                        <span>I spent more than $50 on API credits last month</span>
+                    </label>
+                    <label class="ai-option">
+                        <input type="checkbox" data-item="sentient">
+                        <span>AI might be sentient</span>
+                    </label>
+                    <label class="ai-option">
+                        <input type="checkbox" data-item="alignment">
+                        <span>I've thought about AI alignment</span>
+                    </label>
+                    <label class="ai-option">
+                        <input type="checkbox" data-item="claude">
+                        <span>I have a favorite AI model</span>
+                    </label>
+                </div>
+                <div class="ai-response" id="ai-response"></div>
+            </div>
+        </section>
+
+        <!-- Toy 15: Are you having fun? -->
+        <section class="toy" id="toy-fun" data-order="15">
+            <div class="toy-header">
+                <span class="toy-number">15</span>
                 <h2>are you having fun?</h2>
             </div>
             <div class="toy-content">
@@ -234,7 +333,12 @@
         <!-- End -->
         <section class="playground-end">
             <p>that's all for now.</p>
-            <p class="end-note">if you enjoyed this, you might enjoy me. <a href="index.html">say hello?</a></p>
+            <p class="end-note">if you enjoyed this, you might enjoy me.</p>
+            <div class="share-section">
+                <button class="share-btn" id="share-results">share your answers with me</button>
+                <div class="share-output" id="share-output"></div>
+            </div>
+            <p class="end-link"><a href="index.html">or say hello another way</a></p>
         </section>
 
         <footer class="playground-footer">

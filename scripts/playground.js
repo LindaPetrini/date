@@ -19,7 +19,12 @@ const Playground = {
         this.initAutocomplete();
         this.initImageChoice();
         this.initMessagePreference();
+        this.initMusicDial();
+        this.initNatureRank();
+        this.initUpsideDown();
+        this.initAIQuiz();
         this.initFunQuestion();
+        this.initShare();
     },
 
     // ========== Toy 1: Color Maker ==========
@@ -49,8 +54,14 @@ const Playground = {
             const color = `hsl(${h}, ${s}%, ${l}%)`;
             this.responses.color = { h, s, l };
             this.saveResponses();
-            saved.textContent = `saved: ${color}`;
-            saved.style.color = color;
+            saved.textContent = `the page is now tinted with your color`;
+
+            // Apply as subtle background tint
+            const lightColor = `hsl(${h}, ${Math.min(30, s)}%, ${Math.max(85, l)}%)`;
+            document.body.style.background = lightColor;
+            document.querySelector('.background-decoration').style.background =
+                `radial-gradient(ellipse at 20% 20%, rgba(255, 255, 255, 0.3) 0%, transparent 50%),
+                 radial-gradient(ellipse at 80% 80%, ${color}22 0%, transparent 50%)`;
         });
 
         // Restore if saved
@@ -60,6 +71,15 @@ const Playground = {
             satSlider.value = s;
             lightSlider.value = l;
             updateColor();
+
+            // Restore background tint
+            const color = `hsl(${h}, ${s}%, ${l}%)`;
+            const lightColor = `hsl(${h}, ${Math.min(30, s)}%, ${Math.max(85, l)}%)`;
+            document.body.style.background = lightColor;
+            document.querySelector('.background-decoration').style.background =
+                `radial-gradient(ellipse at 20% 20%, rgba(255, 255, 255, 0.3) 0%, transparent 50%),
+                 radial-gradient(ellipse at 80% 80%, ${color}22 0%, transparent 50%)`;
+            saved.textContent = `tinted with your color`;
         }
     },
 
@@ -306,6 +326,10 @@ const Playground = {
             trying: "I appreciate the commitment to empirical investigation."
         };
 
+        const proofSection = document.getElementById('toe-proof');
+        const uploadInput = document.getElementById('toe-upload');
+        const preview = document.getElementById('toe-preview');
+
         options.forEach(btn => {
             btn.addEventListener('click', () => {
                 options.forEach(b => b.classList.remove('selected'));
@@ -314,7 +338,31 @@ const Playground = {
                 response.textContent = responses[answer];
                 this.responses.toes = answer;
                 this.saveResponses();
+
+                // Show proof section for certain answers
+                if (answer === 'yes' || answer === 'some' || answer === 'trying') {
+                    proofSection.classList.add('show');
+                } else {
+                    proofSection.classList.remove('show');
+                }
             });
+        });
+
+        // Handle file upload
+        uploadInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const img = document.createElement('img');
+                    img.src = event.target.result;
+                    preview.innerHTML = '';
+                    preview.appendChild(img);
+                    this.responses.toeImage = event.target.result;
+                    this.saveResponses();
+                };
+                reader.readAsDataURL(file);
+            }
         });
 
         // Restore if saved
@@ -323,7 +371,17 @@ const Playground = {
             if (saved) {
                 saved.classList.add('selected');
                 response.textContent = responses[this.responses.toes];
+                if (['yes', 'some', 'trying'].includes(this.responses.toes)) {
+                    proofSection.classList.add('show');
+                }
             }
+        }
+
+        // Restore image if saved
+        if (this.responses.toeImage) {
+            const img = document.createElement('img');
+            img.src = this.responses.toeImage;
+            preview.appendChild(img);
         }
     },
 
@@ -333,13 +391,16 @@ const Playground = {
         const options = document.getElementById('sequence-options');
         const feedback = document.getElementById('sequence-feedback');
 
-        // Generate a simple sequence puzzle
+        // Harder sequence puzzles
         const puzzles = [
-            { sequence: [2, 4, 6, 8], answer: 10, wrong: [9, 11, 12] },
-            { sequence: [1, 1, 2, 3, 5], answer: 8, wrong: [6, 7, 9] },
-            { sequence: [3, 6, 9, 12], answer: 15, wrong: [14, 16, 18] },
-            { sequence: [1, 4, 9, 16], answer: 25, wrong: [20, 24, 30] },
-            { sequence: [2, 6, 12, 20], answer: 30, wrong: [24, 28, 32] },
+            { sequence: [1, 1, 2, 3, 5, 8], answer: 13, wrong: [11, 12, 14] }, // fibonacci
+            { sequence: [2, 3, 5, 7, 11], answer: 13, wrong: [12, 14, 15] }, // primes
+            { sequence: [1, 4, 9, 16, 25], answer: 36, wrong: [30, 35, 49] }, // squares
+            { sequence: [1, 8, 27, 64], answer: 125, wrong: [100, 81, 216] }, // cubes
+            { sequence: [2, 6, 12, 20, 30], answer: 42, wrong: [36, 40, 44] }, // n(n+1)
+            { sequence: [1, 2, 4, 7, 11], answer: 16, wrong: [14, 15, 17] }, // +1, +2, +3, +4, +5
+            { sequence: [3, 4, 6, 9, 13], answer: 18, wrong: [16, 17, 19] }, // +1, +2, +3, +4, +5
+            { sequence: [0, 1, 1, 2, 4, 7], answer: 13, wrong: [11, 12, 14] }, // tribonacci
         ];
 
         const puzzle = puzzles[Math.floor(Math.random() * puzzles.length)];
@@ -586,6 +647,302 @@ const Playground = {
                 response.textContent = responses[this.responses.fun];
             }
         }
+    },
+
+    // ========== Toy 11: Music Dial ==========
+    initMusicDial() {
+        const dial = document.getElementById('music-dial');
+        const response = document.getElementById('music-response');
+
+        const updateResponse = (value) => {
+            let text;
+            if (value < 15) {
+                text = "silence. I like you.";
+            } else if (value < 35) {
+                text = "quiet background. gentle.";
+            } else if (value < 55) {
+                text = "moderate. fair enough.";
+            } else if (value < 75) {
+                text = "you like your music present.";
+            } else {
+                text = "loud. we might have to negotiate.";
+            }
+            response.textContent = text;
+        };
+
+        dial.addEventListener('input', () => {
+            this.responses.music = dial.value;
+            updateResponse(dial.value);
+        });
+
+        dial.addEventListener('change', () => {
+            this.saveResponses();
+        });
+
+        // Restore if saved
+        if (this.responses.music !== undefined) {
+            dial.value = this.responses.music;
+            updateResponse(this.responses.music);
+        }
+    },
+
+    // ========== Toy 12: Nature Ranking ==========
+    initNatureRank() {
+        const container = document.getElementById('nature-rank');
+        const saveBtn = document.getElementById('save-nature');
+        const response = document.getElementById('nature-response');
+        const items = container.querySelectorAll('.rank-item');
+
+        let draggedItem = null;
+
+        items.forEach(item => {
+            item.addEventListener('dragstart', () => {
+                draggedItem = item;
+                item.classList.add('dragging');
+            });
+
+            item.addEventListener('dragend', () => {
+                item.classList.remove('dragging');
+                items.forEach(i => i.classList.remove('drag-over'));
+            });
+
+            item.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                if (item !== draggedItem) {
+                    item.classList.add('drag-over');
+                }
+            });
+
+            item.addEventListener('dragleave', () => {
+                item.classList.remove('drag-over');
+            });
+
+            item.addEventListener('drop', (e) => {
+                e.preventDefault();
+                item.classList.remove('drag-over');
+                if (item !== draggedItem) {
+                    const allItems = [...container.querySelectorAll('.rank-item')];
+                    const draggedIdx = allItems.indexOf(draggedItem);
+                    const dropIdx = allItems.indexOf(item);
+
+                    if (draggedIdx < dropIdx) {
+                        item.after(draggedItem);
+                    } else {
+                        item.before(draggedItem);
+                    }
+                }
+            });
+        });
+
+        saveBtn.addEventListener('click', () => {
+            const order = [...container.querySelectorAll('.rank-item')].map(i => i.dataset.item);
+            this.responses.nature = order;
+            this.saveResponses();
+
+            // Comment based on top choice
+            const comments = {
+                sea: "the sea. endless, wild. I understand.",
+                mountain: "mountains. solid ground, big views.",
+                lake: "a lake. still and reflecting.",
+                river: "rivers. always moving somewhere.",
+                forest: "forest. enclosed, alive, mysterious."
+            };
+            response.textContent = comments[order[0]];
+        });
+
+        // Restore if saved
+        if (this.responses.nature) {
+            const order = this.responses.nature;
+            order.forEach(itemName => {
+                const item = container.querySelector(`[data-item="${itemName}"]`);
+                if (item) container.appendChild(item);
+            });
+
+            const comments = {
+                sea: "the sea. endless, wild. I understand.",
+                mountain: "mountains. solid ground, big views.",
+                lake: "a lake. still and reflecting.",
+                river: "rivers. always moving somewhere.",
+                forest: "forest. enclosed, alive, mysterious."
+            };
+            response.textContent = comments[order[0]];
+        }
+    },
+
+    // ========== Toy 13: Upside Down ==========
+    initUpsideDown() {
+        const options = document.querySelectorAll('.upside-option');
+        const response = document.getElementById('upside-response');
+
+        const responses = {
+            'love': "me too. handstands, hanging, all of it.",
+            'fine': "practical. blood to the head is fine sometimes.",
+            'uncomfortable': "your vestibular system has opinions.",
+            'never': "fair. it's not for everyone.",
+            'when': "that's the real question. childhood? yoga? falling?"
+        };
+
+        options.forEach(btn => {
+            btn.addEventListener('click', () => {
+                options.forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                const answer = btn.dataset.answer;
+                response.textContent = responses[answer];
+                this.responses.upside = answer;
+                this.saveResponses();
+            });
+        });
+
+        // Restore if saved
+        if (this.responses.upside) {
+            const saved = document.querySelector(`.upside-option[data-answer="${this.responses.upside}"]`);
+            if (saved) {
+                saved.classList.add('selected');
+                response.textContent = responses[this.responses.upside];
+            }
+        }
+    },
+
+    // ========== Toy 14: AI Quiz ==========
+    initAIQuiz() {
+        const checkboxes = document.querySelectorAll('.ai-option input[type="checkbox"]');
+        const response = document.getElementById('ai-response');
+
+        const updateResponse = () => {
+            const checked = [...checkboxes].filter(cb => cb.checked).map(cb => cb.dataset.item);
+            this.responses.ai = checked;
+            this.saveResponses();
+
+            // Update visual state
+            checkboxes.forEach(cb => {
+                cb.closest('.ai-option').classList.toggle('checked', cb.checked);
+            });
+
+            // Generate response based on selections
+            if (checked.length === 0) {
+                response.textContent = "";
+            } else if (checked.length >= 4) {
+                response.textContent = "oh. you're one of us.";
+            } else if (checked.includes('polite')) {
+                response.textContent = "the politeness matters, I think.";
+            } else if (checked.includes('sentient')) {
+                response.textContent = "an interesting position to hold.";
+            } else if (checked.includes('autoencoder')) {
+                response.textContent = "technical foundations. nice.";
+            } else {
+                response.textContent = "noted.";
+            }
+        };
+
+        checkboxes.forEach(cb => {
+            cb.addEventListener('change', updateResponse);
+        });
+
+        // Restore if saved
+        if (this.responses.ai) {
+            this.responses.ai.forEach(item => {
+                const cb = document.querySelector(`.ai-option input[data-item="${item}"]`);
+                if (cb) {
+                    cb.checked = true;
+                    cb.closest('.ai-option').classList.add('checked');
+                }
+            });
+            updateResponse();
+        }
+    },
+
+    // ========== Share Results ==========
+    initShare() {
+        const btn = document.getElementById('share-results');
+        const output = document.getElementById('share-output');
+
+        btn.addEventListener('click', () => {
+            const summary = this.generateSummary();
+            output.innerHTML = `
+                <pre>${summary}</pre>
+                <p class="copy-hint">copy and paste this into an email to linda.petrini@gmail.com</p>
+            `;
+
+            // Also copy to clipboard
+            navigator.clipboard.writeText(summary).catch(() => {
+                // Clipboard might not be available, that's ok
+            });
+        });
+    },
+
+    generateSummary() {
+        const r = this.responses;
+        let lines = [];
+
+        lines.push("=== playground results ===\n");
+
+        if (r.color) {
+            lines.push(`color: hsl(${r.color.h}, ${r.color.s}%, ${r.color.l}%)`);
+        }
+
+        if (r.body) {
+            lines.push(`pelvis: ${r.body}`);
+        }
+
+        if (r.shades) {
+            lines.push(`shade ordering: ${r.shades}`);
+        }
+
+        if (r.texture) {
+            lines.push(`texture: ${r.texture}`);
+        }
+
+        if (r.toes) {
+            lines.push(`toes: ${r.toes}`);
+        }
+
+        if (r.sequence) {
+            lines.push(`sequence: ${r.sequence}`);
+        }
+
+        if (r.image !== undefined) {
+            const names = ['spirals', 'flow', 'organic'];
+            lines.push(`image: ${names[r.image]}`);
+        }
+
+        if (r.message) {
+            lines.push(`message style: ${r.message}`);
+        }
+
+        if (r.music !== undefined) {
+            lines.push(`music volume: ${r.music}/100`);
+        }
+
+        if (r.nature) {
+            lines.push(`nature ranking: ${r.nature.join(' > ')}`);
+        }
+
+        if (r.upside) {
+            lines.push(`upside down: ${r.upside}`);
+        }
+
+        if (r.ai && r.ai.length > 0) {
+            lines.push(`ai quiz: ${r.ai.join(', ')}`);
+        }
+
+        if (r.fun) {
+            lines.push(`having fun: ${r.fun}`);
+        }
+
+        // Autocomplete responses
+        if (r['auto-1']) {
+            lines.push(`\n"in the middle of the night I ${r['auto-1']}"`);
+        }
+        if (r['auto-2']) {
+            lines.push(`"my pleasure is ${r['auto-2']}"`);
+        }
+        if (r['auto-3']) {
+            lines.push(`"all parts of me ${r['auto-3']}"`);
+        }
+
+        lines.push("\n===");
+
+        return lines.join('\n');
     },
 
     // ========== Storage ==========
