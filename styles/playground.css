@@ -614,6 +614,14 @@
     margin-top: 0.5rem;
 }
 
+.playground-note {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-petrol);
+    opacity: 0.6;
+    margin-top: 0.5rem;
+}
+
 /* Disqualifiers hover box */
 .disqualifiers-container {
     position: relative;
@@ -976,6 +984,45 @@
 }
 
 .fun-response {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    color: var(--color-petrol);
+    text-align: center;
+    margin-top: 1rem;
+    min-height: 1.5em;
+}
+
+/* Meta question */
+.meta-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.meta-option {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    padding: 0.5rem 1rem;
+    background: transparent;
+    border: 1px solid var(--color-rosa-light);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--color-text);
+}
+
+.meta-option:hover {
+    border-color: var(--color-petrol);
+    background: rgba(45, 106, 106, 0.05);
+}
+
+.meta-option.selected {
+    border-color: var(--color-petrol);
+    background: rgba(45, 106, 106, 0.1);
+}
+
+.meta-response {
     font-family: var(--font-body);
     font-size: 0.9rem;
     color: var(--color-petrol);

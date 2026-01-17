@@ -9,6 +9,7 @@ const Playground = {
 
     init() {
         this.loadResponses();
+        this.reorderToys();
         this.initColorMaker();
         this.initBodyCheck();
         this.initShadeOrder();
@@ -35,7 +36,63 @@ const Playground = {
         this.initPrecision();
         this.initHold();
         this.initFunQuestion();
+        this.initMeta();
         this.initShare();
+    },
+
+    // ========== Reorder toys based on CONTENT.toyOrder ==========
+    reorderToys() {
+        if (!CONTENT.toyOrder) return;
+
+        const container = document.querySelector('.playground-container');
+        const pathHint = document.querySelector('.path-hint');
+
+        // Map toy IDs to their elements
+        const toyMap = {
+            color: document.getElementById('toy-color'),
+            body: document.getElementById('toy-body'),
+            shades: document.getElementById('toy-shades'),
+            emotion: document.getElementById('toy-emotion'),
+            autocomplete: document.getElementById('toy-autocomplete'),
+            texture: document.getElementById('toy-texture'),
+            toes: document.getElementById('toy-toes'),
+            sequence: document.getElementById('toy-sequence'),
+            images: document.getElementById('toy-images'),
+            message: document.getElementById('toy-message'),
+            music: document.getElementById('toy-music'),
+            nature: document.getElementById('toy-nature'),
+            upside: document.getElementById('toy-upside'),
+            ai: document.getElementById('toy-ai'),
+            room: document.getElementById('toy-room'),
+            crying: document.getElementById('toy-crying'),
+            reading: document.getElementById('toy-reading'),
+            spirit: document.getElementById('toy-spirit'),
+            neuro: document.getElementById('toy-neuro'),
+            lead: document.getElementById('toy-lead'),
+            therapy: document.getElementById('toy-therapy'),
+            god: document.getElementById('toy-god'),
+            food: document.getElementById('toy-food'),
+            precision: document.getElementById('toy-precision'),
+            hold: document.getElementById('toy-hold'),
+            fun: document.getElementById('toy-fun'),
+            meta: document.getElementById('toy-meta')
+        };
+
+        // Reorder toys after the path hint
+        let insertAfter = pathHint;
+        CONTENT.toyOrder.forEach((toyId, index) => {
+            const toy = toyMap[toyId];
+            if (toy) {
+                // Update the number
+                const numEl = toy.querySelector('.toy-number');
+                if (numEl) {
+                    numEl.textContent = String(index + 1).padStart(2, '0');
+                }
+                // Move element
+                insertAfter.after(toy);
+                insertAfter = toy;
+            }
+        });
     },
 
     // ========== Toy 1: Color Maker ==========
@@ -263,7 +320,7 @@ const Playground = {
 
     // ========== Toy 5: Autocomplete ==========
     initAutocomplete() {
-        const inputs = ['auto-1', 'auto-2', 'auto-3'];
+        const inputs = ['auto-1', 'auto-2', 'auto-3', 'auto-4', 'auto-5'];
 
         inputs.forEach(id => {
             const input = document.getElementById(id);
@@ -633,6 +690,35 @@ const Playground = {
             if (saved) {
                 saved.classList.add('selected');
                 response.textContent = C.responses[this.responses.fun];
+            }
+        }
+    },
+
+    // ========== Toy 27: Meta ==========
+    initMeta() {
+        const options = document.querySelectorAll('.meta-option');
+        const response = document.getElementById('meta-response');
+        const C = CONTENT.meta;
+
+        if (!C) return;
+
+        options.forEach(btn => {
+            btn.addEventListener('click', () => {
+                options.forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                const answer = btn.dataset.answer;
+                response.textContent = C.responses[answer];
+                this.responses.meta = answer;
+                this.saveResponses();
+            });
+        });
+
+        // Restore if saved
+        if (this.responses.meta) {
+            const saved = document.querySelector(`.meta-option[data-answer="${this.responses.meta}"]`);
+            if (saved) {
+                saved.classList.add('selected');
+                response.textContent = C.responses[this.responses.meta];
             }
         }
     },

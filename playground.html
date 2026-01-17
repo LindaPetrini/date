@@ -18,6 +18,7 @@
             <h1 class="playground-title">play</h1>
             <p class="playground-subtitle">date me docs are boring. here's a playground instead.</p>
             <p class="playground-description">get to know some things about me. for dating or otherwise.</p>
+            <p class="playground-note">you don't have to do all of them. skip around.</p>
 
             <!-- Disqualifiers hover box -->
             <div class="disqualifiers-container">
@@ -143,12 +144,20 @@
                         <input type="text" class="prompt-input-inline" id="auto-1" placeholder="...">
                     </div>
                     <div class="autocomplete-item">
-                        <span class="prompt-start">my pleasure is</span>
+                        <span class="prompt-start">pleasure is</span>
                         <input type="text" class="prompt-input-inline" id="auto-2" placeholder="...">
                     </div>
                     <div class="autocomplete-item">
                         <span class="prompt-start">all parts of me</span>
                         <input type="text" class="prompt-input-inline" id="auto-3" placeholder="...">
+                    </div>
+                    <div class="autocomplete-item">
+                        <span class="prompt-start">the point of life is</span>
+                        <input type="text" class="prompt-input-inline" id="auto-4" placeholder="...">
+                    </div>
+                    <div class="autocomplete-item">
+                        <span class="prompt-start">I never leave the house without</span>
+                        <input type="text" class="prompt-input-inline" id="auto-5" placeholder="...">
                     </div>
                 </div>
             </div>
@@ -557,6 +566,23 @@
                     <span class="hold-timer" id="hold-timer">0.0s</span>
                 </button>
                 <div class="hold-response" id="hold-response"></div>
+            </div>
+        </section>
+
+        <!-- Toy 27: Meta -->
+        <section class="toy" id="toy-meta" data-order="27">
+            <div class="toy-header">
+                <span class="toy-number">27</span>
+                <h2>how do you feel about going meta?</h2>
+            </div>
+            <div class="toy-content">
+                <div class="meta-options">
+                    <button class="meta-option" data-answer="hate">hate it</button>
+                    <button class="meta-option" data-answer="loveHating">I love hating it</button>
+                    <button class="meta-option" data-answer="hateLove">I hate loving it</button>
+                    <button class="meta-option" data-answer="dontStart">don't get me started</button>
+                </div>
+                <div class="meta-response" id="meta-response"></div>
             </div>
         </section>
 

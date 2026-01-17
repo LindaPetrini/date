@@ -62,7 +62,7 @@ const CONTENT = {
             text: "if you liked this, ask Claude to make you one.",
             repoUrl: "https://github.com/lindapetrini/dateme-playground",
             repoLabel: "github repo",
-            note: "i won't be offended if you don't cite me, but i'll be happy if you do — and i might end up finding more humans i'd like to meet."
+            note: "feel free to share this with your friends, I wanna meet more humans I vibe with.."
         }
     },
 
@@ -70,31 +70,32 @@ const CONTENT = {
     // TOY ORDER - Change this array to reorder toys
     // =====================================================
     toyOrder: [
-        "color",      // 1
+        "texture",    // 6
         "body",       // 2
         "shades",     // 3
-        "emotion",    // 4
         "autocomplete", // 5
-        "texture",    // 6
+        "ai",         // 14
         "toes",       // 7
         "sequence",   // 8
         "images",     // 9
         "message",    // 10
         "music",      // 11
+        "hold",       // 25
         "nature",     // 12
+        "color",      // 1
+        "precision",  // 24
         "upside",     // 13
-        "ai",         // 14
         "room",       // 15
         "crying",     // 16
         "reading",    // 17
         "spirit",     // 18
+        "emotion",    // 4
         "neuro",      // 19
         "lead",       // 20
         "therapy",    // 21
         "god",        // 22
         "food",       // 23
-        "precision",  // 24
-        "hold",       // 25
+        "meta",       // 27
         "fun"         // 26
     ],
 
@@ -148,17 +149,17 @@ const CONTENT = {
     // =====================================================
     emotion: {
         title: "is this a feeling?",
-        hint: "in the nonviolent communication sense",
+        hint: "in the nonviolent communication sense - there are 12 questions",
         buttons: { yes: "yes, a feeling", no: "no, something else" },
         endText: "that's all of them",
-        summary: "you got {correct} out of {total}. in NVC, feelings are different from thoughts about what others did.",
+        summary: "you got {correct} out of {total}. in NVC, feelings are different from thoughts about what others did. believe it or not, some people nerd out over this.",
         items: [
             { text: "I feel abandoned", isFeeling: false, explanation: "That's an interpretation of what others did to you." },
             { text: "I feel sad", isFeeling: true, explanation: "Yes, sadness is a feeling." },
             { text: "I feel like you don't care", isFeeling: false, explanation: "That's a thought about someone else." },
             { text: "I feel anxious", isFeeling: true, explanation: "Yes, anxiety is a feeling." },
             { text: "I feel manipulated", isFeeling: false, explanation: "That's a judgment about someone's actions." },
-            { text: "I feel curious", isFeeling: true, explanation: "Yes, curiosity is a feeling." },
+            { text: "I feel curious", isFeeling: true, explanation: "We'll count it as a feeling, but it's more of a thought." },
             { text: "I feel unheard", isFeeling: false, explanation: "That's about how others are treating you." },
             { text: "I feel peaceful", isFeeling: true, explanation: "Yes, peace is a feeling." },
             { text: "I feel betrayed", isFeeling: false, explanation: "That's an interpretation of someone's behavior." },
@@ -175,8 +176,10 @@ const CONTENT = {
         title: "complete these",
         prompts: [
             "in the middle of the night I",
-            "my pleasure is",
-            "all parts of me"
+            "pleasure is",
+            "all parts of me",
+            "the point of life is",
+            "I never leave the house without"
         ]
     },
 
@@ -206,7 +209,7 @@ const CONTENT = {
             no: "most people can't. our feet spend too much time in shoes.",
             trying: "I appreciate the commitment to empirical investigation."
         },
-        proofInvite: "prove it?",
+        proofInvite: "pic or it didn't happen",
         uploadButton: "upload toe pic"
     },
 
@@ -248,7 +251,7 @@ const CONTENT = {
     // TOY 11: MUSIC
     // =====================================================
     music: {
-        title: "music volume when working",
+        title: "music volume",
         labels: { min: "silence", max: "loud" },
         responses: {
             0: "silence. I like you.",
@@ -541,6 +544,25 @@ const CONTENT = {
     },
 
     // =====================================================
+    // TOY 27: META
+    // =====================================================
+    meta: {
+        title: "how do you feel about going meta?",
+        options: {
+            hate: "hate it",
+            loveHating: "I love hating it",
+            hateLove: "I hate loving it",
+            dontStart: "don't get me started"
+        },
+        responses: {
+            hate: "fair. this whole thing is pretty meta.",
+            loveHating: "a connoisseur of contradictions.",
+            hateLove: "the recursive trap.",
+            dontStart: "too late."
+        }
+    },
+
+    // =====================================================
     // LINDA'S ANSWERS - Fill these in!
     // =====================================================
     myAnswers: {
@@ -548,21 +570,23 @@ const CONTENT = {
         body: "usually tilted, if I'm honest",
         texture: "linen in summer, wool in winter",
         toes: "yes — barefoot life",
-        music: "10/100 — I need silence to think",
-        nature: "sea > forest > mountain > lake > river",
+        music: "10/100 — I love silence",
+        nature: "sea > river > forest > mountain > lake > ",
         upside: "I love it. handstands are my meditation.",
-        ai: "all of them except the $50 (this month)",
-        room: "35/100 — cozy but distinct spaces",
-        crying: "ask, then maybe cry too",
-        spirit: "75/100 — something's going on",
+        ai: "all of them really. I don't wanna talk about my API usage.",
+        room: "5/100 - I love multi functional spaces",
+        crying: "ask, I value giving people agency a lot",
+        spirit: "85/100 — something's def going on",
         lead: "depends on the context, but I lean follow",
         therapy: "500+ hours, more money than I want to calculate",
-        god: "something like love, or presence",
+        god: "to my big surprise, these days the answer is Jesus",
         food: "cook, joy, ingredients — food is connection",
         autocomplete: [
-            "in the middle of the night I write",
-            "my pleasure is simple — sun, movement, good conversation",
-            "all parts of me are welcome here"
+            "in the middle of the night I breath and chat with AI",
+            "pleasure is a practice",
+            "all parts of me are welcome here",
+            "the point of life is to keep living",
+            "I never leave the house without earplugs"
         ]
     }
 };
