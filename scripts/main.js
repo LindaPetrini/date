@@ -8,6 +8,7 @@ const STORAGE_KEY = 'dateme_progress';
 
 // State
 let currentProgress = 0;  // 0 = intro only, 1-3 = puzzles completed
+let progressKnotScenes = [];
 
 /**
  * Initialize the application
@@ -16,11 +17,44 @@ function init() {
     // Load saved progress
     loadProgress();
 
+    // Initialize progress indicator knots
+    initProgressKnots();
+
     // Update UI based on progress
     updateUI();
 
     // Set up keyboard listeners
     document.addEventListener('keydown', handleKeydown);
+}
+
+/**
+ * Initialize the 3D knots in the progress bar
+ */
+function initProgressKnots() {
+    // Clean up any existing scenes
+    progressKnotScenes.forEach(scene => {
+        if (scene.renderer) scene.renderer.dispose();
+    });
+    progressKnotScenes = [];
+
+    // Create mini knots for each stage
+    for (let i = 0; i <= 3; i++) {
+        const container = document.getElementById(`knot-stage-${i}`);
+        if (container && typeof Knots3D !== 'undefined') {
+            container.innerHTML = '';
+            const isUnlocked = i <= currentProgress;
+            const color = isUnlocked ? Knots3D.colors.sage : Knots3D.colors.light;
+
+            const scene = Knots3D.createKnotScene(container, 'trefoil', {
+                size: 48,
+                color: color,
+                tubeRadius: 0.18,
+                rotation: { x: 0.3 + i * 0.2, y: 0.5 + i * 0.3, z: i * 0.1 },
+                animate: false
+            });
+            progressKnotScenes.push(scene);
+        }
+    }
 }
 
 /**
@@ -59,7 +93,7 @@ function saveProgress(stageCompleted) {
  * Update UI based on current progress
  */
 function updateUI() {
-    // Update progress indicators
+    // Update progress indicator states
     for (let i = 0; i <= 3; i++) {
         const progressKnot = document.querySelector(`.progress-knot[data-stage="${i}"]`);
         const icon = progressKnot?.querySelector('.knot-icon');
@@ -69,13 +103,10 @@ function updateUI() {
 
             if (i <= currentProgress) {
                 icon.classList.add('unlocked');
-                icon.textContent = '✓';
             } else if (i === currentProgress + 1) {
                 icon.classList.add('active');
-                icon.textContent = '?';
             } else {
                 icon.classList.add('locked');
-                icon.textContent = '?';
             }
         }
 
@@ -90,14 +121,6 @@ function updateUI() {
         }
     }
 
-    // Special case for intro (stage 0)
-    const introIcon = document.querySelector('.progress-knot[data-stage="0"] .knot-icon');
-    if (introIcon) {
-        introIcon.classList.remove('locked');
-        introIcon.classList.add(currentProgress >= 0 ? 'unlocked' : 'active');
-        introIcon.textContent = currentProgress > 0 ? '✓' : '∞';
-    }
-
     // Unlock content sections
     for (let i = 1; i <= 3; i++) {
         const section = document.querySelector(`.content-section.stage-${i}`);
@@ -108,6 +131,11 @@ function updateUI() {
                 section.classList.add('locked');
             }
         }
+    }
+
+    // Re-render progress knots with updated colors
+    if (typeof Knots3D !== 'undefined') {
+        initProgressKnots();
     }
 }
 

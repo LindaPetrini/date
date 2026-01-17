@@ -5,19 +5,22 @@
 
 /* CSS Custom Properties */
 :root {
-    /* Warm palette from lindapetrini.com */
-    --color-rose: #D9A3A3;
-    --color-rose-light: #E8C4C4;
-    --color-cream: #FDF8F5;
-    --color-burgundy: #914F62;
-    --color-burgundy-dark: #6B3A49;
-    --color-terracotta: #C09882;
+    /* Warm earth tones palette */
+    --color-sand: #E8DFD5;
+    --color-sand-light: #F5F0EA;
+    --color-cream: #FAF8F5;
+    --color-terracotta: #C17F59;
+    --color-terracotta-dark: #A66B47;
+    --color-brown: #8B5A2B;
+    --color-brown-dark: #5D3A1A;
+    --color-sage: #87A878;
+    --color-sage-dark: #6B8A5E;
 
-    /* Terminal/interactive accents */
-    --color-terminal-green: #50C878;
-    --color-terminal-green-dim: #3D9E5C;
-    --color-terminal-bg: #1a1a1a;
-    --color-terminal-text: #E0E0E0;
+    /* Terminal/interactive accents - using sage */
+    --color-terminal-green: #87A878;
+    --color-terminal-green-dim: #6B8A5E;
+    --color-terminal-bg: #2C2416;
+    --color-terminal-text: #E8DFD5;
 
     /* Neutral */
     --color-text: #2D2D2D;
@@ -63,7 +66,7 @@ html {
 body {
     font-family: var(--font-body);
     color: var(--color-text);
-    background: var(--color-rose);
+    background: var(--color-sand);
     line-height: 1.7;
     min-height: 100vh;
 }
@@ -76,8 +79,8 @@ body {
     right: 0;
     bottom: 0;
     background:
-        radial-gradient(ellipse at 20% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 80%, rgba(145, 79, 98, 0.1) 0%, transparent 50%);
+        radial-gradient(ellipse at 20% 20%, rgba(255, 255, 255, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(193, 127, 89, 0.08) 0%, transparent 50%);
     pointer-events: none;
     z-index: -1;
 }
@@ -99,7 +102,7 @@ body {
     font-family: var(--font-display);
     font-size: clamp(2.5rem, 8vw, 4rem);
     font-weight: 400;
-    color: var(--color-burgundy-dark);
+    color: var(--color-brown-dark);
     letter-spacing: 0.05em;
     margin-bottom: var(--space-sm);
 }
@@ -134,24 +137,26 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.2rem;
-    font-family: var(--font-mono);
     transition: var(--transition-medium);
+    overflow: hidden;
+    background: var(--color-cream);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .knot-icon.active {
-    background: var(--color-burgundy);
-    color: var(--color-white);
+    box-shadow: 0 2px 12px rgba(193, 127, 89, 0.3);
 }
 
 .knot-icon.locked {
-    background: var(--color-rose-light);
-    color: var(--color-text-light);
+    opacity: 0.6;
 }
 
 .knot-icon.unlocked {
-    background: var(--color-terminal-green);
-    color: var(--color-white);
+    box-shadow: 0 2px 12px rgba(135, 168, 120, 0.4);
+}
+
+.knot-icon canvas {
+    border-radius: 50%;
 }
 
 .progress-knot span {
@@ -164,7 +169,7 @@ body {
 .progress-line {
     width: 3rem;
     height: 2px;
-    background: var(--color-rose-light);
+    background: var(--color-sand-light);
     transition: var(--transition-medium);
 }
 
@@ -204,21 +209,21 @@ body {
 .section-content h2 {
     font-family: var(--font-display);
     font-size: 1.8rem;
-    color: var(--color-burgundy-dark);
+    color: var(--color-brown-dark);
     margin-bottom: var(--space-md);
     text-align: center;
 }
 
 .section-content h3 {
     font-size: 1.3rem;
-    color: var(--color-burgundy);
+    color: var(--color-terracotta);
     margin-top: var(--space-md);
     margin-bottom: var(--space-sm);
 }
 
 .section-content h4 {
     font-size: 1.1rem;
-    color: var(--color-burgundy);
+    color: var(--color-terracotta);
     margin-bottom: var(--space-xs);
 }
 
@@ -249,7 +254,7 @@ body {
 .intro-card .value {
     display: block;
     font-weight: 600;
-    color: var(--color-burgundy);
+    color: var(--color-terracotta);
 }
 
 /* Prose */
@@ -285,7 +290,7 @@ body {
     content: "~";
     position: absolute;
     left: 0;
-    color: var(--color-burgundy);
+    color: var(--color-terracotta);
     font-family: var(--font-mono);
 }
 
@@ -308,8 +313,8 @@ body {
 }
 
 .side.embodied {
-    background: linear-gradient(135deg, var(--color-cream), var(--color-rose-light));
-    border-left: 3px solid var(--color-burgundy);
+    background: linear-gradient(135deg, var(--color-cream), var(--color-sand-light));
+    border-left: 3px solid var(--color-terracotta);
 }
 
 .side p {
@@ -325,7 +330,7 @@ body {
 .time-block {
     padding: var(--space-sm) 0;
     padding-left: var(--space-md);
-    border-left: 2px solid var(--color-rose-light);
+    border-left: 2px solid var(--color-sand-light);
     position: relative;
 }
 
@@ -337,13 +342,13 @@ body {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: var(--color-burgundy);
+    background: var(--color-terracotta);
 }
 
 .time-block .time {
     font-family: var(--font-mono);
     font-size: 0.85rem;
-    color: var(--color-burgundy);
+    color: var(--color-terracotta);
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
@@ -404,7 +409,7 @@ body {
     background: var(--color-cream);
     padding: var(--space-sm);
     border-radius: var(--radius-sm);
-    border-left: 3px solid var(--color-burgundy);
+    border-left: 3px solid var(--color-terracotta);
 }
 
 .manifest-item p {
@@ -413,7 +418,7 @@ body {
 }
 
 .dealbreakers {
-    background: var(--color-rose-light);
+    background: var(--color-sand-light);
     padding: var(--space-sm);
     border-radius: var(--radius-sm);
     font-style: italic;
@@ -556,7 +561,7 @@ body {
 .puzzle-header h3 {
     font-family: var(--font-display);
     font-size: 1.5rem;
-    color: var(--color-burgundy-dark);
+    color: var(--color-brown-dark);
     margin-bottom: var(--space-sm);
 }
 
@@ -584,7 +589,7 @@ body {
 
 .close-puzzle:hover {
     background: var(--color-cream);
-    color: var(--color-burgundy);
+    color: var(--color-terracotta);
 }
 
 /* Knot Display Areas */
@@ -620,11 +625,11 @@ body {
 }
 
 .knot-option:hover {
-    border-color: var(--color-rose);
+    border-color: var(--color-sand);
 }
 
 .knot-option.selected {
-    border-color: var(--color-burgundy);
+    border-color: var(--color-terracotta);
 }
 
 .knot-option.correct {
@@ -677,7 +682,7 @@ body {
 .unknot-button {
     padding: var(--space-sm) var(--space-md);
     background: var(--color-cream);
-    border: 2px solid var(--color-rose);
+    border: 2px solid var(--color-sand);
     border-radius: var(--radius-sm);
     font-family: var(--font-body);
     font-size: 1rem;
@@ -687,8 +692,8 @@ body {
 
 .equiv-button:hover,
 .unknot-button:hover {
-    border-color: var(--color-burgundy);
-    background: var(--color-rose-light);
+    border-color: var(--color-terracotta);
+    background: var(--color-sand-light);
 }
 
 /* Puzzle 3: Unknotting */
@@ -751,7 +756,7 @@ body {
     text-align: center;
     margin-top: var(--space-lg);
     padding-top: var(--space-lg);
-    border-top: 1px solid var(--color-rose-light);
+    border-top: 1px solid var(--color-sand-light);
 }
 
 .contact-section h3 {
@@ -772,7 +777,7 @@ body {
     align-items: center;
     gap: var(--space-xs);
     padding: var(--space-sm) var(--space-md);
-    background: var(--color-burgundy);
+    background: var(--color-terracotta);
     color: var(--color-white);
     text-decoration: none;
     border-radius: var(--radius-sm);
@@ -781,7 +786,7 @@ body {
 }
 
 .contact-link:hover {
-    background: var(--color-burgundy-dark);
+    background: var(--color-brown-dark);
     transform: translateY(-2px);
 }
 
@@ -804,7 +809,7 @@ body {
 }
 
 .footer a {
-    color: var(--color-burgundy);
+    color: var(--color-terracotta);
     text-decoration: none;
 }
 

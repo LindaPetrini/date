@@ -1,60 +1,43 @@
 /**
  * Puzzle Logic
- * Handles all three knot puzzle types
+ * Handles all three knot puzzle types with 3D rendering
  */
 
 const Puzzles = {
-    // Puzzle definitions
+    // Track puzzle state
     puzzles: {
-        // Puzzle 1: Visual Rotation
-        // Show trefoil1, correct answer is trefoil2 (same knot, different view)
         1: {
             type: 'rotation',
-            reference: 'trefoil1',
-            options: [
-                { knot: 'figureEight', correct: false },
-                { knot: 'trefoil2', correct: true },
-                { knot: 'cinquefoil', correct: false },
-                { knot: 'fakeKnot1', correct: false }
-            ],
             hints: [
-                'Count the crossings in each knot...',
-                'A trefoil has exactly 3 crossings.',
-                'Look at how the loops interweave.'
+                'Look at the overall shape and number of crossings...',
+                'A trefoil knot has three lobes.',
+                'Try to trace the path mentally.'
             ],
-            successMessage: 'You recognized the trefoil from a different angle.',
-            attempts: 0
+            successMessage: 'You found the same knot from a different view.',
+            attempts: 0,
+            scenes: []
         },
-
-        // Puzzle 2: Knot Equivalence
-        // Two knots shown - are they the same?
         2: {
             type: 'equivalence',
-            knotA: 'trefoil3',
-            knotB: 'trefoilSymmetric',
-            areSame: true,  // They're both trefoils
             hints: [
-                'Both have the same number of crossings...',
-                'Try tracing the path with your finger.',
-                'Count the lobes - how many does each have?'
+                'Count the crossings in each...',
+                'Look at the overall structure.',
+                'These are the same type of knot, just rotated.'
             ],
-            successMessage: 'Both are the trefoil knot, just drawn differently.',
-            attempts: 0
+            successMessage: 'They are the same knot, seen differently.',
+            attempts: 0,
+            scenes: []
         },
-
-        // Puzzle 3: Unknotting
-        // Is this knot unknottable (can become a simple circle)?
         3: {
             type: 'unknotting',
-            knot: 'fakeKnot2',
-            isUnknottable: true,  // This one CAN be untangled
             hints: [
-                'Follow each strand carefully...',
-                'At each crossing, which strand is on top?',
-                'Can you mentally slide the loops apart?'
+                'Trace the strand with your mind...',
+                'Does it actually cross over itself in a knotted way?',
+                'This tangle can be smoothed out.'
             ],
-            successMessage: 'This tangle can be completely undone with patience.',
-            attempts: 0
+            successMessage: 'This tangle can indeed be undone.',
+            attempts: 0,
+            scenes: []
         }
     },
 
@@ -65,6 +48,12 @@ const Puzzles = {
         const puzzle = this.puzzles[puzzleNum];
         if (!puzzle) return;
 
+        // Clean up any existing scenes
+        puzzle.scenes.forEach(s => {
+            if (s.renderer) s.renderer.dispose();
+            if (s.frameId) cancelAnimationFrame(s.frameId);
+        });
+        puzzle.scenes = [];
         puzzle.attempts = 0;
 
         switch (puzzle.type) {
@@ -84,14 +73,19 @@ const Puzzles = {
      * Initialize rotation puzzle (Puzzle 1)
      */
     initRotationPuzzle(num, puzzle) {
+        const config = Knots3D.getPuzzle1Config();
+
         // Set reference knot
         const refContainer = document.getElementById(`reference-knot-${num}`);
         if (refContainer) {
             refContainer.innerHTML = '';
-            const refKnot = KnotSVG.getKnot(puzzle.reference);
-            refKnot.setAttribute('width', '150');
-            refKnot.setAttribute('height', '150');
-            refContainer.appendChild(refKnot);
+            const scene = Knots3D.createKnotScene(refContainer, config.reference.type, {
+                size: 150,
+                rotation: config.reference.rotation,
+                color: config.reference.color,
+                animate: true
+            });
+            puzzle.scenes.push(scene);
         }
 
         // Set options (shuffled)
@@ -100,7 +94,7 @@ const Puzzles = {
             optionsContainer.innerHTML = '';
 
             // Shuffle options
-            const shuffledOptions = [...puzzle.options].sort(() => Math.random() - 0.5);
+            const shuffledOptions = [...config.options].sort(() => Math.random() - 0.5);
 
             shuffledOptions.forEach((option, index) => {
                 const optionDiv = document.createElement('div');
@@ -108,8 +102,13 @@ const Puzzles = {
                 optionDiv.dataset.correct = option.correct;
                 optionDiv.dataset.index = index;
 
-                const knotSvg = KnotSVG.getKnot(option.knot);
-                optionDiv.appendChild(knotSvg);
+                const scene = Knots3D.createKnotScene(optionDiv, option.type, {
+                    size: 100,
+                    rotation: option.rotation,
+                    color: option.color,
+                    animate: false
+                });
+                puzzle.scenes.push(scene);
 
                 optionDiv.addEventListener('click', () => {
                     this.checkRotation(num, optionDiv, option.correct);
@@ -143,14 +142,11 @@ const Puzzles = {
             feedbackText.className = 'feedback-text success';
             feedbackText.textContent = puzzle.successMessage;
 
-            // Delay then complete puzzle
             setTimeout(() => {
                 this.completePuzzle(num);
             }, 1500);
         } else {
             element.classList.add('incorrect');
-
-            // Show hint based on attempts
             const hintIndex = Math.min(puzzle.attempts - 1, puzzle.hints.length - 1);
             feedbackText.className = 'feedback-text hint';
             feedbackText.textContent = puzzle.hints[hintIndex];
@@ -161,6 +157,9 @@ const Puzzles = {
      * Initialize equivalence puzzle (Puzzle 2)
      */
     initEquivalencePuzzle(num, puzzle) {
+        const config = Knots3D.getPuzzle2Config();
+        puzzle.areSame = config.areSame;
+
         const pairContainer = document.getElementById(`knot-pair-${num}`);
         if (pairContainer) {
             pairContainer.innerHTML = '';
@@ -168,14 +167,24 @@ const Puzzles = {
             // Knot A
             const knotADiv = document.createElement('div');
             knotADiv.className = 'knot-display';
-            const knotA = KnotSVG.getKnot(puzzle.knotA);
-            knotADiv.appendChild(knotA);
+            const sceneA = Knots3D.createKnotScene(knotADiv, config.knotA.type, {
+                size: 120,
+                rotation: config.knotA.rotation,
+                color: config.knotA.color,
+                animate: true
+            });
+            puzzle.scenes.push(sceneA);
 
             // Knot B
             const knotBDiv = document.createElement('div');
             knotBDiv.className = 'knot-display';
-            const knotB = KnotSVG.getKnot(puzzle.knotB);
-            knotBDiv.appendChild(knotB);
+            const sceneB = Knots3D.createKnotScene(knotBDiv, config.knotB.type, {
+                size: 120,
+                rotation: config.knotB.rotation,
+                color: config.knotB.color,
+                animate: true
+            });
+            puzzle.scenes.push(sceneB);
 
             pairContainer.appendChild(knotADiv);
             pairContainer.appendChild(knotBDiv);
@@ -186,14 +195,20 @@ const Puzzles = {
      * Initialize unknotting puzzle (Puzzle 3)
      */
     initUnknottingPuzzle(num, puzzle) {
+        const config = Knots3D.getPuzzle3Config();
+        puzzle.canBeUnknotted = config.canBeUnknotted;
+
         const displayContainer = document.getElementById(`unknot-${num}`);
         if (displayContainer) {
             displayContainer.innerHTML = '';
 
-            const knot = KnotSVG.getKnot(puzzle.knot);
-            knot.setAttribute('width', '180');
-            knot.setAttribute('height', '180');
-            displayContainer.appendChild(knot);
+            const scene = Knots3D.createKnotScene(displayContainer, config.knot.type, {
+                size: 180,
+                rotation: config.knot.rotation,
+                color: config.knot.color,
+                animate: true
+            });
+            puzzle.scenes.push(scene);
         }
     },
 
@@ -233,7 +248,7 @@ const Puzzles = {
         const feedback = document.getElementById(`feedback-${num}`);
         const feedbackText = feedback.querySelector('.feedback-text');
 
-        const isCorrect = (userSaysUnknottable === puzzle.isUnknottable);
+        const isCorrect = (userSaysUnknottable === puzzle.canBeUnknotted);
 
         if (isCorrect) {
             feedbackText.className = 'feedback-text success';
@@ -253,13 +268,14 @@ const Puzzles = {
      * Complete a puzzle and unlock content
      */
     completePuzzle(num) {
-        // Close puzzle modal
+        // Clean up puzzle scenes
+        const puzzle = this.puzzles[num];
+        puzzle.scenes.forEach(s => {
+            if (s.frameId) cancelAnimationFrame(s.frameId);
+        });
+
         closePuzzle(num);
-
-        // Unlock next stage
         unlockStage(num);
-
-        // Save progress
         saveProgress(num);
     }
 };
@@ -273,5 +289,4 @@ function checkUnknot(num, userSaysUnknottable) {
     Puzzles.checkUnknot(num, userSaysUnknottable);
 }
 
-// Export
 window.Puzzles = Puzzles;

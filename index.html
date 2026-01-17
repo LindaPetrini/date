@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Date Me? - Linda Petrini</title>
+    <title>Date Me? - Linda</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -16,28 +16,28 @@
         <!-- Header -->
         <header class="header">
             <h1 class="title">Date Me?</h1>
-            <p class="subtitle">A little game to see if we might be a good fit</p>
+            <p class="subtitle">A little game to see if we might fit</p>
         </header>
 
         <!-- Progress indicator -->
         <div class="progress-container">
             <div class="progress-knot" data-stage="0">
-                <div class="knot-icon active">&#x221E;</div>
+                <div class="knot-icon active" id="knot-stage-0"></div>
                 <span>Intro</span>
             </div>
             <div class="progress-line" data-after="1"></div>
             <div class="progress-knot" data-stage="1">
-                <div class="knot-icon locked">?</div>
-                <span>Values</span>
+                <div class="knot-icon locked" id="knot-stage-1"></div>
+                <span>Depth</span>
             </div>
             <div class="progress-line" data-after="2"></div>
             <div class="progress-knot" data-stage="2">
-                <div class="knot-icon locked">?</div>
-                <span>Dreams</span>
+                <div class="knot-icon locked" id="knot-stage-2"></div>
+                <span>Texture</span>
             </div>
             <div class="progress-line" data-after="3"></div>
             <div class="progress-knot" data-stage="3">
-                <div class="knot-icon locked">?</div>
+                <div class="knot-icon locked" id="knot-stage-3"></div>
                 <span>Connect</span>
             </div>
         </div>
@@ -54,24 +54,22 @@
                     </div>
                     <div class="intro-card">
                         <span class="label">Looking for</span>
-                        <span class="value">Life partner</span>
+                        <span class="value">My person</span>
                     </div>
                     <div class="intro-card">
-                        <span class="label">Relationship style</span>
+                        <span class="label">Style</span>
                         <span class="value">Monogamous</span>
                     </div>
                     <div class="intro-card">
-                        <span class="label">Children</span>
-                        <span class="value">Yes, ideally 3-4</span>
+                        <span class="label">Kids</span>
+                        <span class="value">Yes, a few</span>
                     </div>
                 </div>
 
                 <div class="prose">
-                    <p>I'm a mathematician by training, working in AI for most of my adult life. Mixed Italian/Russian, currently semi-nomadic with a base in Italy.</p>
+                    <p>I've been described as intense, sweet, and a little strange. I live in a body that loves to move and feel. I write a lot. I cry when I need to cry.</p>
 
-                    <p>I believe we are approaching the singularity and the best way to go about it is to learn how to be really attuned and centered and aligned with oneself. Not necessarily to grind really hard&mdash;in fact, learning to slow down despite everything pulling towards faster might be a very powerful move.</p>
-
-                    <p>I live at the intersection of technical interests and embodied practices. I also teach acroyoga, tried my hand at life coaching, and live in a very sensitive body that loves to move and stretch and feel.</p>
+                    <p>I'm drawn to slowing down in a world that keeps speeding up. To presence. To what's actually true, even when it's uncomfortable.</p>
                 </div>
 
                 <div class="puzzle-invitation">
@@ -80,15 +78,15 @@
                             <span class="terminal-dot"></span>
                             <span class="terminal-dot"></span>
                             <span class="terminal-dot"></span>
-                            <span class="terminal-title">knot_puzzle_01.exe</span>
+                            <span class="terminal-title">knot_puzzle_01</span>
                         </div>
                         <div class="terminal-body">
                             <p class="terminal-text">There's more to share, but I'd like to know you're willing to work a little for it.</p>
                             <p class="terminal-text">Relationships are like knots&mdash;complex, requiring patience and spatial understanding.</p>
                             <p class="terminal-text typing">Ready to untangle the first one?</p>
                             <button class="puzzle-button" onclick="startPuzzle(1)">
-                                <span class="button-text">Begin Puzzle 1</span>
-                                <span class="button-icon">&#x2192;</span>
+                                <span class="button-text">Begin</span>
+                                <span class="button-icon">&rarr;</span>
                             </button>
                         </div>
                     </div>
@@ -100,13 +98,13 @@
         <section class="puzzle-section" id="puzzle-1" data-puzzle="1">
             <div class="puzzle-container">
                 <div class="puzzle-header">
-                    <h3>Puzzle 1: Perspective</h3>
-                    <p>Which of these knots is the same as the one above, just seen from a different angle?</p>
+                    <h3>Perspective</h3>
+                    <p>Which of these is the same knot, just seen from a different angle?</p>
                 </div>
 
                 <div class="puzzle-content">
                     <div class="reference-knot" id="reference-knot-1">
-                        <!-- SVG knot will be inserted here -->
+                        <!-- 3D knot will be inserted here -->
                     </div>
 
                     <div class="knot-options" id="options-1">
@@ -122,40 +120,30 @@
             </div>
         </section>
 
-        <!-- Stage 1: After Puzzle 1 - Values & Lifestyle -->
+        <!-- Stage 1: After Puzzle 1 - Depth -->
         <section class="content-section stage-1 locked" data-stage="1">
             <div class="section-content">
-                <h2>More About Me</h2>
+                <h2>A Little Deeper</h2>
 
                 <div class="prose">
-                    <p>I care about truth a lot. I do my best to act in the world with honesty and kindness. I'm in the process of discovering and accepting I'm quite neurodivergent&mdash;plausibly AuADHD.</p>
+                    <p>I care about truth&mdash;even when it's uncomfortable. I'd rather hear what's real than what sounds nice.</p>
 
-                    <p>I love systems and I love ideas. I moved a thousand times in my life, lived in 6 countries, speak 4 languages. I lean semi-nomadic, currently with a base in a low-stimulation place from where I travel.</p>
+                    <p>There are two sides of me that feel equally alive:</p>
 
-                    <h3>Things I Value</h3>
-                    <ul class="values-list">
-                        <li><strong>Curiosity</strong> &mdash; I often get into a new topic very intensely and might think mostly about that for a few weeks</li>
-                        <li><strong>Attunement</strong> &mdash; to myself, to others, to what's actually happening</li>
-                        <li><strong>Honesty</strong> &mdash; I will always prefer to hear what's true over what would "not hurt me"</li>
-                        <li><strong>Alignment</strong> &mdash; between what I believe, say, and do</li>
-                    </ul>
-
-                    <h3>My Two Sides</h3>
                     <div class="two-sides">
                         <div class="side technical">
-                            <h4>Technical</h4>
-                            <p>Talking about AI, first principles thinking, ideas, knowledge, elegant proofs, coding up a little tool, creating systems for my copious journaling</p>
+                            <h4>The mind part</h4>
+                            <p>Loves ideas, systems, elegant solutions. Gets excited about how things work.</p>
                         </div>
                         <div class="side embodied">
-                            <h4>Embodied</h4>
-                            <p>Stretching, dancing, devotional singing, praying, crying, emoting, acroyoga, healing arts, meditation</p>
+                            <h4>The body part</h4>
+                            <p>Moves, dances, stretches, sings, prays. Feels everything deeply.</p>
                         </div>
                     </div>
 
-                    <h3>What I've Explored</h3>
-                    <p>I'm high openness and have explored a lot&mdash;poly relationships, my bi attraction, psychedelics, years of vegetarianism. These are paths I've walked and learned from, though I've since found different directions that fit me better now.</p>
+                    <p>I've explored a lot of ways to live. Some paths turned out not to be mine. I've learned what I actually need, and I'm still learning.</p>
 
-                    <p>I find I connect best with someone who has also explored and chosen consciously&mdash;someone who has experienced both monogamy and poly and decided to focus on building depth in one relationship; who has explored states of consciousness and now finds more interest in what can be reached through sobriety and practice; who has considered different ways of eating and found peace with what nourishes their body.</p>
+                    <p>I notice I feel most at ease with people who have also wandered and chosen consciously.</p>
                 </div>
 
                 <div class="puzzle-invitation">
@@ -164,14 +152,14 @@
                             <span class="terminal-dot"></span>
                             <span class="terminal-dot"></span>
                             <span class="terminal-dot"></span>
-                            <span class="terminal-title">knot_puzzle_02.exe</span>
+                            <span class="terminal-title">knot_puzzle_02</span>
                         </div>
                         <div class="terminal-body">
-                            <p class="terminal-text">You're doing well. The next layer goes deeper.</p>
-                            <p class="terminal-text">This time: are two knots actually the same, or merely similar?</p>
+                            <p class="terminal-text">Good. This one requires a different kind of seeing.</p>
+                            <p class="terminal-text typing">Are these truly the same, or merely similar?</p>
                             <button class="puzzle-button" onclick="startPuzzle(2)">
-                                <span class="button-text">Begin Puzzle 2</span>
-                                <span class="button-icon">&#x2192;</span>
+                                <span class="button-text">Continue</span>
+                                <span class="button-icon">&rarr;</span>
                             </button>
                         </div>
                     </div>
@@ -183,8 +171,8 @@
         <section class="puzzle-section" id="puzzle-2" data-puzzle="2">
             <div class="puzzle-container">
                 <div class="puzzle-header">
-                    <h3>Puzzle 2: Equivalence</h3>
-                    <p>Are these two knots the same knot (can be deformed into each other without cutting), or are they fundamentally different?</p>
+                    <h3>Equivalence</h3>
+                    <p>Can these two knots be deformed into each other without cutting&mdash;or are they fundamentally different?</p>
                 </div>
 
                 <div class="puzzle-content equivalence">
@@ -206,60 +194,19 @@
             </div>
         </section>
 
-        <!-- Stage 2: After Puzzle 2 - Dreams & Desires -->
+        <!-- Stage 2: After Puzzle 2 - Texture of life -->
         <section class="content-section stage-2 locked" data-stage="2">
             <div class="section-content">
-                <h2>What I Dream Of</h2>
+                <h2>What Life Feels Like</h2>
 
                 <div class="prose">
-                    <h3>A Good Day</h3>
-                    <div class="day-timeline">
-                        <div class="time-block">
-                            <span class="time">Morning</span>
-                            <p>Waking up to cuddles, maybe morning intimacy. Slow practices together or in the same space&mdash;tea, meditation, journaling, stretching. Then coworking or a trip to a local cute cafe.</p>
-                        </div>
-                        <div class="time-block">
-                            <span class="time">Midday</span>
-                            <p>Cooking a delicious steak for us. I love preparing food with care.</p>
-                        </div>
-                        <div class="time-block">
-                            <span class="time">Afternoon</span>
-                            <p>Outdoors time&mdash;training or exploring or building or learning or tending to the house. Being in nature, moving our bodies.</p>
-                        </div>
-                        <div class="time-block">
-                            <span class="time">Evening</span>
-                            <p>Light dinner, evening practices and reflections. Quiet time, maybe exchanging massage, or chill hangout with friends, singing together or jamming or dancing or discussing something or stretching together.</p>
-                        </div>
-                        <div class="time-block">
-                            <span class="time">Night</span>
-                            <p>Early bedtime. I treasure sleep.</p>
-                        </div>
-                    </div>
+                    <p>I like mornings slow. Tea, some kind of movement, maybe writing. Evenings quiet. I treasure sleep.</p>
 
-                    <h3>About You</h3>
-                    <p>I'm looking for someone who is:</p>
-                    <ul class="about-you-list">
-                        <li>Curious, driven, kind, caring</li>
-                        <li>In charge of your life, competent</li>
-                        <li>Grounded and at ease with emotions</li>
-                        <li>Excited to grow tiny humans</li>
-                        <li>Healthy and aware of your body</li>
-                    </ul>
+                    <p>I love water. If we ever encounter a lake or sea or river, I'll probably end up in it. I get intensely curious about things for weeks at a time. I'm often rearranging something&mdash;a room, a system, my understanding of myself.</p>
 
-                    <p>I deeply desire to be able to fully surrender to a competent man. I want to follow your lead and feel amazing about it. I need to trust, and trust is built slowly, but once there&mdash;I'm very cuddly and need a lot of touch.</p>
+                    <p>I dream of cooking beautiful meals together. Of building things with our hands. Of reading the same book and talking about it late into the evening. Of sleeping under the stars sometimes.</p>
 
-                    <h3>What We'd Do Together</h3>
-                    <ul class="together-list">
-                        <li>Cooking together</li>
-                        <li>Acroyoga</li>
-                        <li>Reading and discussing something</li>
-                        <li>Debugging any life problem</li>
-                        <li>Emotional processing</li>
-                        <li>Walking around and climbing on things</li>
-                        <li>Making sounds together</li>
-                        <li>Building things (I dream of building a house)</li>
-                        <li>Sleeping under the stars</li>
-                    </ul>
+                    <p>I care about health and eat what actually makes me feel good. I pray. I care about things that can't be measured.</p>
                 </div>
 
                 <div class="puzzle-invitation">
@@ -268,14 +215,14 @@
                             <span class="terminal-dot"></span>
                             <span class="terminal-dot"></span>
                             <span class="terminal-dot"></span>
-                            <span class="terminal-title">knot_puzzle_03.exe</span>
+                            <span class="terminal-title">knot_puzzle_03</span>
                         </div>
                         <div class="terminal-body">
-                            <p class="terminal-text">One more knot to work through.</p>
-                            <p class="terminal-text">The deepest layer awaits. Can this tangle become unknotted?</p>
+                            <p class="terminal-text">One more.</p>
+                            <p class="terminal-text typing">Some tangles can be undone. Some cannot.</p>
                             <button class="puzzle-button" onclick="startPuzzle(3)">
-                                <span class="button-text">Begin Final Puzzle</span>
-                                <span class="button-icon">&#x2192;</span>
+                                <span class="button-text">Final puzzle</span>
+                                <span class="button-icon">&rarr;</span>
                             </button>
                         </div>
                     </div>
@@ -287,8 +234,8 @@
         <section class="puzzle-section" id="puzzle-3" data-puzzle="3">
             <div class="puzzle-container">
                 <div class="puzzle-header">
-                    <h3>Puzzle 3: Unknotting</h3>
-                    <p>Can this knot be completely untangled into a simple loop without cutting? Look carefully at how the strands cross.</p>
+                    <h3>Unknotting</h3>
+                    <p>Can this tangle be completely undone into a simple loop&mdash;or is it truly knotted?</p>
                 </div>
 
                 <div class="puzzle-content unknotting">
@@ -297,8 +244,8 @@
                     </div>
 
                     <div class="unknot-buttons">
-                        <button class="unknot-button" onclick="checkUnknot(3, true)">Yes, it can be unknotted</button>
-                        <button class="unknot-button" onclick="checkUnknot(3, false)">No, it's truly knotted</button>
+                        <button class="unknot-button" onclick="checkUnknot(3, true)">It can be unknotted</button>
+                        <button class="unknot-button" onclick="checkUnknot(3, false)">It's truly knotted</button>
                     </div>
                 </div>
 
@@ -310,90 +257,40 @@
             </div>
         </section>
 
-        <!-- Stage 3: After Puzzle 3 - Manifestation & Contact -->
+        <!-- Stage 3: After Puzzle 3 - Connect -->
         <section class="content-section stage-3 locked" data-stage="3">
             <div class="section-content">
-                <h2>The Man I Dream Of</h2>
+                <h2>Hello</h2>
 
-                <div class="prose manifestation">
-                    <p class="manifestation-intro">In as much detail as I can imagine...</p>
+                <div class="prose">
+                    <p>You worked through the puzzles. Thank you for taking the time.</p>
 
-                    <div class="manifestation-grid">
-                        <div class="manifest-item">
-                            <h4>Presence</h4>
-                            <p>He's in his 30s, tall and strong, can lift me easily and enjoys doing that. European. Understands Italian and English fluently, bonus for Russian or French.</p>
-                        </div>
+                    <p>I'm curious about you now. What brought you here? What are you looking for? What are you building in your life?</p>
 
-                        <div class="manifest-item">
-                            <h4>Mind</h4>
-                            <p>Smart, can solve problems effectively, has lots of ideas, is able to move the world towards where he wants it. Handy&mdash;can build things, enjoys creating with his hands. Can speak math and emotions with equal ease.</p>
-                        </div>
-
-                        <div class="manifest-item">
-                            <h4>Attunement</h4>
-                            <p>He deeply feels himself and me. He knows when I'm opening or closing in reaction to him. He cares about supporting my safe opening.</p>
-                        </div>
-
-                        <div class="manifest-item">
-                            <h4>Spirit</h4>
-                            <p>He cares about God, spirituality, has a connection to his higher power. He's explored states of consciousness and is now interested in what can be reached with sobriety and practice. He prays.</p>
-                        </div>
-
-                        <div class="manifest-item">
-                            <h4>Body</h4>
-                            <p>Cares about health, nutrition, wellbeing. Works out in functional ways because it feels good to live in a strong and flexible body. Likes to climb around and dance and balance on things and people. We have good acroyoga chemistry.</p>
-                        </div>
-
-                        <div class="manifest-item">
-                            <h4>Masculinity</h4>
-                            <p>At peace and embodied in his masculinity. Not afraid to lead, competent and caring and kind. Likes to be in control while being loving. Can hold steady presence.</p>
-                        </div>
-
-                        <div class="manifest-item">
-                            <h4>Nature</h4>
-                            <p>Loves the sea, being outdoors, moving in nature. Loves sleeping outside, making fires, watching stars, singing and dancing, breathing deeply.</p>
-                        </div>
-
-                        <div class="manifest-item">
-                            <h4>Growth</h4>
-                            <p>Cares about spiritual and emotional growth. Loves himself and wants to bloom into his best self. Done his share of coaching, therapy, self inquiry, men's circles.</p>
-                        </div>
-
-                        <div class="manifest-item">
-                            <h4>Freedom</h4>
-                            <p>Optimizing his life for agency and self-determination. Decides when he works, in charge of his time. Has more than enough to provide for a family and wants to. Knows how to balance work with time for love and adventure.</p>
-                        </div>
-                    </div>
-
-                    <h3>Possible Dealbreakers</h3>
-                    <p class="dealbreakers">In circles I often find myself: I'm not a materialist and I'm not vegan/vegetarian. I eat meat and believe it's what my body needs. I care about God and the non-physical.</p>
+                    <p>If something here felt familiar, I'd love to hear from you.</p>
                 </div>
 
                 <div class="contact-section">
-                    <h3>You Made It</h3>
-                    <p>Thank you for taking the time to work through those puzzles. It tells me something about your patience and spatial reasoning that I find attractive.</p>
-
-                    <p>If what you've read resonates, I'd love to hear from you.</p>
-
                     <div class="contact-links">
                         <a href="mailto:linda.petrini@gmail.com" class="contact-link email">
                             <span class="contact-icon">&#x2709;</span>
-                            <span>Email me</span>
+                            <span>Say hello</span>
                         </a>
                     </div>
 
-                    <p class="contact-note">Tell me something about yourself. What drew you here? What puzzle was hardest? What resonated most?</p>
+                    <p class="contact-note">Tell me something real.</p>
                 </div>
             </div>
         </section>
 
         <!-- Footer -->
         <footer class="footer">
-            <p>Made with intention &bull; <a href="https://lindapetrini.com">lindapetrini.com</a></p>
+            <p><a href="https://lindapetrini.com">lindapetrini.com</a></p>
         </footer>
     </main>
 
-    <script src="scripts/knots.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="scripts/knots3d.js"></script>
     <script src="scripts/puzzles.js"></script>
     <script src="scripts/main.js"></script>
 </body>
