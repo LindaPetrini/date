@@ -17,29 +17,19 @@
         <header class="playground-header">
             <h1 class="playground-title">play</h1>
             <p class="playground-subtitle">date me docs are boring. here's a playground instead.</p>
-            <p class="playground-description">get to know some things about me. for dating or otherwise.</p>
-            <p class="playground-note">you don't have to do all of them. skip around.</p>
+            <p class="playground-description">30 small interactive questions. skip around. or skip entirely.</p>
 
-            <!-- Disqualifiers hover box -->
-            <div class="disqualifiers-container">
-                <div class="disqualifiers-trigger">
-                    <span class="disqualifiers-label">obvious disqualifiers</span>
-                    <span class="disqualifiers-hint">(hover)</span>
-                </div>
-                <div class="disqualifiers-popup">
-                    <img src="assets/linda.jpg" alt="Linda" class="disqualifiers-pic" onerror="this.style.display='none'">
-                    <ul class="disqualifiers-list">
-                        <li>F looking for M</li>
-                        <li>29</li>
-                        <li>monogamous</li>
-                        <li>wants kids</li>
-                        <li>omnivore</li>
-                        <li>europe-based</li>
-                    </ul>
+            <!-- Quick info box -->
+            <div class="quick-info">
+                <img src="assets/linda.jpg" alt="Linda" class="quick-info-pic" onerror="this.style.display='none'">
+                <div class="quick-info-text">
+                    <p><strong>Linda, 29, Europe</strong></p>
+                    <p>F seeking M • monogamous • wants kids • omnivore</p>
                 </div>
             </div>
 
             <nav class="playground-nav">
+                <a href="#playground-end" class="nav-link skip-link">not into interactive things? skip to the end &rarr;</a>
                 <a href="index.html" class="nav-link">&larr; back to main</a>
             </nav>
         </header>
@@ -574,44 +564,40 @@
             <div class="toy-header">
                 <span class="toy-number">28</span>
                 <h2>assemble a good day</h2>
-                <p class="toy-hint">no ideal, just what feels right</p>
+                <p class="toy-hint">drag activities to your timetable, or add your own</p>
             </div>
             <div class="toy-content">
-                <div class="day-phases">
-                    <div class="day-phase" data-phase="morning">
-                        <span class="phase-label">morning</span>
-                        <div class="phase-options">
-                            <button class="phase-option" data-value="slow">slow start, minimal talking</button>
-                            <button class="phase-option" data-value="movement">movement first</button>
-                            <button class="phase-option" data-value="coffee">coffee + reading</button>
-                            <button class="phase-option" data-value="work">jump straight into work</button>
+                <div class="day-builder">
+                    <!-- Left: Activity pool -->
+                    <div class="activity-pool">
+                        <h3>activities</h3>
+                        <div id="activity-list" class="activity-list"></div>
+                        <div class="add-activity">
+                            <input type="text" id="new-activity-input" placeholder="add your own..." maxlength="50">
+                            <button id="add-activity-btn" class="add-activity-btn">+</button>
                         </div>
                     </div>
-                    <div class="day-phase" data-phase="afternoon">
-                        <span class="phase-label">afternoon</span>
-                        <div class="phase-options">
-                            <button class="phase-option" data-value="solo">focused solo work</button>
-                            <button class="phase-option" data-value="wander">wandering with no plan</button>
-                            <button class="phase-option" data-value="hands">making something with hands</button>
-                            <button class="phase-option" data-value="talk">long conversation</button>
-                        </div>
-                    </div>
-                    <div class="day-phase" data-phase="evening">
-                        <span class="phase-label">evening</span>
-                        <div class="phase-options">
-                            <button class="phase-option" data-value="cook">cooking together</button>
-                            <button class="phase-option" data-value="people">being around people</button>
-                            <button class="phase-option" data-value="parallel">quiet parallel time</button>
-                            <button class="phase-option" data-value="intense">one intense activity</button>
-                        </div>
-                    </div>
-                    <div class="day-phase" data-phase="night">
-                        <span class="phase-label">night</span>
-                        <div class="phase-options">
-                            <button class="phase-option" data-value="early">early sleep</button>
-                            <button class="phase-option" data-value="music">music, lights low</button>
-                            <button class="phase-option" data-value="talking">talking until too late</button>
-                            <button class="phase-option" data-value="alone">alone with thoughts</button>
+
+                    <!-- Right: Timetable -->
+                    <div class="day-timetable">
+                        <h3>your day</h3>
+                        <div class="timetable-slots">
+                            <div class="time-slot" data-phase="morning">
+                                <span class="time-label">morning</span>
+                                <div class="time-drop-zone" data-phase="morning"></div>
+                            </div>
+                            <div class="time-slot" data-phase="afternoon">
+                                <span class="time-label">afternoon</span>
+                                <div class="time-drop-zone" data-phase="afternoon"></div>
+                            </div>
+                            <div class="time-slot" data-phase="evening">
+                                <span class="time-label">evening</span>
+                                <div class="time-drop-zone" data-phase="evening"></div>
+                            </div>
+                            <div class="time-slot" data-phase="night">
+                                <span class="time-label">night</span>
+                                <div class="time-drop-zone" data-phase="night"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -690,51 +676,58 @@
         </section>
 
         <!-- End -->
-        <section class="playground-end">
+        <section class="playground-end" id="playground-end">
             <p>that's all for now.</p>
             <p class="end-note">if you enjoyed this, you might enjoy me.</p>
 
-            <!-- Compatibility score -->
-            <div class="score-section" id="score-section">
-                <div class="score-display">
-                    <span class="score-label">compatibility vibe:</span>
-                    <span class="score-value" id="score-value">--</span>
+            <!-- Compatibility score card -->
+            <div class="score-card" id="score-card">
+                <canvas id="score-canvas" class="score-canvas-img"></canvas>
+                <div class="score-content">
+                    <div class="score-header">
+                        <span class="score-title">your character card</span>
+                        <span class="score-value" id="score-value">--</span>
+                    </div>
+                    <div class="score-stats" id="score-stats">
+                        <!-- Stats will be dynamically added -->
+                    </div>
+                    <div class="score-note" id="score-note"></div>
                 </div>
-                <p class="score-note" id="score-note"></p>
             </div>
 
             <div class="share-section">
-                <button class="share-btn" id="share-results">share your answers with me</button>
-                <div class="share-output" id="share-output"></div>
+                <button class="share-btn" id="share-toggle">share your answers with me</button>
+                <div class="share-form-container" id="share-form-container" style="display: none;">
+                    <form class="share-form" id="share-form">
+                        <input type="email" id="share-email" name="email" placeholder="your email" required>
+                        <textarea id="share-message" name="message" placeholder="anything else you want to say..." rows="3"></textarea>
+                        <input type="hidden" id="share-answers" name="answers">
+                        <button type="submit" class="form-submit-btn">send</button>
+                    </form>
+                    <p class="form-note">your answers will be included automatically</p>
+                    <div class="form-response" id="form-response"></div>
+                </div>
             </div>
 
             <div class="end-links">
-                <a href="#my-answers" class="end-link-btn" id="my-answers-link" onclick="document.getElementById('my-answers').open = true; return true;">see my answers</a>
+                <a href="#your-answers" class="end-link-btn" id="your-answers-link" onclick="document.getElementById('your-answers').open = true; return true;">see your answers</a>
+                <a href="#linda-answers" class="end-link-btn" id="linda-answers-link" onclick="document.getElementById('linda-answers').open = true; return true;">see linda's answers</a>
                 <a href="index.html" class="end-link-btn">say hello another way</a>
             </div>
 
-            <!-- My answers collapsible -->
-            <details class="my-answers-section" id="my-answers">
+            <!-- Your answers collapsible -->
+            <details class="my-answers-section" id="your-answers">
+                <summary>your answers</summary>
+                <div class="my-answers-content" id="your-answers-content">
+                    <!-- Dynamically populated -->
+                </div>
+            </details>
+
+            <!-- Linda's answers collapsible -->
+            <details class="my-answers-section" id="linda-answers">
                 <summary>linda's answers</summary>
-                <div class="my-answers-content">
-                    <div class="my-answer"><strong>color:</strong> a muted teal, like the sea on a cloudy day</div>
-                    <div class="my-answer"><strong>pelvis:</strong> usually tilted, if I'm honest</div>
-                    <div class="my-answer"><strong>texture:</strong> linen in summer, wool in winter</div>
-                    <div class="my-answer"><strong>toes:</strong> yes — barefoot life</div>
-                    <div class="my-answer"><strong>music:</strong> 10/100 — I need silence to think</div>
-                    <div class="my-answer"><strong>nature:</strong> sea > forest > mountain > lake > river</div>
-                    <div class="my-answer"><strong>upside down:</strong> I love it. handstands are my meditation.</div>
-                    <div class="my-answer"><strong>AI:</strong> all of them except the $50 (this month)</div>
-                    <div class="my-answer"><strong>rooms:</strong> 35/100 — cozy but distinct spaces</div>
-                    <div class="my-answer"><strong>crying:</strong> ask, then maybe cry too</div>
-                    <div class="my-answer"><strong>spirituality:</strong> 75/100 — something's going on</div>
-                    <div class="my-answer"><strong>lead/follow:</strong> depends on context, but I lean follow</div>
-                    <div class="my-answer"><strong>therapy:</strong> 500+ hours, more $ than I want to calculate</div>
-                    <div class="my-answer"><strong>god:</strong> something like love, or presence</div>
-                    <div class="my-answer"><strong>food:</strong> cook, joy, ingredients — food is connection</div>
-                    <div class="my-answer"><strong>in the middle of the night I:</strong> write</div>
-                    <div class="my-answer"><strong>my pleasure is:</strong> simple — sun, movement, good conversation</div>
-                    <div class="my-answer"><strong>all parts of me:</strong> are welcome here</div>
+                <div class="my-answers-content" id="linda-answers-content">
+                    <!-- Dynamically populated from CONTENT.myAnswers -->
                 </div>
             </details>
 

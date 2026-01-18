@@ -41,6 +41,7 @@ const Playground = {
         this.initEmbodiment();
         this.initPatterns();
         this.initShare();
+        this.populateAnswerSections();
     },
 
     // ========== Reorder toys based on CONTENT.toyOrder ==========
@@ -729,50 +730,164 @@ const Playground = {
         }
     },
 
-    // ========== Toy 28: Assemble a Day ==========
+    // ========== Toy 28: Assemble a Day (Draggable) ==========
     initDay() {
-        const phases = document.querySelectorAll('.day-phase');
+        const activityList = document.getElementById('activity-list');
+        const newActivityInput = document.getElementById('new-activity-input');
+        const addActivityBtn = document.getElementById('add-activity-btn');
         const response = document.getElementById('day-response');
         const C = CONTENT.day;
 
-        if (!C || !phases.length) return;
+        if (!C || !activityList) return;
 
-        phases.forEach(phase => {
-            const phaseName = phase.dataset.phase;
-            const options = phase.querySelectorAll('.phase-option');
+        // Initialize responses storage
+        if (!this.responses.day) {
+            this.responses.day = {
+                morning: null,
+                afternoon: null,
+                evening: null,
+                night: null,
+                customActivities: []
+            };
+        } else {
+            // Ensure customActivities exists for old saves
+            if (!this.responses.day.customActivities) {
+                this.responses.day.customActivities = [];
+            }
+        }
 
-            options.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    // Deselect others in this phase
-                    options.forEach(b => b.classList.remove('selected'));
-                    btn.classList.add('selected');
+        let draggedElement = null;
+
+        // Render initial activities
+        const renderActivities = () => {
+            activityList.innerHTML = '';
+            const allActivities = [...C.activities, ...(this.responses.day.customActivities || [])];
+
+            allActivities.forEach((activity, index) => {
+                const isCustom = index >= C.activities.length;
+                const item = document.createElement('div');
+                item.className = 'activity-item' + (isCustom ? ' custom' : '');
+                item.draggable = true;
+                item.textContent = activity;
+                item.dataset.activity = activity;
+
+                // Add remove button for custom activities
+                if (isCustom) {
+                    const removeBtn = document.createElement('button');
+                    removeBtn.className = 'remove-activity';
+                    removeBtn.textContent = '×';
+                    removeBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        this.responses.day.customActivities = this.responses.day.customActivities.filter(a => a !== activity);
+                        this.saveResponses();
+                        renderActivities();
+                    };
+                    item.appendChild(removeBtn);
+                }
+
+                // Drag events
+                item.addEventListener('dragstart', (e) => {
+                    draggedElement = item;
+                    item.classList.add('dragging');
+                });
+
+                item.addEventListener('dragend', () => {
+                    item.classList.remove('dragging');
+                    draggedElement = null;
+                });
+
+                activityList.appendChild(item);
+            });
+        };
+
+        // Add custom activity
+        const addCustomActivity = () => {
+            const text = newActivityInput.value.trim();
+            if (text && text.length > 0) {
+                if (!this.responses.day.customActivities) {
+                    this.responses.day.customActivities = [];
+                }
+                this.responses.day.customActivities.push(text);
+                newActivityInput.value = '';
+                this.saveResponses();
+                renderActivities();
+            }
+        };
+
+        addActivityBtn.addEventListener('click', addCustomActivity);
+        newActivityInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addCustomActivity();
+        });
+
+        // Setup drop zones
+        const dropZones = document.querySelectorAll('.time-drop-zone');
+        dropZones.forEach(zone => {
+            zone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                zone.classList.add('drag-over');
+            });
+
+            zone.addEventListener('dragleave', () => {
+                zone.classList.remove('drag-over');
+            });
+
+            zone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                zone.classList.remove('drag-over');
+
+                if (draggedElement) {
+                    const phase = zone.dataset.phase;
+                    const activity = draggedElement.dataset.activity;
+
+                    // Clear existing activity in this slot
+                    zone.innerHTML = '';
+
+                    // Create non-draggable copy for the slot
+                    const slotItem = document.createElement('div');
+                    slotItem.className = 'activity-item';
+                    slotItem.textContent = activity;
+                    zone.appendChild(slotItem);
+
+                    zone.classList.add('filled');
 
                     // Save
-                    if (!this.responses.day) this.responses.day = {};
-                    this.responses.day[phaseName] = btn.dataset.value;
+                    this.responses.day[phase] = activity;
                     this.saveResponses();
 
-                    // Show response when all phases selected
-                    const allSelected = ['morning', 'afternoon', 'evening', 'night'].every(
-                        p => this.responses.day && this.responses.day[p]
+                    // Check if all slots filled
+                    const allFilled = ['morning', 'afternoon', 'evening', 'night'].every(
+                        p => this.responses.day[p]
                     );
-                    if (allSelected) {
+                    if (allFilled) {
                         response.textContent = C.response;
                     }
-                });
+                }
             });
         });
 
-        // Restore if saved
+        // Initial render
+        renderActivities();
+
+        // Restore saved state
         if (this.responses.day) {
-            Object.entries(this.responses.day).forEach(([phaseName, value]) => {
-                const btn = document.querySelector(`.day-phase[data-phase="${phaseName}"] .phase-option[data-value="${value}"]`);
-                if (btn) btn.classList.add('selected');
+            ['morning', 'afternoon', 'evening', 'night'].forEach(phase => {
+                const activity = this.responses.day[phase];
+                if (activity) {
+                    const zone = document.querySelector(`.time-drop-zone[data-phase="${phase}"]`);
+                    if (zone) {
+                        const slotItem = document.createElement('div');
+                        slotItem.className = 'activity-item';
+                        slotItem.textContent = activity;
+                        zone.appendChild(slotItem);
+                        zone.classList.add('filled');
+                    }
+                }
             });
-            const allSelected = ['morning', 'afternoon', 'evening', 'night'].every(
-                p => this.responses.day && this.responses.day[p]
+
+            const allFilled = ['morning', 'afternoon', 'evening', 'night'].every(
+                p => this.responses.day[p]
             );
-            if (allSelected) {
+            if (allFilled) {
                 response.textContent = C.response;
             }
         }
@@ -1472,127 +1587,238 @@ const Playground = {
         }
     },
 
-    // ========== Share Results ==========
+    // ========== Share Results (Contact Form) ==========
     initShare() {
-        const btn = document.getElementById('share-results');
-        const output = document.getElementById('share-output');
+        const toggleBtn = document.getElementById('share-toggle');
+        const formContainer = document.getElementById('share-form-container');
+        const form = document.getElementById('share-form');
+        const answersInput = document.getElementById('share-answers');
+        const responseDiv = document.getElementById('form-response');
 
-        btn.addEventListener('click', () => {
-            const summary = this.generateSummary();
-            output.innerHTML = `
-                <pre>${summary}</pre>
-                <p class="copy-hint">${CONTENT.end.copyHint}</p>
-            `;
+        if (!toggleBtn || !formContainer || !form) {
+            console.log('Share form elements not found');
+            this.updateScore();
+            return;
+        }
 
-            // Also copy to clipboard
-            navigator.clipboard.writeText(summary).catch(() => {
-                // Clipboard might not be available, that's ok
-            });
+        // Toggle form visibility
+        toggleBtn.addEventListener('click', () => {
+            const isVisible = formContainer.style.display !== 'none';
+            formContainer.style.display = isVisible ? 'none' : 'block';
+
+            // Pre-fill answers in hidden field
+            if (!isVisible) {
+                answersInput.value = this.generateSummary();
+            }
+        });
+
+        // Handle form submission
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('share-email').value;
+            const message = document.getElementById('share-message').value;
+            const answers = answersInput.value;
+
+            // Use a simple mailto link as fallback
+            // In production, you'd use Formspree, EmailJS, or a backend endpoint
+            const subject = 'Playground Answers';
+            const body = `Email: ${email}\n\nMessage:\n${message}\n\n=== Answers ===\n${answers}`;
+
+            // Try to use mailto
+            window.location.href = `mailto:linda.petrini@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+            // Show success message
+            responseDiv.className = 'form-response success';
+            responseDiv.textContent = "opening your email client... (or copy the text above and email linda.petrini@gmail.com)";
+
+            // Optionally, integrate with a service like Formspree
+            // Uncomment and replace with your Formspree endpoint:
+            /*
+            try {
+                const response = await fetch('https://formspree.io/f/YOUR_FORM_ID', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, message, answers })
+                });
+
+                if (response.ok) {
+                    responseDiv.className = 'form-response success';
+                    responseDiv.textContent = 'sent! linda will get back to you soon.';
+                    form.reset();
+                } else {
+                    throw new Error('Failed to send');
+                }
+            } catch (error) {
+                responseDiv.className = 'form-response error';
+                responseDiv.textContent = 'something went wrong. try emailing linda.petrini@gmail.com directly.';
+            }
+            */
         });
 
         // Calculate and show score
         this.updateScore();
     },
 
-    // ========== Scorecard ==========
+    // ========== Visual Scorecard ==========
     updateScore() {
         const scoreValue = document.getElementById('score-value');
         const scoreNote = document.getElementById('score-note');
+        const scoreStats = document.getElementById('score-stats');
+        const scoreCanvas = document.getElementById('score-canvas');
 
-        if (!scoreValue) return;
+        if (!scoreValue || !scoreStats) return;
 
         const r = this.responses;
-        let points = 0;
-        let maxPoints = 0;
-        let notes = [];
 
-        // Score based on Linda's preferences (edit these!)
-        // Each match adds points, mismatches subtract or add 0
+        // Calculate character stats (0-100 scale)
+        const stats = {};
 
-        // Music: Linda likes silence/quiet
+        // Quietness (based on music preference)
         if (r.music !== undefined) {
-            maxPoints += 10;
-            if (r.music < 35) { points += 10; notes.push("quiet person"); }
-            else if (r.music < 55) { points += 5; }
+            stats.quietness = 100 - parseInt(r.music);
         }
 
-        // Upside down: Linda loves it
+        // Playfulness (based on upside down + hold button + fun)
+        let playfulness = 0;
+        let playCount = 0;
         if (r.upside) {
-            maxPoints += 10;
-            if (r.upside === 'love') { points += 10; notes.push("upside down buddy"); }
-            else if (r.upside === 'fine') { points += 5; }
+            playCount++;
+            if (r.upside === 'love') playfulness += 100;
+            else if (r.upside === 'fine') playfulness += 60;
+            else playfulness += 20;
         }
+        if (r.hold === 'completed') {
+            playCount++;
+            playfulness += 80;
+        }
+        if (playCount > 0) stats.playfulness = Math.round(playfulness / playCount);
 
-        // AI: Linda is very online
+        // Tech Affinity (based on AI quiz)
         if (r.ai && r.ai.length > 0) {
-            maxPoints += 10;
-            if (r.ai.length >= 4) { points += 10; notes.push("AI nerd"); }
-            else if (r.ai.length >= 2) { points += 5; }
+            stats['tech affinity'] = Math.min(100, (r.ai.length / 6) * 100);
         }
 
-        // Spirituality: Linda is spiritual
+        // Spirituality
         if (r.spirit !== undefined) {
-            maxPoints += 10;
-            if (r.spirit >= 55) { points += 10; notes.push("open to mystery"); }
-            else if (r.spirit >= 35) { points += 5; }
+            stats.spirituality = parseInt(r.spirit);
         }
 
-        // Lead/follow: flexible is good
-        if (r.lead) {
-            maxPoints += 10;
-            if (r.lead === 'both' || r.lead === 'neither') { points += 10; }
-            else { points += 5; }
-        }
-
-        // Crying: emotional availability
+        // Emotional Openness (crying + message preference)
+        let emotional = 0;
+        let emotionalCount = 0;
         if (r.crying) {
-            maxPoints += 10;
-            if (r.crying === 'cry' || r.crying === 'ask') { points += 10; notes.push("emotionally present"); }
-            else if (r.crying === 'hug') { points += 7; }
-            else { points += 3; }
+            emotionalCount++;
+            if (r.crying === 'cry' || r.crying === 'ask') emotional += 100;
+            else if (r.crying === 'hug') emotional += 70;
+            else emotional += 40;
         }
+        if (r.message) {
+            emotionalCount++;
+            emotional += r.message === 'soft' ? 80 : 60;
+        }
+        if (emotionalCount > 0) stats['emotional openness'] = Math.round(emotional / emotionalCount);
 
-        // Nature: sea is Linda's fave
+        // Adventurousness (nature preference + patterns)
         if (r.nature && r.nature.length > 0) {
-            maxPoints += 10;
-            if (r.nature[0] === 'sea') { points += 10; notes.push("sea lover"); }
-            else if (r.nature[0] === 'forest') { points += 8; }
-            else { points += 5; }
+            const adventureMap = { sea: 85, mountain: 90, river: 75, forest: 70, lake: 60 };
+            stats.adventurousness = adventureMap[r.nature[0]] || 70;
         }
 
-        // Food: cooking joy
-        if (r.food && r.food.length > 0) {
-            maxPoints += 10;
-            if (r.food.includes('joy') && r.food.includes('cook')) { points += 10; notes.push("cooking together"); }
-            else if (r.food.includes('ingredients')) { points += 7; }
-            else { points += 3; }
+        // Calculate overall compatibility
+        let compatPoints = 0;
+        let compatMax = 0;
+
+        if (r.music !== undefined) {
+            compatMax += 10;
+            if (r.music < 35) compatPoints += 10;
+            else if (r.music < 55) compatPoints += 5;
+        }
+        if (r.upside === 'love') { compatMax += 10; compatPoints += 10; }
+        else if (r.upside) { compatMax += 10; compatPoints += 5; }
+        if (r.ai && r.ai.length >= 4) { compatMax += 10; compatPoints += 10; }
+        else if (r.ai && r.ai.length > 0) { compatMax += 10; compatPoints += 5; }
+        if (r.spirit !== undefined) {
+            compatMax += 10;
+            if (r.spirit >= 55) compatPoints += 10;
+            else if (r.spirit >= 35) compatPoints += 5;
+        }
+        if (r.crying) {
+            compatMax += 10;
+            if (r.crying === 'cry' || r.crying === 'ask') compatPoints += 10;
+            else if (r.crying === 'hug') compatPoints += 7;
+            else compatPoints += 3;
         }
 
-        // Calculate percentage
-        if (maxPoints === 0) {
+        // Render stats
+        if (Object.keys(stats).length > 0) {
+            scoreStats.innerHTML = '';
+            Object.entries(stats).forEach(([label, value]) => {
+                const row = document.createElement('div');
+                row.className = 'stat-row';
+
+                row.innerHTML = `
+                    <span class="stat-label">${label}</span>
+                    <div class="stat-bar-container">
+                        <div class="stat-bar" style="width: ${value}%"></div>
+                    </div>
+                    <span class="stat-value">${Math.round(value)}</span>
+                `;
+                scoreStats.appendChild(row);
+            });
+        }
+
+        // Calculate compatibility label
+        if (compatMax === 0) {
             scoreValue.textContent = "--";
-            scoreNote.textContent = "answer some things first";
-            return;
+            scoreNote.textContent = "answer some things to see your character card";
+        } else {
+            const percentage = Math.round((compatPoints / compatMax) * 100);
+            let label;
+            if (percentage >= 85) label = "intriguing";
+            else if (percentage >= 70) label = "promising";
+            else if (percentage >= 50) label = "curious";
+            else if (percentage >= 30) label = "different";
+            else label = "wildcard";
+
+            scoreValue.textContent = label;
+            scoreNote.textContent = `${percentage}% compatibility with linda`;
         }
 
-        const percentage = Math.round((points / maxPoints) * 100);
+        // Draw the image/pattern in canvas
+        if (scoreCanvas && r.color) {
+            const ctx = scoreCanvas.getContext('2d');
+            const size = 120;
+            scoreCanvas.width = size;
+            scoreCanvas.height = size;
 
-        // Fun labels instead of numbers
-        let label;
-        if (percentage >= 85) label = "intriguing";
-        else if (percentage >= 70) label = "promising";
-        else if (percentage >= 50) label = "curious";
-        else if (percentage >= 30) label = "different";
-        else label = "wildcard";
+            const { h, s, l } = r.color;
+            const color = `hsl(${h}, ${s}%, ${l}%)`;
 
-        scoreValue.textContent = label;
-
-        // Show one random note
-        if (notes.length > 0) {
-            const randomNote = notes[Math.floor(Math.random() * notes.length)];
-            scoreNote.textContent = randomNote;
-        } else {
-            scoreNote.textContent = "";
+            // Use the selected image pattern or color-based pattern
+            if (r.image !== undefined) {
+                // Redraw the selected pattern
+                if (r.image === 0) this.drawSpirals(scoreCanvas);
+                else if (r.image === 1) this.drawFlowField(scoreCanvas);
+                else if (r.image === 2) this.drawOrganicBlobs(scoreCanvas);
+            } else {
+                // Draw a color-based pattern
+                ctx.fillStyle = color;
+                ctx.fillRect(0, 0, size, size);
+                ctx.globalAlpha = 0.5;
+                for (let i = 0; i < 5; i++) {
+                    ctx.beginPath();
+                    ctx.arc(
+                        Math.random() * size,
+                        Math.random() * size,
+                        Math.random() * 40 + 10,
+                        0,
+                        Math.PI * 2
+                    );
+                    ctx.fillStyle = `hsl(${h}, ${Math.max(0, s - 20)}%, ${Math.min(100, l + 10)}%)`;
+                    ctx.fill();
+                }
+            }
         }
     },
 
@@ -1715,10 +1941,118 @@ const Playground = {
         return lines.join('\n');
     },
 
+    // ========== Populate Answer Sections ==========
+    populateAnswerSections() {
+        // Populate YOUR answers
+        const yourAnswersContent = document.getElementById('your-answers-content');
+
+        if (yourAnswersContent) {
+            yourAnswersContent.innerHTML = '';
+            const r = this.responses;
+
+            const addAnswer = (label, value) => {
+                if (value !== undefined && value !== null && value !== '') {
+                    const div = document.createElement('div');
+                    div.className = 'my-answer';
+                    div.innerHTML = `<strong>${label}:</strong> ${value}`;
+                    yourAnswersContent.appendChild(div);
+                }
+            };
+
+            // Format responses
+            if (r.color) {
+                addAnswer('color', `hsl(${r.color.h}, ${r.color.s}%, ${r.color.l}%)`);
+            }
+            if (r.body) addAnswer('pelvis', r.body);
+            if (r.texture) addAnswer('texture', r.texture);
+            if (r.toes) addAnswer('toes', r.toes);
+            if (r.music !== undefined) addAnswer('music', `${r.music}/100`);
+            if (r.nature) addAnswer('nature', r.nature.join(' > '));
+            if (r.upside) addAnswer('upside down', r.upside);
+            if (r.ai) addAnswer('AI', r.ai.join(', '));
+            if (r.room !== undefined) addAnswer('living space', `${r.room}/100`);
+            if (r.crying) addAnswer('crying scenario', r.crying);
+            if (r.spirit !== undefined) addAnswer('spirituality', `${r.spirit}/100`);
+            if (r.lead) addAnswer('lead/follow', r.lead);
+            if (r.therapyHours) addAnswer('therapy hours', r.therapyHours);
+            if (r.god) addAnswer('god/source', r.god);
+            if (r.food) addAnswer('food', r.food.join(', '));
+            if (r.message) addAnswer('message preference', r.message);
+            if (r.precision !== undefined) addAnswer('precision', `${r.precision}/100`);
+            if (r.hold) addAnswer('hold button', r.hold);
+            if (r.fun) addAnswer('having fun', r.fun);
+            if (r.meta) addAnswer('going meta', r.meta);
+            if (r.embodiment) addAnswer('learning physical things', r.embodiment);
+            if (r.patterns) addAnswer('meeting someone interesting', r.patterns);
+            if (r.day && r.day.morning) {
+                const dayParts = [];
+                if (r.day.morning) dayParts.push(`morning: ${r.day.morning}`);
+                if (r.day.afternoon) dayParts.push(`afternoon: ${r.day.afternoon}`);
+                if (r.day.evening) dayParts.push(`evening: ${r.day.evening}`);
+                if (r.day.night) dayParts.push(`night: ${r.day.night}`);
+                if (dayParts.length > 0) addAnswer('perfect day', dayParts.join(' | '));
+            }
+
+            // Autocomplete answers
+            if (r['auto-1']) addAnswer('in the middle of the night I', r['auto-1']);
+            if (r['auto-2']) addAnswer('pleasure is', r['auto-2']);
+            if (r['auto-3']) addAnswer('all parts of me', r['auto-3']);
+            if (r['auto-4']) addAnswer('the point of life is', r['auto-4']);
+            if (r['auto-5']) addAnswer('I never leave the house without', r['auto-5']);
+
+            if (yourAnswersContent.children.length === 0) {
+                yourAnswersContent.innerHTML = '<p style="opacity: 0.6; font-style: italic;">answer some things first</p>';
+            }
+        }
+
+        // Populate LINDA'S answers
+        const lindaAnswersContent = document.getElementById('linda-answers-content');
+        if (lindaAnswersContent && CONTENT.myAnswers) {
+            lindaAnswersContent.innerHTML = '';
+            const m = CONTENT.myAnswers;
+
+            const addAnswer = (label, value) => {
+                const div = document.createElement('div');
+                div.className = 'my-answer';
+                div.innerHTML = `<strong>${label}:</strong> ${value}`;
+                lindaAnswersContent.appendChild(div);
+            };
+
+            if (m.color) addAnswer('color', m.color);
+            if (m.body) addAnswer('pelvis', m.body);
+            if (m.texture) addAnswer('texture', m.texture);
+            if (m.toes) addAnswer('toes', m.toes);
+            if (m.music) addAnswer('music', m.music);
+            if (m.nature) addAnswer('nature', m.nature);
+            if (m.upside) addAnswer('upside down', m.upside);
+            if (m.ai) addAnswer('AI', m.ai);
+            if (m.room) addAnswer('living space', m.room);
+            if (m.crying) addAnswer('crying scenario', m.crying);
+            if (m.spirit) addAnswer('spirituality', m.spirit);
+            if (m.lead) addAnswer('lead/follow', m.lead);
+            if (m.therapy) addAnswer('therapy', m.therapy);
+            if (m.god) addAnswer('god/source', m.god);
+            if (m.food) addAnswer('food', m.food);
+            if (m.autocomplete && m.autocomplete.length > 0) {
+                m.autocomplete.forEach((answer, i) => {
+                    const prompts = [
+                        'in the middle of the night I',
+                        'pleasure is',
+                        'all parts of me',
+                        'the point of life is',
+                        'I never leave the house without'
+                    ];
+                    if (prompts[i]) addAnswer(prompts[i], answer);
+                });
+            }
+        }
+    },
+
     // ========== Storage ==========
     saveResponses() {
         try {
             localStorage.setItem('playground_responses', JSON.stringify(this.responses));
+            this.populateAnswerSections(); // Update answer sections when saved
         } catch (e) {
             console.log('Could not save responses:', e);
         }

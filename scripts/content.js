@@ -551,33 +551,25 @@ const CONTENT = {
     // =====================================================
     day: {
         title: "assemble a good day",
-        hint: "no ideal, just what feels right",
-        phases: {
-            morning: [
-                "slow start, minimal talking",
-                "movement first",
-                "coffee + reading",
-                "jump straight into work"
-            ],
-            afternoon: [
-                "focused solo work",
-                "wandering with no plan",
-                "making something with hands",
-                "long conversation"
-            ],
-            evening: [
-                "cooking together",
-                "being around people",
-                "quiet parallel time",
-                "one intense activity"
-            ],
-            night: [
-                "early sleep",
-                "music, lights low",
-                "talking until too late",
-                "alone with thoughts"
-            ]
-        },
+        hint: "drag activities to your timetable, or add your own",
+        activities: [
+            "slow start, minimal talking",
+            "movement first",
+            "coffee + reading",
+            "jump straight into work",
+            "focused solo work",
+            "wandering with no plan",
+            "making something with hands",
+            "long conversation",
+            "cooking together",
+            "being around people",
+            "quiet parallel time",
+            "one intense activity",
+            "early sleep",
+            "music, lights low",
+            "talking until too late",
+            "alone with thoughts"
+        ],
         response: "interesting. this tells me more than you think."
     },
 
