@@ -26,11 +26,14 @@ Reorderable via `toyOrder` array in content.js:
 - therapy, god, food, patterns, meta, fun
 
 ## Key Features
-- **Intro**: Hover box with disqualifiers + profile pic
-- **Compatibility score**: Fun labels (intriguing/promising/curious/different/wildcard)
-- **My answers**: Collapsible section with Linda's responses
+- **Intro**: Quick info box with photo, age, location, and key attributes
+- **Skip to end**: Link at top for those not into interactive things
+- **Draggable day builder**: Toy 28 uses drag-and-drop interface with custom activity inputs
+- **Visual character card**: Stats-based scorecard with bars, user's color/image, and compatibility label
+- **Your answers**: Collapsible section showing user's responses dynamically
+- **Linda's answers**: Collapsible section with Linda's responses from content.js
 - **Make your own**: Collapsible with repo link
-- **Share**: Generate summary to copy/email
+- **Contact form**: Share answers via form (uses mailto, ready for Formspree integration)
 
 ## Tech Stack
 - Pure HTML/CSS/JavaScript (no build step)
@@ -48,10 +51,9 @@ dating/
 │   └── playground.css     # All toy styles
 ├── scripts/
 │   ├── content.js         # ALL EDITABLE TEXT LIVES HERE
-│   ├── playground.js      # Toy logic, init functions
-│   └── easter-eggs.js     # Hidden interactions
+│   └── playground.js      # Toy logic, init functions, drag-drop
 └── assets/
-    └── linda.jpg          # Profile pic for hover box
+    └── linda.jpg          # Profile pic for quick info box
 ```
 
 ## Editing Content
@@ -69,6 +71,10 @@ In browser console:
 
 ## Deployment
 ```bash
+# Local testing
+python3 -m http.server 8080
+# Then visit http://localhost:8080/playground.html
+
 # GitHub Pages
 git remote add origin https://github.com/username/repo.git
 git push -u origin main
@@ -77,3 +83,12 @@ git push -u origin main
 ```
 
 Or just upload the folder to any static host (Netlify, Vercel, your own server).
+
+## Recent Updates
+**2025-01-19**: Major UX improvements
+- Transformed "assemble a day" toy into drag-and-drop builder with custom activity inputs
+- Replaced text-based score with visual character card (stats bars, color/image integration)
+- Split answer sections into "your answers" (dynamic) and "linda's answers" (from content.js)
+- Simplified intro with quick info box, added skip-to-end link
+- Replaced direct email with contact form (mailto-based, Formspree-ready)
+- Added safety checks for localStorage and missing DOM elements
