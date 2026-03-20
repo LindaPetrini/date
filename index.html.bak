@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Date Me? - Linda</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <div class="background-decoration"></div>
+
+    <!-- Easter egg: hidden message container -->
+    <div id="easter-egg-message" class="easter-egg-popup">
+        <div class="easter-egg-content">
+            <p class="easter-egg-text"></p>
+            <button onclick="closeEasterEgg()">close</button>
+        </div>
+    </div>
+
+    <main class="container">
+        <!-- Header - draggable easter egg -->
+        <header class="header">
+            <h1 class="title" id="draggable-title" draggable="true">Date Me?</h1>
+            <p class="subtitle">A little game to see if we might fit</p>
+        </header>
+
+        <!-- Progress indicator -->
+        <div class="progress-container">
+            <div class="progress-knot" data-stage="0">
+                <div class="knot-icon active" id="knot-stage-0"></div>
+                <span>Intro</span>
+            </div>
+            <div class="progress-line" data-after="1"></div>
+            <div class="progress-knot" data-stage="1">
+                <div class="knot-icon locked" id="knot-stage-1"></div>
+                <span>Depth</span>
+            </div>
+            <div class="progress-line" data-after="2"></div>
+            <div class="progress-knot" data-stage="2">
+                <div class="knot-icon locked" id="knot-stage-2"></div>
+                <span>Texture</span>
+            </div>
+            <div class="progress-line" data-after="3"></div>
+            <div class="progress-knot" data-stage="3">
+                <div class="knot-icon locked" id="knot-stage-3"></div>
+                <span>Connect</span>
+            </div>
+        </div>
+
+        <!-- Stage 0: Always visible intro -->
+        <section class="content-section stage-0" data-stage="0">
+            <div class="section-content">
+                <h2>Hi, I'm Linda</h2>
+
+                <div class="intro-grid">
+                    <div class="intro-card">
+                        <span class="label">Age</span>
+                        <span class="value">29</span>
+                    </div>
+                    <div class="intro-card">
+                        <span class="label">Looking for</span>
+                        <span class="value">My person</span>
+                    </div>
+                    <div class="intro-card">
+                        <span class="label">Style</span>
+                        <span class="value">Monogamous</span>
+                    </div>
+                    <div class="intro-card">
+                        <span class="label">Kids</span>
+                        <span class="value">Yes, a few</span>
+                    </div>
+                </div>
+
+                <div class="prose">
+                    <p>I've been described as intense, sweet, and a little <span class="easter-egg-word" id="strange-word">strange</span>. I live in a body that loves to move and feel. I write a lot. I cry when I need to cry.</p>
+
+                    <p>I'm drawn to slowing down in a world that keeps speeding up. To presence. To what's actually true, even when it's uncomfortable.</p>
+                </div>
+
+                <div class="prompt-invitation">
+                    <div class="terminal-box">
+                        <div class="terminal-header">
+                            <span class="terminal-dot"></span>
+                            <span class="terminal-dot"></span>
+                            <span class="terminal-dot"></span>
+                            <span class="terminal-title">prompt_01</span>
+                        </div>
+                        <div class="terminal-body">
+                            <p class="terminal-text">There's more here, but I'm curious about you first.</p>
+                            <p class="terminal-text typing">No right answers. Just you.</p>
+                            <button class="prompt-button" onclick="showPrompt(1)">
+                                <span class="button-text">Begin</span>
+                                <span class="button-icon">&rarr;</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Prompt 1: Visual association -->
+        <section class="prompt-section" id="prompt-1" data-prompt="1">
+            <div class="prompt-container">
+                <div class="prompt-header">
+                    <h3>What comes to mind?</h3>
+                </div>
+
+                <div class="prompt-content">
+                    <!-- Abstract pattern -->
+                    <div class="abstract-pattern" id="pattern-1">
+                        <canvas id="pattern-canvas"></canvas>
+                    </div>
+
+                    <p class="prompt-instruction">Three things. Words, feelings, memories, anything.</p>
+
+                    <div class="prompt-inputs">
+                        <input type="text" class="prompt-input" id="prompt-1-input-1" placeholder="first thing..." maxlength="50">
+                        <input type="text" class="prompt-input" id="prompt-1-input-2" placeholder="second..." maxlength="50">
+                        <input type="text" class="prompt-input" id="prompt-1-input-3" placeholder="third..." maxlength="50">
+                    </div>
+
+                    <button class="submit-prompt" onclick="submitPrompt(1)">continue</button>
+                </div>
+
+                <button class="close-prompt" onclick="closePrompt(1)">&times;</button>
+            </div>
+        </section>
+
+        <!-- Stage 1: After Prompt 1 -->
+        <section class="content-section stage-1 locked" data-stage="1">
+            <div class="section-content">
+                <h2>A Little Deeper</h2>
+
+                <div class="prose">
+                    <p>I care about truth&mdash;even when it's uncomfortable. I'd rather hear what's real than what sounds nice.</p>
+
+                    <p>There are two sides of me that feel equally alive:</p>
+
+                    <div class="two-sides">
+                        <div class="side technical">
+                            <h4>The mind part</h4>
+                            <p>Loves ideas, systems, elegant solutions. Gets excited about how things work.</p>
+                        </div>
+                        <div class="side embodied">
+                            <h4>The body part</h4>
+                            <p>Moves, dances, stretches, sings, prays. Feels everything deeply.</p>
+                        </div>
+                    </div>
+
+                    <p>I've explored a lot of ways to live. Some paths turned out not to be mine. I've learned what I actually need, and I'm still learning.</p>
+
+                    <p>I notice I feel most at ease with people who have also wandered and chosen consciously.</p>
+                </div>
+
+                <div class="prompt-invitation">
+                    <div class="terminal-box">
+                        <div class="terminal-header">
+                            <span class="terminal-dot"></span>
+                            <span class="terminal-dot"></span>
+                            <span class="terminal-dot"></span>
+                            <span class="terminal-title">prompt_02</span>
+                        </div>
+                        <div class="terminal-body">
+                            <p class="terminal-text">One more question.</p>
+                            <button class="prompt-button" onclick="showPrompt(2)">
+                                <span class="button-text">Continue</span>
+                                <span class="button-icon">&rarr;</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Prompt 2: Obsession -->
+        <section class="prompt-section" id="prompt-2" data-prompt="2">
+            <div class="prompt-container">
+                <div class="prompt-header">
+                    <h3>Last thing you couldn't stop thinking about?</h3>
+                    <p class="prompt-subtext">A rabbit hole, a question, a person, an idea, a feeling.</p>
+                </div>
+
+                <div class="prompt-content">
+                    <textarea class="prompt-textarea" id="prompt-2-input" placeholder="..." maxlength="500"></textarea>
+                    <button class="submit-prompt" onclick="submitPrompt(2)">continue</button>
+                </div>
+
+                <button class="close-prompt" onclick="closePrompt(2)">&times;</button>
+            </div>
+        </section>
+
+        <!-- Stage 2: After Prompt 2 -->
+        <section class="content-section stage-2 locked" data-stage="2">
+            <div class="section-content">
+                <h2>What Life Feels Like</h2>
+
+                <div class="prose">
+                    <p>I like mornings slow. Tea, some kind of movement, maybe writing. Evenings quiet. I treasure sleep.</p>
+
+                    <p>I love water. If we ever encounter a lake or sea or river, I'll probably end up in it. I get intensely curious about things for weeks at a time. I'm often rearranging something&mdash;a room, a system, my understanding of myself.</p>
+
+                    <p>I dream of cooking beautiful meals together. Of building things with our hands. Of reading the same book and talking about it late into the evening. Of sleeping under the stars sometimes.</p>
+
+                    <p>I care about health and eat what actually makes me feel good. I pray. I care about things that can't be measured.</p>
+                </div>
+
+                <div class="prompt-invitation">
+                    <div class="terminal-box">
+                        <div class="terminal-header">
+                            <span class="terminal-dot"></span>
+                            <span class="terminal-dot"></span>
+                            <span class="terminal-dot"></span>
+                            <span class="terminal-title">prompt_03</span>
+                        </div>
+                        <div class="terminal-body">
+                            <p class="terminal-text">Last one.</p>
+                            <button class="prompt-button" onclick="showPrompt(3)">
+                                <span class="button-text">Final prompt</span>
+                                <span class="button-icon">&rarr;</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Prompt 3: Poetry/memory -->
+        <section class="prompt-section" id="prompt-3" data-prompt="3">
+            <div class="prompt-container">
+                <div class="prompt-header">
+                    <h3>A line you know by heart</h3>
+                    <p class="prompt-subtext">From a poem, a song, a book, a conversation. Something that stayed.</p>
+                </div>
+
+                <div class="prompt-content">
+                    <textarea class="prompt-textarea" id="prompt-3-input" placeholder="..." maxlength="500"></textarea>
+                    <button class="submit-prompt" onclick="submitPrompt(3)">continue</button>
+                </div>
+
+                <button class="close-prompt" onclick="closePrompt(3)">&times;</button>
+            </div>
+        </section>
+
+        <!-- Stage 3: After Prompt 3 -->
+        <section class="content-section stage-3 locked" data-stage="3">
+            <div class="section-content">
+                <h2>Hello</h2>
+
+                <div class="prose">
+                    <p>You took the time. Thank you.</p>
+
+                    <p>I'm curious about you now. What brought you here? What are you building in your life?</p>
+
+                    <p>If something here felt familiar, I'd love to hear from you.</p>
+                </div>
+
+                <div class="contact-section">
+                    <div class="contact-links">
+                        <a href="mailto:linda.petrini@gmail.com" class="contact-link email">
+                            <span class="contact-icon">&#x2709;</span>
+                            <span>Say hello</span>
+                        </a>
+                    </div>
+
+                    <p class="contact-note">Tell me something real.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Hidden drop zone for easter egg -->
+        <div id="drop-zone" class="drop-zone">
+            <span>?</span>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p><a href="playground.html" class="playground-link">or just play</a></p>
+            <p><a href="https://lindapetrini.com">lindapetrini.com</a></p>
+        </footer>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="scripts/knots3d.js"></script>
+    <script src="scripts/prompts.js"></script>
+    <script src="scripts/easter-eggs.js"></script>
+    <script src="scripts/main.js"></script>
+</body>
+</html>

@@ -47,7 +47,7 @@ const CONTENT = {
     // =====================================================
     end: {
         main: "that's all for now.",
-        note: "if you enjoyed this, you might enjoy me.",
+        note: "if you made it here, maybe we'd get along.",
         shareButton: "share your answers with me",
         copyHint: "copy and paste this into an email to linda.petrini@gmail.com",
         backLink: "or say hello another way",
@@ -71,13 +71,11 @@ const CONTENT = {
     // =====================================================
     toyOrder: [
         "texture",    // 6
-        "body",       // 2
         "day",        // 28 - assemble a day
         "shades",     // 3
         "autocomplete", // 5
         "ai",         // 14
         "toes",       // 7
-        "embodiment", // 29 - learning with body
         "sequence",   // 8
         "images",     // 9
         "message",    // 10
@@ -88,12 +86,14 @@ const CONTENT = {
         "precision",  // 24
         "upside",     // 13
         "room",       // 15
+        "body",       // 2 - moved later, after trust is built
         "crying",     // 16
         "reading",    // 17
         "spirit",     // 18
         "emotion",    // 4
         "neuro",      // 19
         "lead",       // 20
+        "embodiment", // 29 - learning with body
         "therapy",    // 21
         "god",        // 22
         "food",       // 23
@@ -128,8 +128,8 @@ const CONTENT = {
         responses: {
             forward: "interesting. most people don't think about it at all.",
             tucked: "that's a common protective posture. nothing wrong with it.",
-            tilted: "bodies find their own balance. thanks for noticing.",
-            back: "the chair shapes us more than we shape it.",
+            tilted: "asymmetry is normal. thanks for checking.",
+            back: "fair enough, chairs will do that.",
             unsure: "that's honest. most people have no idea where their pelvis is."
         }
     },
@@ -151,24 +151,18 @@ const CONTENT = {
     // TOY 4: EMOTION / NVC
     // =====================================================
     emotion: {
-        title: "is this a feeling?",
-        hint: "in the nonviolent communication sense - there are 12 questions",
+        title: "feeling or not?",
+        hint: "this one surprises most people — 6 quick rounds",
         buttons: { yes: "yes, a feeling", no: "no, something else" },
         endText: "that's all of them",
-        summary: "you got {correct} out of {total}. in NVC, feelings are different from thoughts about what others did. believe it or not, some people nerd out over this.",
+        summary: "you got {correct} out of {total}. turns out a lot of what we call feelings are actually thoughts about what someone else did. most people find this weird at first.",
         items: [
-            { text: "I feel abandoned", isFeeling: false, explanation: "That's an interpretation of what others did to you." },
-            { text: "I feel sad", isFeeling: true, explanation: "Yes, sadness is a feeling." },
-            { text: "I feel like you don't care", isFeeling: false, explanation: "That's a thought about someone else." },
-            { text: "I feel anxious", isFeeling: true, explanation: "Yes, anxiety is a feeling." },
-            { text: "I feel manipulated", isFeeling: false, explanation: "That's a judgment about someone's actions." },
-            { text: "I feel curious", isFeeling: true, explanation: "We'll count it as a feeling, but it's more of a thought." },
-            { text: "I feel unheard", isFeeling: false, explanation: "That's about how others are treating you." },
-            { text: "I feel peaceful", isFeeling: true, explanation: "Yes, peace is a feeling." },
-            { text: "I feel betrayed", isFeeling: false, explanation: "That's an interpretation of someone's behavior." },
-            { text: "I feel tender", isFeeling: true, explanation: "Yes, tenderness is a feeling." },
-            { text: "I feel attacked", isFeeling: false, explanation: "That's a perception of others' intent." },
-            { text: "I feel restless", isFeeling: true, explanation: "Yes, restlessness is a feeling." }
+            { text: "I feel abandoned", isFeeling: false, explanation: "that's more about what you think happened than how you feel inside." },
+            { text: "I feel like you don't care", isFeeling: false, explanation: "that's a thought about someone else, not a feeling." },
+            { text: "I feel manipulated", isFeeling: false, explanation: "that's a story about what someone did to you." },
+            { text: "I feel curious", isFeeling: true, explanation: "yes, curiosity counts." },
+            { text: "I feel tender", isFeeling: true, explanation: "yes, tenderness is a feeling." },
+            { text: "I feel restless", isFeeling: true, explanation: "yes, restlessness is a feeling." }
         ]
     },
 
@@ -295,9 +289,9 @@ const CONTENT = {
             when: "when was the last time I was upside down?"
         },
         responses: {
-            love: "me too. handstands, hanging, all of it.",
+            love: "me too. there's something great about a change of perspective.",
             fine: "practical. blood to the head is fine sometimes.",
-            uncomfortable: "your vestibular system has opinions.",
+            uncomfortable: "understandable. not everyone's thing.",
             never: "fair. it's not for everyone.",
             when: "that's the real question. childhood? yoga? falling?"
         }
@@ -427,9 +421,9 @@ const CONTENT = {
             { key: "normal", text: "my brain is pretty normal actually" }
         ],
         responses: {
-            normal: "normal. sure.",
+            normal: "nothing wrong with that. steady is underrated.",
             many: "your brain is interesting.",
-            swings: "swings are great. vestibular joy.",
+            swings: "swings are great. never too old for that.",
             hyperfocus: "hyperfocus is a superpower (and a curse).",
             default: "noted."
         }
@@ -460,8 +454,7 @@ const CONTENT = {
     therapy: {
         title: "therapy",
         labels: {
-            hours: "hours spent in therapy (lifetime estimate)",
-            money: "money spent on therapy (rough $)"
+            hours: "hours spent in therapy (lifetime estimate)"
         },
         responses: {
             lots: "you've done the work.",
@@ -632,19 +625,19 @@ const CONTENT = {
         toes: "yes — barefoot life",
         music: "10/100 — I love silence",
         nature: "sea > river > forest > mountain > lake > ",
-        upside: "I love it. handstands are my meditation.",
+        upside: "I love it. handstands are how I reset.",
         ai: "all of them really. I don't wanna talk about my API usage.",
         room: "5/100 - I love multi functional spaces",
         crying: "ask, I value giving people agency a lot",
         spirit: "85/100 — something's def going on",
         lead: "depends on the context, but I lean follow",
-        therapy: "500+ hours, more money than I want to calculate",
+        therapy: "500+ hours",
         god: "to my big surprise, these days the answer is Jesus",
         food: "cook, joy, ingredients — food is connection",
         autocomplete: [
             "in the middle of the night I breath and chat with AI",
-            "pleasure is a practice",
-            "all parts of me are welcome here",
+            "pleasure is paying attention to what feels good",
+            "all parts of me are trying their best",
             "the point of life is to keep living",
             "I never leave the house without earplugs"
         ]

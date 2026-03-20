@@ -44,8 +44,7 @@ Reorderable via `toyOrder` array in content.js:
 ```
 dating/
 ├── CLAUDE.md              # This file
-├── playground.html        # Main playground page
-├── index.html             # Landing page (optional)
+├── index.html             # Main playground page
 ├── styles/
 │   ├── main.css           # Base styles, variables
 │   └── playground.css     # All toy styles
@@ -73,7 +72,7 @@ In browser console:
 ```bash
 # Local testing
 python3 -m http.server 8080
-# Then visit http://localhost:8080/playground.html
+# Then visit http://localhost:8080/
 
 # GitHub Pages
 git remote add origin https://github.com/username/repo.git

@@ -102,6 +102,179 @@ const Playground = {
         });
     },
 
+    // ========== Touch Drag Polyfill ==========
+    // Makes draggable elements work on touch devices
+    addTouchDragToReorderable(container, itemSelector, onReorder) {
+        let draggedItem = null;
+        let placeholder = null;
+        let startY = 0;
+        let startX = 0;
+        let itemRect = null;
+
+        const getItemAtPoint = (x, y) => {
+            const items = [...container.querySelectorAll(itemSelector)];
+            return items.find(item => {
+                if (item === placeholder) return false;
+                const rect = item.getBoundingClientRect();
+                return y >= rect.top && y <= rect.bottom && x >= rect.left && x <= rect.right;
+            });
+        };
+
+        container.addEventListener('touchstart', (e) => {
+            const item = e.target.closest(itemSelector);
+            if (!item || !container.contains(item)) return;
+
+            draggedItem = item;
+            itemRect = item.getBoundingClientRect();
+            startY = e.touches[0].clientY;
+            startX = e.touches[0].clientX;
+
+            // Create placeholder
+            placeholder = item.cloneNode(true);
+            placeholder.style.opacity = '0.3';
+            placeholder.style.pointerEvents = 'none';
+            item.after(placeholder);
+
+            // Style dragged item
+            item.style.position = 'fixed';
+            item.style.zIndex = '1000';
+            item.style.width = itemRect.width + 'px';
+            item.style.left = itemRect.left + 'px';
+            item.style.top = itemRect.top + 'px';
+            item.style.transition = 'none';
+            item.classList.add('dragging');
+        }, { passive: true });
+
+        container.addEventListener('touchmove', (e) => {
+            if (!draggedItem) return;
+            e.preventDefault();
+
+            const touch = e.touches[0];
+            const dy = touch.clientY - startY;
+            const dx = touch.clientX - startX;
+
+            draggedItem.style.top = (itemRect.top + dy) + 'px';
+            draggedItem.style.left = (itemRect.left + dx) + 'px';
+
+            const target = getItemAtPoint(touch.clientX, touch.clientY);
+            if (target && target !== placeholder) {
+                const targetRect = target.getBoundingClientRect();
+                const midY = targetRect.top + targetRect.height / 2;
+                if (touch.clientY < midY) {
+                    target.before(placeholder);
+                } else {
+                    target.after(placeholder);
+                }
+            }
+        }, { passive: false });
+
+        const endDrag = () => {
+            if (!draggedItem) return;
+
+            // Move dragged item to placeholder position
+            placeholder.before(draggedItem);
+            placeholder.remove();
+
+            // Reset styles
+            draggedItem.style.position = '';
+            draggedItem.style.zIndex = '';
+            draggedItem.style.width = '';
+            draggedItem.style.left = '';
+            draggedItem.style.top = '';
+            draggedItem.style.transition = '';
+            draggedItem.classList.remove('dragging');
+
+            if (onReorder) onReorder();
+
+            draggedItem = null;
+            placeholder = null;
+        };
+
+        container.addEventListener('touchend', endDrag);
+        container.addEventListener('touchcancel', endDrag);
+    },
+
+    // Touch drag for day builder (drag from pool to drop zones)
+    addTouchDragToDropZones(sourceContainer, itemSelector, dropZones, onDrop) {
+        let draggedItem = null;
+        let clone = null;
+        let startY = 0;
+        let startX = 0;
+
+        sourceContainer.addEventListener('touchstart', (e) => {
+            const item = e.target.closest(itemSelector);
+            if (!item) return;
+
+            draggedItem = item;
+            const rect = item.getBoundingClientRect();
+            startY = e.touches[0].clientY;
+            startX = e.touches[0].clientX;
+
+            clone = item.cloneNode(true);
+            clone.style.position = 'fixed';
+            clone.style.zIndex = '1000';
+            clone.style.width = rect.width + 'px';
+            clone.style.left = rect.left + 'px';
+            clone.style.top = rect.top + 'px';
+            clone.style.opacity = '0.8';
+            clone.style.pointerEvents = 'none';
+            clone.style.transition = 'none';
+            document.body.appendChild(clone);
+
+            item.style.opacity = '0.3';
+        }, { passive: true });
+
+        sourceContainer.addEventListener('touchmove', (e) => {
+            if (!clone) return;
+            e.preventDefault();
+
+            const touch = e.touches[0];
+            const rect = draggedItem.getBoundingClientRect();
+            clone.style.top = (touch.clientY - 20) + 'px';
+            clone.style.left = (touch.clientX - 60) + 'px';
+
+            // Highlight drop zones
+            dropZones.forEach(zone => {
+                const zr = zone.getBoundingClientRect();
+                if (touch.clientX >= zr.left && touch.clientX <= zr.right &&
+                    touch.clientY >= zr.top && touch.clientY <= zr.bottom) {
+                    zone.classList.add('drag-over');
+                } else {
+                    zone.classList.remove('drag-over');
+                }
+            });
+        }, { passive: false });
+
+        const endDrag = (e) => {
+            if (!clone) return;
+
+            const touch = e.changedTouches[0];
+            clone.remove();
+            draggedItem.style.opacity = '';
+
+            // Find which drop zone we're over
+            dropZones.forEach(zone => {
+                zone.classList.remove('drag-over');
+                const zr = zone.getBoundingClientRect();
+                if (touch.clientX >= zr.left && touch.clientX <= zr.right &&
+                    touch.clientY >= zr.top && touch.clientY <= zr.bottom) {
+                    onDrop(zone, draggedItem);
+                }
+            });
+
+            draggedItem = null;
+            clone = null;
+        };
+
+        sourceContainer.addEventListener('touchend', endDrag);
+        sourceContainer.addEventListener('touchcancel', () => {
+            if (clone) clone.remove();
+            if (draggedItem) draggedItem.style.opacity = '';
+            draggedItem = null;
+            clone = null;
+        });
+    },
+
     // ========== Toy 1: Color Maker ==========
     initColorMaker() {
         const preview = document.getElementById('color-preview');
@@ -267,20 +440,14 @@ const Playground = {
         const correctEl = document.getElementById('emotion-correct');
         const totalEl = document.getElementById('emotion-total');
 
-        // NVC: feelings vs thoughts/evaluations
+        // Feelings vs thoughts disguised as feelings
         const items = [
-            { text: "I feel abandoned", isFeeling: false, explanation: "That's an interpretation of what others did to you." },
-            { text: "I feel sad", isFeeling: true, explanation: "Yes, sadness is a feeling." },
-            { text: "I feel like you don't care", isFeeling: false, explanation: "That's a thought about someone else." },
-            { text: "I feel anxious", isFeeling: true, explanation: "Yes, anxiety is a feeling." },
-            { text: "I feel manipulated", isFeeling: false, explanation: "That's a judgment about someone's actions." },
-            { text: "I feel curious", isFeeling: true, explanation: "Yes, curiosity is a feeling." },
-            { text: "I feel unheard", isFeeling: false, explanation: "That's about how others are treating you." },
-            { text: "I feel peaceful", isFeeling: true, explanation: "Yes, peace is a feeling." },
-            { text: "I feel betrayed", isFeeling: false, explanation: "That's an interpretation of someone's behavior." },
-            { text: "I feel tender", isFeeling: true, explanation: "Yes, tenderness is a feeling." },
-            { text: "I feel attacked", isFeeling: false, explanation: "That's a perception of others' intent." },
-            { text: "I feel restless", isFeeling: true, explanation: "Yes, restlessness is a feeling." },
+            { text: "I feel abandoned", isFeeling: false, explanation: "that's more about what you think happened than how you feel inside." },
+            { text: "I feel like you don't care", isFeeling: false, explanation: "that's a thought about someone else, not a feeling." },
+            { text: "I feel manipulated", isFeeling: false, explanation: "that's a story about what someone did to you." },
+            { text: "I feel curious", isFeeling: true, explanation: "yes, curiosity counts." },
+            { text: "I feel tender", isFeeling: true, explanation: "yes, tenderness is a feeling." },
+            { text: "I feel restless", isFeeling: true, explanation: "yes, restlessness is a feeling." },
         ];
 
         let shuffled = [...items].sort(() => Math.random() - 0.5);
@@ -292,7 +459,7 @@ const Playground = {
                 text.textContent = "that's all of them";
                 yesBtn.style.display = 'none';
                 noBtn.style.display = 'none';
-                feedback.textContent = `you got ${correct} out of ${shuffled.length}. in NVC, feelings are different from thoughts about what others did.`;
+                feedback.textContent = `you got ${correct} out of ${shuffled.length}. turns out a lot of what we call feelings are actually thoughts about what someone else did. most people find this weird at first.`;
                 return;
             }
             text.textContent = `"${shuffled[current].text}"`;
@@ -868,6 +1035,29 @@ const Playground = {
         // Initial render
         renderActivities();
 
+        // Touch support for dragging activities to drop zones
+        this.addTouchDragToDropZones(activityList, '.activity-item', dropZones, (zone, item) => {
+            const phase = zone.dataset.phase;
+            const activity = item.dataset.activity;
+
+            zone.innerHTML = '';
+            const slotItem = document.createElement('div');
+            slotItem.className = 'activity-item';
+            slotItem.textContent = activity;
+            zone.appendChild(slotItem);
+            zone.classList.add('filled');
+
+            this.responses.day[phase] = activity;
+            this.saveResponses();
+
+            const allFilled = ['morning', 'afternoon', 'evening', 'night'].every(
+                p => this.responses.day[p]
+            );
+            if (allFilled) {
+                response.textContent = C.response;
+            }
+        });
+
         // Restore saved state
         if (this.responses.day) {
             ['morning', 'afternoon', 'evening', 'night'].forEach(phase => {
@@ -1041,6 +1231,9 @@ const Playground = {
             this.saveResponses();
             response.textContent = CONTENT.nature.responses[order[0]];
         });
+
+        // Touch support for reordering
+        this.addTouchDragToReorderable(container, '.rank-item');
 
         // Restore if saved
         if (this.responses.nature) {
@@ -1389,19 +1582,16 @@ const Playground = {
     // ========== Toy 21: Therapy ==========
     initTherapy() {
         const hoursInput = document.getElementById('therapy-hours');
-        const moneyInput = document.getElementById('therapy-money');
         const response = document.getElementById('therapy-response');
         const C = CONTENT.therapy;
 
         const updateResponse = () => {
             const hours = parseInt(hoursInput.value) || 0;
-            const money = parseInt(moneyInput.value) || 0;
 
             this.responses.therapyHours = hours;
-            this.responses.therapyMoney = money;
             this.saveResponses();
 
-            if (hours === 0 && money === 0) {
+            if (hours === 0) {
                 response.textContent = "";
             } else if (hours > 500) {
                 response.textContent = C.responses.lots;
@@ -1413,11 +1603,9 @@ const Playground = {
         };
 
         hoursInput.addEventListener('change', updateResponse);
-        moneyInput.addEventListener('change', updateResponse);
 
         if (this.responses.therapyHours) hoursInput.value = this.responses.therapyHours;
-        if (this.responses.therapyMoney) moneyInput.value = this.responses.therapyMoney;
-        if (this.responses.therapyHours || this.responses.therapyMoney) updateResponse();
+        if (this.responses.therapyHours) updateResponse();
     },
 
     // ========== Toy 22: God ==========
@@ -1612,7 +1800,36 @@ const Playground = {
             }
         });
 
-        // Handle form submission
+        // Copy to clipboard button
+        const copyBtn = document.getElementById('copy-answers-btn');
+        if (copyBtn) {
+            copyBtn.addEventListener('click', () => {
+                const email = document.getElementById('share-email').value;
+                const message = document.getElementById('share-message').value;
+                const answers = answersInput.value;
+
+                const text = `From: ${email}\n\n${message ? 'Message:\n' + message + '\n\n' : ''}${answers}`;
+
+                navigator.clipboard.writeText(text).then(() => {
+                    responseDiv.className = 'form-response success';
+                    responseDiv.textContent = 'copied! send it however you like.';
+                    copyBtn.textContent = 'copied';
+                    setTimeout(() => { copyBtn.textContent = 'copy to clipboard'; }, 2000);
+                }).catch(() => {
+                    // Fallback for older browsers
+                    const textarea = document.createElement('textarea');
+                    textarea.value = text;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    responseDiv.className = 'form-response success';
+                    responseDiv.textContent = 'copied! send it however you like.';
+                });
+            });
+        }
+
+        // Handle form submission (mailto fallback)
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -1620,40 +1837,13 @@ const Playground = {
             const message = document.getElementById('share-message').value;
             const answers = answersInput.value;
 
-            // Use a simple mailto link as fallback
-            // In production, you'd use Formspree, EmailJS, or a backend endpoint
             const subject = 'Playground Answers';
             const body = `Email: ${email}\n\nMessage:\n${message}\n\n=== Answers ===\n${answers}`;
 
-            // Try to use mailto
             window.location.href = `mailto:linda.petrini@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
-            // Show success message
             responseDiv.className = 'form-response success';
-            responseDiv.textContent = "opening your email client... (or copy the text above and email linda.petrini@gmail.com)";
-
-            // Optionally, integrate with a service like Formspree
-            // Uncomment and replace with your Formspree endpoint:
-            /*
-            try {
-                const response = await fetch('https://formspree.io/f/YOUR_FORM_ID', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, message, answers })
-                });
-
-                if (response.ok) {
-                    responseDiv.className = 'form-response success';
-                    responseDiv.textContent = 'sent! linda will get back to you soon.';
-                    form.reset();
-                } else {
-                    throw new Error('Failed to send');
-                }
-            } catch (error) {
-                responseDiv.className = 'form-response error';
-                responseDiv.textContent = 'something went wrong. try emailing linda.petrini@gmail.com directly.';
-            }
-            */
+            responseDiv.textContent = "opening your email client...";
         });
 
         // Calculate and show score
@@ -1901,8 +2091,8 @@ const Playground = {
             lines.push(`lead/follow: ${r.lead}`);
         }
 
-        if (r.therapyHours || r.therapyMoney) {
-            lines.push(`therapy: ${r.therapyHours || 0} hours, $${r.therapyMoney || 0}`);
+        if (r.therapyHours) {
+            lines.push(`therapy: ${r.therapyHours} hours`);
         }
 
         if (r.god) {
