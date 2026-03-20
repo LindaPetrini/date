@@ -1612,6 +1612,11 @@
     min-height: 60px;
 }
 
+.share-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
 .form-submit-btn {
     font-family: var(--font-mono);
     font-size: 0.85rem;
@@ -1622,10 +1627,21 @@
     border-radius: 6px;
     cursor: pointer;
     transition: all 0.2s;
+    flex: 1;
+}
+
+.form-submit-btn.mailto-btn {
+    background: transparent;
+    color: var(--color-petrol);
+    border: 1px solid var(--color-petrol);
 }
 
 .form-submit-btn:hover {
     background: var(--color-petrol-light);
+}
+
+.form-submit-btn.mailto-btn:hover {
+    background: rgba(45, 106, 106, 0.1);
 }
 
 .form-note {
@@ -2145,4 +2161,95 @@
         height: 38px;
         font-size: 1rem;
     }
+}
+
+/* ========== Untangle This ========== */
+.untangle-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.untangle-canvas-wrap {
+    width: 100%;
+    max-width: 320px;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(45, 106, 106, 0.05), rgba(139, 74, 94, 0.05));
+    cursor: grab;
+    touch-action: none;
+    overflow: hidden;
+}
+
+.untangle-canvas-wrap:active {
+    cursor: grabbing;
+}
+
+.untangle-canvas-wrap canvas {
+    border-radius: 12px;
+}
+
+.untangle-timer {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--color-petrol);
+    opacity: 0.6;
+    min-height: 1.2em;
+}
+
+.untangle-response {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--color-petrol);
+    text-align: center;
+    min-height: 1.5em;
+    margin-top: 0.5rem;
+}
+
+/* ========== Patience Test ========== */
+.patience-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.patience-canvas-wrap {
+    width: 100%;
+    max-width: 320px;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(139, 74, 94, 0.05), rgba(45, 106, 106, 0.05));
+    overflow: hidden;
+}
+
+.patience-canvas-wrap canvas {
+    border-radius: 12px;
+}
+
+.patience-status {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--color-petrol);
+    opacity: 0.6;
+    min-height: 1.2em;
+    transition: opacity 0.3s;
+}
+
+.patience-response {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--color-petrol);
+    text-align: center;
+    min-height: 1.5em;
+    margin-top: 0.5rem;
 }

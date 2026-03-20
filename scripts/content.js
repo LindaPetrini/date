@@ -76,6 +76,7 @@ const CONTENT = {
         "autocomplete", // 5
         "ai",         // 14
         "toes",       // 7
+        "untangle",   // untangle this
         "sequence",   // 8
         "images",     // 9
         "message",    // 10
@@ -93,6 +94,7 @@ const CONTENT = {
         "emotion",    // 4
         "neuro",      // 19
         "lead",       // 20
+        "patience",   // patience test
         "embodiment", // 29 - learning with body
         "therapy",    // 21
         "god",        // 22
@@ -616,6 +618,35 @@ const CONTENT = {
     },
 
     // =====================================================
+    // TOY: UNTANGLE THIS
+    // =====================================================
+    untangle: {
+        title: "untangle this",
+        hint: "rotate it with your mouse or finger",
+        button: "I give up",
+        responses: {
+            quick: "decisive. you don't waste time on things that don't have answers.",
+            medium: "curious enough to explore, smart enough to know when to stop.",
+            long: "you stayed for {seconds} seconds. that's either patience or stubbornness. both are interesting."
+        }
+    },
+
+    // =====================================================
+    // TOY: PATIENCE TEST
+    // =====================================================
+    patience: {
+        title: "patience test",
+        hint: "just watch",
+        status: "untangling...",
+        statusDone: "done.",
+        responses: {
+            touched_many: "most people try to help. it untangles itself if you let it.",
+            touched_once: "you figured it out. some things just need time.",
+            watched: "you just watched. that's rare. presence > action."
+        }
+    },
+
+    // =====================================================
     // LINDA'S ANSWERS - Fill these in!
     // =====================================================
     myAnswers: {
@@ -634,6 +665,8 @@ const CONTENT = {
         therapy: "500+ hours",
         god: "to my big surprise, these days the answer is Jesus",
         food: "cook, joy, ingredients — food is connection",
+        untangle: "I played with it for about 30 seconds before accepting it's a knot",
+        patience: "I watched the whole thing. it was hard not to touch it.",
         autocomplete: [
             "in the middle of the night I breath and chat with AI",
             "pleasure is paying attention to what feels good",

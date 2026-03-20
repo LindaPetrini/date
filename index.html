@@ -211,6 +211,39 @@
             </div>
         </section>
 
+        <!-- Toy: Untangle this -->
+        <section class="toy" id="toy-untangle" data-order="0">
+            <div class="toy-header">
+                <span class="toy-number">00</span>
+                <h2>untangle this</h2>
+                <p class="toy-hint">rotate it with your mouse or finger</p>
+            </div>
+            <div class="toy-content">
+                <div class="untangle-container">
+                    <div class="untangle-canvas-wrap" id="untangle-canvas-wrap"></div>
+                    <div class="untangle-timer" id="untangle-timer"></div>
+                </div>
+                <button class="toy-action" id="untangle-done">I give up</button>
+                <div class="untangle-response" id="untangle-response"></div>
+            </div>
+        </section>
+
+        <!-- Toy: Patience test -->
+        <section class="toy" id="toy-patience" data-order="0">
+            <div class="toy-header">
+                <span class="toy-number">00</span>
+                <h2>patience test</h2>
+                <p class="toy-hint">just watch</p>
+            </div>
+            <div class="toy-content">
+                <div class="patience-container">
+                    <div class="patience-canvas-wrap" id="patience-canvas-wrap"></div>
+                    <div class="patience-status" id="patience-status">untangling...</div>
+                </div>
+                <div class="patience-response" id="patience-response"></div>
+            </div>
+        </section>
+
         <!-- Toy 9: Choose an image -->
         <section class="toy" id="toy-images" data-order="9">
             <div class="toy-header">
@@ -746,6 +779,7 @@
         </footer>
     </main>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="scripts/content.js"></script>
     <script src="scripts/playground.js"></script>
 </body>
