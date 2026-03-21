@@ -1824,40 +1824,39 @@ const Playground = {
 
     initUntangle() {
         const wrap = document.getElementById('untangle-canvas-wrap');
-        const doneBtn = document.getElementById('untangle-done');
+        const buttonsDiv = document.getElementById('untangle-buttons');
         const response = document.getElementById('untangle-response');
-        const timerEl = document.getElementById('untangle-timer');
         const C = CONTENT.untangle;
 
-        if (!wrap || !doneBtn || !response) return;
+        if (!wrap || !buttonsDiv || !response) return;
 
-        // If already completed, hide the button but don't show inline response
-        // (saved response will appear in "your answers" section at the bottom)
+        // If already completed, hide buttons and show response
         if (this.responses.untangle) {
-            doneBtn.style.display = 'none';
+            buttonsDiv.style.display = 'none';
+            response.textContent = C.responses[this.responses.untangle] || '';
         }
 
         if (typeof THREE === 'undefined') return;
 
-        // Setup Three.js scene
-        const width = 250;
-        const height = 250;
+        // Setup Three.js scene — small 180x180 canvas
+        const width = 180;
+        const height = 180;
 
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 1000);
-        camera.position.z = 5;
+        camera.position.z = 4.2;
 
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(width, height);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         wrap.appendChild(renderer.domElement);
 
-        // Create torus knot
-        const geometry = new THREE.TorusKnotGeometry(2, 0.5, 200, 32, 7, 2);
+        // Create complex torus knot — high p,q for visual intricacy
+        const geometry = new THREE.TorusKnotGeometry(1.4, 0.35, 300, 32, 11, 7);
         const material = new THREE.MeshStandardMaterial({
             color: 0x2D6A6A,
-            roughness: 0.6,
-            metalness: 0.1
+            roughness: 0.5,
+            metalness: 0.15
         });
         const mesh = new THREE.Mesh(geometry, material);
         scene.add(mesh);
@@ -1871,108 +1870,23 @@ const Playground = {
         fillLight.position.set(-3, 2, -3);
         scene.add(fillLight);
 
-        // Mouse/touch interaction tracking
-        let isDragging = false;
-        let prevX = 0, prevY = 0;
-        let interactionCount = 0;
-        let startTime = null;
-        let completed = !!this.responses.untangle;
-
-        const canvas = renderer.domElement;
-
-        const onPointerDown = (x, y) => {
-            if (completed) return;
-            isDragging = true;
-            prevX = x;
-            prevY = y;
-            interactionCount++;
-            if (!startTime) startTime = Date.now();
-        };
-
-        const onPointerMove = (x, y) => {
-            if (!isDragging || completed) return;
-            const dx = x - prevX;
-            const dy = y - prevY;
-            mesh.rotation.y += dx * 0.01;
-            mesh.rotation.x += dy * 0.01;
-            prevX = x;
-            prevY = y;
-        };
-
-        const onPointerUp = () => {
-            isDragging = false;
-        };
-
-        canvas.addEventListener('mousedown', (e) => {
-            e.preventDefault();
-            onPointerDown(e.clientX, e.clientY);
+        // Button click handlers
+        buttonsDiv.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const value = btn.dataset.value;
+                response.textContent = C.responses[value];
+                this.responses.untangle = value;
+                this.saveResponses();
+                buttonsDiv.style.display = 'none';
+                this.populateAnswerSections();
+            });
         });
-        canvas.addEventListener('mousemove', (e) => {
-            e.preventDefault();
-            onPointerMove(e.clientX, e.clientY);
-        });
-        canvas.addEventListener('mouseup', onPointerUp);
-        canvas.addEventListener('mouseleave', onPointerUp);
 
-        canvas.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            const t = e.touches[0];
-            onPointerDown(t.clientX, t.clientY);
-        }, { passive: false });
-        canvas.addEventListener('touchmove', (e) => {
-            e.preventDefault();
-            const t = e.touches[0];
-            onPointerMove(t.clientX, t.clientY);
-        }, { passive: false });
-        canvas.addEventListener('touchend', onPointerUp);
-
-        // Update timer display
-        const updateTimer = () => {
-            if (startTime && !completed) {
-                const elapsed = Math.floor((Date.now() - startTime) / 1000);
-                timerEl.textContent = `${elapsed}s`;
-            }
-        };
-
-        // Auto-trigger after 90 seconds
-        const autoTrigger = setInterval(() => {
-            if (completed) { clearInterval(autoTrigger); return; }
-            if (startTime && (Date.now() - startTime) > 90000) {
-                finish();
-            }
-        }, 1000);
-
-        const finish = () => {
-            if (completed) return;
-            completed = true;
-            clearInterval(autoTrigger);
-            const seconds = startTime ? Math.floor((Date.now() - startTime) / 1000) : 0;
-
-            if (seconds < 10) {
-                response.textContent = C.responses.quick;
-            } else if (seconds < 45) {
-                response.textContent = C.responses.medium;
-            } else {
-                response.textContent = C.responses.long.replace('{seconds}', seconds);
-            }
-
-            this.responses.untangle = { seconds, interactions: interactionCount };
-            this.saveResponses();
-            doneBtn.textContent = 'done';
-            doneBtn.disabled = true;
-            doneBtn.style.opacity = '0.5';
-        };
-
-        doneBtn.addEventListener('click', finish);
-
-        // Gentle auto-rotation
+        // Auto-rotation only, no interaction
         const animate = () => {
             requestAnimationFrame(animate);
-            if (!isDragging) {
-                mesh.rotation.y += 0.003;
-                mesh.rotation.x += 0.001;
-            }
-            updateTimer();
+            mesh.rotation.y += 0.003;
+            mesh.rotation.x += 0.001;
             renderer.render(scene, camera);
         };
         animate();
@@ -2320,7 +2234,7 @@ const Playground = {
         }
 
         if (r.untangle) {
-            lines.push(`untangle: ${r.untangle.seconds}s, ${r.untangle.interactions} interactions`);
+            lines.push(`can this be untangled: ${r.untangle}`);
         }
 
         if (r.babies !== undefined) {
@@ -2387,7 +2301,7 @@ const Playground = {
             if (r.meta) addAnswer('going meta', r.meta);
             if (r.embodiment) addAnswer('learning physical things', r.embodiment);
             if (r.patterns) addAnswer('meeting someone interesting', r.patterns);
-            if (r.untangle) addAnswer('untangle', `${r.untangle.seconds}s, ${r.untangle.interactions} interactions`);
+            if (r.untangle) addAnswer('can this be untangled', r.untangle);
             if (r.babies !== undefined) {
                 const babyLabels = CONTENT.babies ? CONTENT.babies.labels : [];
                 addAnswer('babies', babyLabels[r.babies] || r.babies);
@@ -2442,7 +2356,7 @@ const Playground = {
             if (m.god) addAnswer('god/source', m.god);
             if (m.food) addAnswer('food', m.food);
             if (m.babies) addAnswer('babies', m.babies);
-            if (m.untangle) addAnswer('untangle', m.untangle);
+            if (m.untangle) addAnswer('can this be untangled', m.untangle);
             if (m.autocomplete && m.autocomplete.length > 0) {
                 m.autocomplete.forEach((answer, i) => {
                     const prompts = [

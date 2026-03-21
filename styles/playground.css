@@ -2241,34 +2241,25 @@
 }
 
 .untangle-canvas-wrap {
-    width: 250px;
-    height: 250px;
+    width: 180px;
+    height: 180px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 12px;
     background: linear-gradient(135deg, rgba(45, 106, 106, 0.05), rgba(139, 74, 94, 0.05));
-    cursor: grab;
-    touch-action: none;
     overflow: hidden;
-    user-select: none;
-    -webkit-user-select: none;
-}
-
-.untangle-canvas-wrap:active {
-    cursor: grabbing;
 }
 
 .untangle-canvas-wrap canvas {
     border-radius: 12px;
 }
 
-.untangle-timer {
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    color: var(--color-petrol);
-    opacity: 0.6;
-    min-height: 1.2em;
+.untangle-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 0.5rem;
 }
 
 .untangle-response {

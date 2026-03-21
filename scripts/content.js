@@ -74,7 +74,6 @@ const CONTENT = {
         "day",        // 28 - assemble a day
         "shades",     // 3
         "autocomplete", // 5
-        "babies",     // babies slider
         "ai",         // 14
         "toes",       // 7
         "untangle",   // untangle this
@@ -84,6 +83,7 @@ const CONTENT = {
         "music",      // 11
         "hold",       // 25
         "nature",     // 12
+        "babies",     // babies slider
         "color",      // 1
         "precision",  // 24
         "upside",     // 13
@@ -95,7 +95,6 @@ const CONTENT = {
         "emotion",    // 4
         "neuro",      // 19
         "lead",       // 20
-        "patience",   // patience test
         "embodiment", // 29 - learning with body
         "therapy",    // 21
         "god",        // 22
@@ -190,13 +189,13 @@ const CONTENT = {
         title: "how many?",
         hint: "kids. the big question.",
         labels: [
-            "not for me",
-            "maybe one",
-            "a pair",
-            "the sweet spot",
-            "go big",
-            "full house",
-            "are you serious"
+            "0 — not for me",
+            "1 — maybe one",
+            "2 — a pair",
+            "3 — the sweet spot",
+            "4 — go big",
+            "5 — full house",
+            "6+ — are you serious"
         ],
         responses: {
             0: "that's honest. we might not be a match on this one — but I appreciate you saying it straight.",
@@ -648,28 +647,14 @@ const CONTENT = {
     // TOY: UNTANGLE THIS
     // =====================================================
     untangle: {
-        title: "untangle this",
-        hint: "rotate it with your mouse or finger",
-        button: "I give up",
+        title: "can this be untangled?",
+        options: {
+            yes: "yes",
+            no: "no"
+        },
         responses: {
-            quick: "decisive. you don't waste time on things that don't have answers.",
-            medium: "curious enough to explore, smart enough to know when to stop.",
-            long: "you stayed for {seconds} seconds. that's either patience or stubbornness. both are interesting."
-        }
-    },
-
-    // =====================================================
-    // TOY: PATIENCE TEST
-    // =====================================================
-    patience: {
-        title: "patience test",
-        hint: "just watch",
-        status: "untangling...",
-        statusDone: "done.",
-        responses: {
-            touched_many: "most people try to help. it untangles itself if you let it.",
-            touched_once: "you figured it out. some things just need time.",
-            watched: "you just watched. that's rare. presence > action."
+            yes: "optimist.",
+            no: "realist."
         }
     },
 
@@ -692,8 +677,7 @@ const CONTENT = {
         therapy: "500+ hours",
         god: "to my big surprise, these days the answer is Jesus",
         food: "cook, joy, ingredients — food is connection",
-        untangle: "I played with it for about 30 seconds before accepting it's a knot",
-        patience: "I watched the whole thing. it was hard not to touch it.",
+        untangle: "yes. everything can.",
         babies: "3-4. this one isn't negotiable.",
         autocomplete: [
             "in the middle of the night I breath and chat with AI",

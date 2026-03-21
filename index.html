@@ -164,13 +164,13 @@
                 <div class="babies-slider-container">
                     <input type="range" id="babies-slider" min="0" max="6" value="3" step="1" class="babies-slider">
                     <div class="babies-labels" id="babies-labels">
-                        <span data-value="0">not for me</span>
-                        <span data-value="1">maybe one</span>
-                        <span data-value="2">a pair</span>
-                        <span data-value="3">the sweet spot</span>
-                        <span data-value="4">go big</span>
-                        <span data-value="5">full house</span>
-                        <span data-value="6">are you serious</span>
+                        <span data-value="0">0 — not for me</span>
+                        <span data-value="1">1 — maybe one</span>
+                        <span data-value="2">2 — a pair</span>
+                        <span data-value="3">3 — the sweet spot</span>
+                        <span data-value="4">4 — go big</span>
+                        <span data-value="5">5 — full house</span>
+                        <span data-value="6">6+ — are you serious</span>
                     </div>
                 </div>
                 <div class="babies-current" id="babies-current"></div>
@@ -240,34 +240,20 @@
         <section class="toy" id="toy-untangle" data-order="0">
             <div class="toy-header">
                 <span class="toy-number">00</span>
-                <h2>untangle this</h2>
-                <p class="toy-hint">rotate it with your mouse or finger</p>
+                <h2>can this be untangled?</h2>
             </div>
             <div class="toy-content">
                 <div class="untangle-container">
                     <div class="untangle-canvas-wrap" id="untangle-canvas-wrap"></div>
-                    <div class="untangle-timer" id="untangle-timer"></div>
                 </div>
-                <button class="toy-action" id="untangle-done">I give up</button>
+                <div class="untangle-buttons" id="untangle-buttons">
+                    <button class="toy-action" data-value="yes">yes</button>
+                    <button class="toy-action" data-value="no">no</button>
+                </div>
                 <div class="untangle-response" id="untangle-response"></div>
             </div>
         </section>
 
-        <!-- Toy: Patience test -->
-        <section class="toy" id="toy-patience" data-order="0">
-            <div class="toy-header">
-                <span class="toy-number">00</span>
-                <h2>patience test</h2>
-                <p class="toy-hint">just watch</p>
-            </div>
-            <div class="toy-content">
-                <div class="patience-container">
-                    <div class="patience-canvas-wrap" id="patience-canvas-wrap"></div>
-                    <div class="patience-status" id="patience-status">untangling...</div>
-                </div>
-                <div class="patience-response" id="patience-response"></div>
-            </div>
-        </section>
 
         <!-- Toy 9: Choose an image -->
         <section class="toy" id="toy-images" data-order="9">
