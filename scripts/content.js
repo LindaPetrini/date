@@ -74,6 +74,7 @@ const CONTENT = {
         "day",        // 28 - assemble a day
         "shades",     // 3
         "autocomplete", // 5
+        "babies",     // babies slider
         "ai",         // 14
         "toes",       // 7
         "untangle",   // untangle this
@@ -154,7 +155,7 @@ const CONTENT = {
     // =====================================================
     emotion: {
         title: "feeling or not?",
-        hint: "this one surprises most people — 6 quick rounds",
+        hint: "feeling or thinking? — 6 quick rounds",
         buttons: { yes: "yes, a feeling", no: "no, something else" },
         endText: "that's all of them",
         summary: "you got {correct} out of {total}. turns out a lot of what we call feelings are actually thoughts about what someone else did. most people find this weird at first.",
@@ -180,6 +181,32 @@ const CONTENT = {
             "the point of life is",
             "I never leave the house without"
         ]
+    },
+
+    // =====================================================
+    // TOY: BABIES
+    // =====================================================
+    babies: {
+        title: "how many?",
+        hint: "kids. the big question.",
+        labels: [
+            "not for me",
+            "maybe one",
+            "a pair",
+            "the sweet spot",
+            "go big",
+            "full house",
+            "are you serious"
+        ],
+        responses: {
+            0: "that's honest. we might not be a match on this one — but I appreciate you saying it straight.",
+            1: "one can be everything.",
+            2: "classic. there's a reason it's popular.",
+            3: "that's my number too.",
+            4: "I like your ambition.",
+            5: "I mean... I said 3-4 but you're making me reconsider.",
+            6: "I mean... I said 3-4 but you're making me reconsider."
+        }
     },
 
     // =====================================================
@@ -667,6 +694,7 @@ const CONTENT = {
         food: "cook, joy, ingredients — food is connection",
         untangle: "I played with it for about 30 seconds before accepting it's a knot",
         patience: "I watched the whole thing. it was hard not to touch it.",
+        babies: "3-4. this one isn't negotiable.",
         autocomplete: [
             "in the middle of the night I breath and chat with AI",
             "pleasure is paying attention to what feels good",

@@ -40,8 +40,8 @@ const Playground = {
         this.initDay();
         this.initEmbodiment();
         this.initPatterns();
+        this.initBabies();
         this.initUntangle();
-        this.initPatience();
         this.initShare();
         this.populateAnswerSections();
     },
@@ -86,7 +86,7 @@ const Playground = {
             embodiment: document.getElementById('toy-embodiment'),
             patterns: document.getElementById('toy-patterns'),
             untangle: document.getElementById('toy-untangle'),
-            patience: document.getElementById('toy-patience')
+            babies: document.getElementById('toy-babies')
         };
 
         // Reorder toys after the path hint
@@ -1780,6 +1780,48 @@ const Playground = {
     },
 
     // ========== Toy: Untangle This (3D Knot) ==========
+    // ========== Toy: Babies ==========
+    initBabies() {
+        const slider = document.getElementById('babies-slider');
+        const current = document.getElementById('babies-current');
+        const response = document.getElementById('babies-response');
+        const labelsContainer = document.getElementById('babies-labels');
+        const C = CONTENT.babies;
+
+        if (!slider || !C) return;
+
+        const updateBabies = (value) => {
+            const val = parseInt(value);
+            if (current) current.textContent = C.labels[val];
+            if (response) response.textContent = C.responses[val];
+
+            // Highlight the active label
+            if (labelsContainer) {
+                const labels = labelsContainer.querySelectorAll('span');
+                labels.forEach(label => {
+                    label.classList.toggle('active', parseInt(label.dataset.value) === val);
+                });
+            }
+        };
+
+        slider.addEventListener('input', () => {
+            updateBabies(slider.value);
+        });
+
+        slider.addEventListener('change', () => {
+            this.responses.babies = parseInt(slider.value);
+            this.saveResponses();
+        });
+
+        // Restore if saved
+        if (this.responses.babies !== undefined) {
+            slider.value = this.responses.babies;
+            updateBabies(this.responses.babies);
+        } else {
+            updateBabies(slider.value);
+        }
+    },
+
     initUntangle() {
         const wrap = document.getElementById('untangle-canvas-wrap');
         const doneBtn = document.getElementById('untangle-done');
@@ -1789,25 +1831,17 @@ const Playground = {
 
         if (!wrap || !doneBtn || !response) return;
 
-        // Check if already completed
+        // If already completed, hide the button but don't show inline response
+        // (saved response will appear in "your answers" section at the bottom)
         if (this.responses.untangle) {
-            const saved = this.responses.untangle;
-            if (saved.seconds < 10) {
-                response.textContent = C.responses.quick;
-            } else if (saved.seconds < 45) {
-                response.textContent = C.responses.medium;
-            } else {
-                response.textContent = C.responses.long.replace('{seconds}', saved.seconds);
-            }
             doneBtn.style.display = 'none';
-            // Still render the knot for visual appeal
         }
 
         if (typeof THREE === 'undefined') return;
 
         // Setup Three.js scene
-        const width = Math.min(wrap.clientWidth || 280, 320);
-        const height = width;
+        const width = 250;
+        const height = 250;
 
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 1000);
@@ -1819,7 +1853,7 @@ const Playground = {
         wrap.appendChild(renderer.domElement);
 
         // Create torus knot
-        const geometry = new THREE.TorusKnotGeometry(1.2, 0.35, 128, 32, 2, 3);
+        const geometry = new THREE.TorusKnotGeometry(2, 0.5, 200, 32, 7, 2);
         const material = new THREE.MeshStandardMaterial({
             color: 0x2D6A6A,
             roughness: 0.6,
@@ -1869,8 +1903,14 @@ const Playground = {
             isDragging = false;
         };
 
-        canvas.addEventListener('mousedown', (e) => onPointerDown(e.clientX, e.clientY));
-        canvas.addEventListener('mousemove', (e) => onPointerMove(e.clientX, e.clientY));
+        canvas.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            onPointerDown(e.clientX, e.clientY);
+        });
+        canvas.addEventListener('mousemove', (e) => {
+            e.preventDefault();
+            onPointerMove(e.clientX, e.clientY);
+        });
         canvas.addEventListener('mouseup', onPointerUp);
         canvas.addEventListener('mouseleave', onPointerUp);
 
@@ -1939,195 +1979,6 @@ const Playground = {
     },
 
     // ========== Toy: Patience Test (3D Knot) ==========
-    initPatience() {
-        const wrap = document.getElementById('patience-canvas-wrap');
-        const response = document.getElementById('patience-response');
-        const statusEl = document.getElementById('patience-status');
-        const C = CONTENT.patience;
-
-        if (!wrap || !response) return;
-
-        // Check if already completed
-        if (this.responses.patience) {
-            const saved = this.responses.patience;
-            if (saved.result === 'watched') {
-                response.textContent = C.responses.watched;
-            } else if (saved.result === 'touched_once') {
-                response.textContent = C.responses.touched_once;
-            } else {
-                response.textContent = C.responses.touched_many;
-            }
-            if (statusEl) statusEl.textContent = C.statusDone;
-            // Still render for visual
-        }
-
-        if (typeof THREE === 'undefined') return;
-
-        const width = Math.min(wrap.clientWidth || 280, 320);
-        const height = width;
-
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 1000);
-        camera.position.z = 5;
-
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(width, height);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        wrap.appendChild(renderer.domElement);
-
-        // Lighting
-        scene.add(new THREE.AmbientLight(0xffffff, 0.4));
-        const mainLight = new THREE.DirectionalLight(0xfff5e6, 1.0);
-        mainLight.position.set(5, 5, 5);
-        scene.add(mainLight);
-        const fillLight = new THREE.DirectionalLight(0xe6f0ff, 0.4);
-        fillLight.position.set(-3, 2, -3);
-        scene.add(fillLight);
-
-        // Create the knot mesh - start complex
-        const material = new THREE.MeshStandardMaterial({
-            color: 0x8B4A5E,
-            roughness: 0.6,
-            metalness: 0.1
-        });
-
-        let mesh = null;
-        let touchCount = 0;
-        let completed = !!this.responses.patience;
-        const duration = 60000; // 60 seconds to untangle
-        let animStart = Date.now();
-        let tangleProgress = 0; // 0 = complex, 1 = simple
-
-        // Generate knot geometry at a given complexity
-        const createKnotGeometry = (complexity) => {
-            // Interpolate torus knot parameters from complex to simple
-            // Complex: p=5, q=3 (cinquefoil-ish)
-            // Simple: p=2, q=1 (simple loop approaching a torus)
-            const p = Math.round(5 - complexity * 3); // 5 -> 2
-            const q = Math.round(3 - complexity * 2); // 3 -> 1
-            const pClamped = Math.max(2, p);
-            const qClamped = Math.max(1, q);
-            // Smooth radius transition
-            const radius = 1.0 + complexity * 0.3;
-            const tube = 0.25 + complexity * 0.1;
-            return new THREE.TorusKnotGeometry(radius, tube, 128, 32, pClamped, qClamped);
-        };
-
-        // Initial mesh
-        const initGeom = createKnotGeometry(0);
-        mesh = new THREE.Mesh(initGeom, material);
-        scene.add(mesh);
-
-        // Milestones for geometry changes (avoid constant rebuilds)
-        let lastGeomStage = 0;
-        const geomStages = [0, 0.35, 0.7, 1.0];
-
-        const resetAnimation = () => {
-            animStart = Date.now();
-            tangleProgress = 0;
-            lastGeomStage = 0;
-            // Rebuild at complex state
-            const newGeom = createKnotGeometry(0);
-            mesh.geometry.dispose();
-            mesh.geometry = newGeom;
-        };
-
-        // Track interactions
-        const canvas = renderer.domElement;
-
-        const onInteraction = () => {
-            if (completed) return;
-            touchCount++;
-            if (touchCount <= 3) {
-                // Reset the animation - knot tangles back up
-                resetAnimation();
-                if (statusEl) statusEl.textContent = 'it reset. try not touching it.';
-            } else {
-                if (statusEl) statusEl.textContent = 'it keeps resetting when you touch it...';
-                resetAnimation();
-            }
-        };
-
-        canvas.addEventListener('mousedown', onInteraction);
-        canvas.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            onInteraction();
-        }, { passive: false });
-
-        const finishPatience = (result) => {
-            if (completed) return;
-            completed = true;
-            if (result === 'watched') {
-                response.textContent = C.responses.watched;
-            } else if (result === 'touched_once') {
-                response.textContent = C.responses.touched_once;
-            } else {
-                response.textContent = C.responses.touched_many;
-            }
-            if (statusEl) statusEl.textContent = C.statusDone;
-            this.responses.patience = { result, touches: touchCount };
-            this.saveResponses();
-        };
-
-        const animate = () => {
-            requestAnimationFrame(animate);
-
-            if (!completed) {
-                const elapsed = Date.now() - animStart;
-                tangleProgress = Math.min(elapsed / duration, 1.0);
-
-                // Update geometry at stage transitions
-                const currentStage = geomStages.findIndex((s, i) => {
-                    const next = geomStages[i + 1];
-                    return next === undefined ? true : tangleProgress < next;
-                });
-                if (currentStage > lastGeomStage) {
-                    lastGeomStage = currentStage;
-                    const newGeom = createKnotGeometry(geomStages[currentStage]);
-                    mesh.geometry.dispose();
-                    mesh.geometry = newGeom;
-                }
-
-                // Scale transition to make it smoother visually
-                const scale = 1.0 + tangleProgress * 0.15;
-                mesh.scale.set(scale, scale, scale);
-
-                // Color transition: burgundy -> petrol as it untangles
-                const r = 0x8B / 255 + (0x2D / 255 - 0x8B / 255) * tangleProgress;
-                const g = 0x4A / 255 + (0x6A / 255 - 0x4A / 255) * tangleProgress;
-                const b = 0x5E / 255 + (0x6A / 255 - 0x5E / 255) * tangleProgress;
-                material.color.setRGB(r, g, b);
-
-                // Update status
-                if (!completed && statusEl && tangleProgress < 1) {
-                    const pct = Math.floor(tangleProgress * 100);
-                    if (touchCount === 0) {
-                        statusEl.textContent = `untangling... ${pct}%`;
-                    }
-                }
-
-                // Completed untangling
-                if (tangleProgress >= 1.0) {
-                    let result;
-                    if (touchCount === 0) {
-                        result = 'watched';
-                    } else if (touchCount === 1) {
-                        result = 'touched_once';
-                    } else {
-                        result = 'touched_many';
-                    }
-                    finishPatience(result);
-                }
-            }
-
-            // Auto-rotate
-            mesh.rotation.y += 0.005;
-            mesh.rotation.x += 0.002;
-            renderer.render(scene, camera);
-        };
-        animate();
-    },
-
     // ========== Share Results (Contact Form) ==========
     initShare() {
         const toggleBtn = document.getElementById('share-toggle');
@@ -2472,8 +2323,9 @@ const Playground = {
             lines.push(`untangle: ${r.untangle.seconds}s, ${r.untangle.interactions} interactions`);
         }
 
-        if (r.patience) {
-            lines.push(`patience test: ${r.patience.result} (${r.patience.touches} touches)`);
+        if (r.babies !== undefined) {
+            const babyLabels = CONTENT.babies ? CONTENT.babies.labels : [];
+            lines.push(`babies: ${babyLabels[r.babies] || r.babies}`);
         }
 
         // Autocomplete responses
@@ -2536,7 +2388,10 @@ const Playground = {
             if (r.embodiment) addAnswer('learning physical things', r.embodiment);
             if (r.patterns) addAnswer('meeting someone interesting', r.patterns);
             if (r.untangle) addAnswer('untangle', `${r.untangle.seconds}s, ${r.untangle.interactions} interactions`);
-            if (r.patience) addAnswer('patience test', `${r.patience.result} (${r.patience.touches} touches)`);
+            if (r.babies !== undefined) {
+                const babyLabels = CONTENT.babies ? CONTENT.babies.labels : [];
+                addAnswer('babies', babyLabels[r.babies] || r.babies);
+            }
             if (r.day && r.day.morning) {
                 const dayParts = [];
                 if (r.day.morning) dayParts.push(`morning: ${r.day.morning}`);
@@ -2586,8 +2441,8 @@ const Playground = {
             if (m.therapy) addAnswer('therapy', m.therapy);
             if (m.god) addAnswer('god/source', m.god);
             if (m.food) addAnswer('food', m.food);
+            if (m.babies) addAnswer('babies', m.babies);
             if (m.untangle) addAnswer('untangle', m.untangle);
-            if (m.patience) addAnswer('patience test', m.patience);
             if (m.autocomplete && m.autocomplete.length > 0) {
                 m.autocomplete.forEach((answer, i) => {
                     const prompts = [

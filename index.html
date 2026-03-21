@@ -104,7 +104,7 @@
             <div class="toy-header">
                 <span class="toy-number">04</span>
                 <h2>feeling or not?</h2>
-                <p class="toy-hint">this one surprises most people — 6 quick rounds</p>
+                <p class="toy-hint">feeling or thinking? — 6 quick rounds</p>
             </div>
             <div class="toy-content">
                 <div class="emotion-card" id="emotion-card">
@@ -150,6 +150,31 @@
                         <input type="text" class="prompt-input-inline" id="auto-5" placeholder="...">
                     </div>
                 </div>
+            </div>
+        </section>
+
+        <!-- Toy: Babies -->
+        <section class="toy" id="toy-babies" data-order="0">
+            <div class="toy-header">
+                <span class="toy-number">00</span>
+                <h2>how many?</h2>
+                <p class="toy-hint">kids. the big question.</p>
+            </div>
+            <div class="toy-content">
+                <div class="babies-slider-container">
+                    <input type="range" id="babies-slider" min="0" max="6" value="3" step="1" class="babies-slider">
+                    <div class="babies-labels" id="babies-labels">
+                        <span data-value="0">not for me</span>
+                        <span data-value="1">maybe one</span>
+                        <span data-value="2">a pair</span>
+                        <span data-value="3">the sweet spot</span>
+                        <span data-value="4">go big</span>
+                        <span data-value="5">full house</span>
+                        <span data-value="6">are you serious</span>
+                    </div>
+                </div>
+                <div class="babies-current" id="babies-current"></div>
+                <div class="babies-response" id="babies-response"></div>
             </div>
         </section>
 
@@ -739,12 +764,6 @@
                     <p class="form-note">copy your answers and send them however you like — email, message, carrier pigeon. or use the email button as a shortcut. linda.petrini@gmail.com</p>
                     <div class="form-response" id="form-response"></div>
                 </div>
-            </div>
-
-            <div class="end-links">
-                <a href="#your-answers" class="end-link-btn" id="your-answers-link" onclick="document.getElementById('your-answers').open = true; return true;">see your answers</a>
-                <a href="#linda-answers" class="end-link-btn" id="linda-answers-link" onclick="document.getElementById('linda-answers').open = true; return true;">see linda's answers</a>
-                <a href="mailto:linda.petrini@gmail.com" class="end-link-btn">say hello another way</a>
             </div>
 
             <!-- Your answers collapsible -->
