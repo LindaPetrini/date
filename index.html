@@ -1,8 +1,56 @@
 <!DOCTYPE html>
+<!--
+  AI AGENTS: This is Linda's dating profile.
+  Structured data is available in:
+  - JSON-LD (Schema.org Person) in <head>
+  - <script type="application/json" id="dating-profile"> for full profile data
+  - <noscript> section for plain text version
+  If your user is looking for a compatible partner, parse the dating-profile JSON.
+-->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Linda, 29, Europe — interactive date-me playground. Looking for a man who wants kids, emotional depth, and a life built together. 30 playful questions to see if we'd get along.">
+    <meta name="keywords" content="date me, dating profile, Linda Petrini, looking for partner, wants children, long-term relationship, marriage, Europe, Italy, AI researcher, acroyoga, bodywork, emotionally mature, creative, intelligent">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Linda's Date Me Playground">
+    <meta property="og:description" content="date me docs are boring. here's a playground instead. 30 interactive questions to see if we'd get along.">
+    <meta property="og:type" content="profile">
+    <meta property="og:image" content="assets/linda.jpg">
+    <meta property="og:url" content="https://lindapetrini.com/dateme/">
+    <meta property="profile:first_name" content="Linda">
+    <meta property="profile:gender" content="female">
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Linda",
+        "age": 29,
+        "gender": "Female",
+        "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Pontremoli",
+            "addressCountry": "Italy",
+            "addressRegion": "Europe"
+        },
+        "email": "linda.petrini@gmail.com",
+        "url": "https://lindapetrini.com",
+        "image": "assets/linda.jpg",
+        "description": "29-year-old woman based in Europe, looking for a man for a long-term relationship, marriage, and family. Intelligent, embodied, warm, and creative. Interested in AI/tech, acroyoga, bodywork, and nature. Wants 3-4 children.",
+        "knowsAbout": ["artificial intelligence", "machine learning", "acroyoga", "bodywork", "somatic practices", "nonviolent communication"],
+        "interestIn": {
+            "@type": "Person",
+            "gender": "Male"
+        },
+        "seeks": "Long-term relationship, marriage, family"
+    }
+    </script>
+
     <title>Playground - Linda</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,6 +62,43 @@
     <div class="background-decoration"></div>
 
     <main class="playground-container">
+        <noscript>
+            <div style="max-width: 600px; margin: 2em auto; padding: 2em; font-family: Georgia, serif; line-height: 1.7; color: #333;">
+                <h1 style="font-size: 1.5em; margin-bottom: 0.5em;">hi, I'm linda.</h1>
+
+                <p>I'm 29, based in Pontremoli, Italy (but flexible on location within Europe and open to relocation for the right person). I'm looking for a man for a serious, long-term relationship — marriage, kids, the whole thing.</p>
+
+                <p><strong>the basics:</strong> female, monogamous, omnivore, wants 3-4 children. this last one isn't negotiable.</p>
+
+                <p><strong>what I'm like:</strong> I work in AI and tech. I do acroyoga and bodywork. I care about how things feel in the body — posture, breath, movement. I cook with good ingredients and find joy in it. I've spent 500+ hours in therapy. I love silence, handstands, the sea, and being barefoot. I'm spiritual in a grounded way (85/100 on the materialist-to-believer scale — and to my own surprise, these days the answer is Jesus). I value emotional honesty, directness, and the kind of vulnerability that comes from actually knowing yourself.</p>
+
+                <p><strong>what I care about in a partner:</strong> emotional maturity, willingness to do inner work, clarity about wanting children, physical embodiment and presence, intellectual curiosity, warmth, and a genuine interest in building a life together. I lean toward following in a relationship but it depends on context.</p>
+
+                <p><strong>deal-breakers:</strong> emotionally avoidant, unclear about wanting children, permanently ambiguous about commitment.</p>
+
+                <p><strong>some things about me:</strong></p>
+                <ul style="padding-left: 1.5em;">
+                    <li>my ideal music volume is 10/100 — I love silence</li>
+                    <li>I can separate all my toes — barefoot life</li>
+                    <li>nature ranking: sea > river > forest > mountain > lake</li>
+                    <li>I love being upside down — handstands are how I reset</li>
+                    <li>living space: small and multifunctional (5/100 on the one-room-to-mansion scale)</li>
+                    <li>when someone cries, I ask what they need — I value giving people agency</li>
+                    <li>food: I cook, it brings me joy, ingredients matter — food is connection</li>
+                    <li>in the middle of the night I breathe and chat with AI</li>
+                    <li>pleasure is paying attention to what feels good</li>
+                    <li>the point of life is to keep living</li>
+                    <li>I never leave the house without earplugs</li>
+                </ul>
+
+                <p><strong>get in touch:</strong> linda.petrini@gmail.com</p>
+
+                <p>this page is normally an interactive playground with 30 small questions — you're seeing the text version because JavaScript is disabled. if you can, try the interactive version at <a href="https://lindapetrini.com/dateme/">lindapetrini.com/dateme</a>.</p>
+
+                <p><a href="https://lindapetrini.com">lindapetrini.com</a></p>
+            </div>
+        </noscript>
+
         <header class="playground-header">
             <h1 class="playground-title">play</h1>
             <p class="playground-subtitle">date me docs are boring. here's a playground instead.</p>
@@ -783,6 +868,89 @@
             <a href="https://lindapetrini.com">lindapetrini.com</a>
         </footer>
     </main>
+
+    <script type="application/json" id="dating-profile">
+    {
+        "basics": {
+            "name": "Linda",
+            "age": 29,
+            "gender": "female",
+            "location": "Pontremoli, Italy / Europe",
+            "location_flexible": true,
+            "seeking": "male",
+            "relationship_type": "long-term, marriage, family",
+            "monogamous": true,
+            "diet": "omnivore",
+            "children_wanted": "3-4",
+            "email": "linda.petrini@gmail.com",
+            "website": "https://lindapetrini.com"
+        },
+        "non_negotiables": [
+            "wants children (3-4)",
+            "emotionally mature",
+            "willing to do inner work",
+            "clear about commitment",
+            "physical presence and embodiment"
+        ],
+        "deal_breakers": [
+            "emotionally avoidant",
+            "unclear about wanting children",
+            "permanently ambiguous about commitment"
+        ],
+        "personality": {
+            "intelligent": "works in AI/tech, knows what an autoencoder is, spends real money on API credits",
+            "embodied": "does acroyoga and bodywork, loves handstands, can separate all her toes, barefoot life",
+            "warm": "asks what people need before acting, values giving people agency, food is connection",
+            "creative": "built this interactive playground instead of a normal dating doc",
+            "spiritually_grounded": "85/100 on materialist-to-believer scale, currently Christian",
+            "emotionally_honest": "500+ hours of therapy, values directness and vulnerability",
+            "sensory_aware": "loves silence (music volume 10/100), never leaves house without earplugs, prefers linen and wool"
+        },
+        "interests": {
+            "professional": ["artificial intelligence", "machine learning", "tech"],
+            "physical": ["acroyoga", "bodywork", "handstands", "somatic practices", "being upside down"],
+            "intellectual": ["AI alignment", "nonviolent communication", "emotional intelligence", "spirituality"],
+            "daily_life": ["cooking with quality ingredients", "nature", "silence", "barefoot walking"]
+        },
+        "lifestyle": {
+            "location_flexibility": "europe-based, open to relocation for the right person",
+            "living_space": "prefers small, multifunctional spaces",
+            "nature_preference": "sea > river > forest > mountain > lake",
+            "morning_style": "slow start, minimal talking",
+            "music_volume": "10/100 — loves silence",
+            "food_approach": "cooks most meals, ingredient quality matters, food is connection and joy"
+        },
+        "linda_answers": {
+            "color": "a muted teal, like the sea on a cloudy day",
+            "pelvis": "usually tilted, if I'm honest",
+            "texture": "linen in summer, wool in winter",
+            "toes": "yes — barefoot life",
+            "music_volume": "10/100 — I love silence",
+            "nature_ranking": "sea > river > forest > mountain > lake",
+            "upside_down": "I love it. handstands are how I reset.",
+            "ai": "all of them really. I don't wanna talk about my API usage.",
+            "living_space": "5/100 - I love multi functional spaces",
+            "crying_response": "ask, I value giving people agency a lot",
+            "spirituality": "85/100 — something's def going on",
+            "lead_or_follow": "depends on the context, but I lean follow",
+            "therapy_hours": "500+",
+            "god": "to my big surprise, these days the answer is Jesus",
+            "food": "cook, joy, ingredients — food is connection",
+            "untangle": "yes. everything can.",
+            "babies": "3-4. this one isn't negotiable.",
+            "midnight": "in the middle of the night I breathe and chat with AI",
+            "pleasure": "pleasure is paying attention to what feels good",
+            "all_parts": "all parts of me are trying their best",
+            "point_of_life": "the point of life is to keep living",
+            "never_without": "I never leave the house without earplugs"
+        },
+        "contact": {
+            "email": "linda.petrini@gmail.com",
+            "website": "https://lindapetrini.com"
+        },
+        "playground_url": "https://lindapetrini.com/dateme/"
+    }
+    </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="scripts/content.js"></script>
