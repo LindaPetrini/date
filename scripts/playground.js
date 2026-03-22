@@ -1836,6 +1836,18 @@ const Playground = {
             response.textContent = C.responses[this.responses.untangle] || '';
         }
 
+        // Button click handlers (attach before THREE check so buttons always work)
+        buttonsDiv.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const value = btn.dataset.value;
+                response.textContent = C.responses[value];
+                this.responses.untangle = value;
+                this.saveResponses();
+                buttonsDiv.style.display = 'none';
+                this.populateAnswerSections();
+            });
+        });
+
         if (typeof THREE === 'undefined') return;
 
         // Setup Three.js scene — small 180x180 canvas
@@ -1843,8 +1855,8 @@ const Playground = {
         const height = 180;
 
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 1000);
-        camera.position.z = 4.2;
+        const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 1000);
+        camera.position.z = 10;
 
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(width, height);
@@ -1852,7 +1864,7 @@ const Playground = {
         wrap.appendChild(renderer.domElement);
 
         // Create complex torus knot — high p,q for visual intricacy
-        const geometry = new THREE.TorusKnotGeometry(1.4, 0.35, 300, 32, 11, 7);
+        const geometry = new THREE.TorusKnotGeometry(2.2, 0.18, 300, 20, 5, 3);
         const material = new THREE.MeshStandardMaterial({
             color: 0x2D6A6A,
             roughness: 0.5,
@@ -1869,18 +1881,6 @@ const Playground = {
         const fillLight = new THREE.DirectionalLight(0xe6f0ff, 0.4);
         fillLight.position.set(-3, 2, -3);
         scene.add(fillLight);
-
-        // Button click handlers
-        buttonsDiv.querySelectorAll('button').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const value = btn.dataset.value;
-                response.textContent = C.responses[value];
-                this.responses.untangle = value;
-                this.saveResponses();
-                buttonsDiv.style.display = 'none';
-                this.populateAnswerSections();
-            });
-        });
 
         // Auto-rotation only, no interaction
         const animate = () => {

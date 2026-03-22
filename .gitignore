@@ -2,3 +2,16 @@
 *.log
 node_modules/
 .env
+.gstack/
+.claude/
+
+# Private strategy docs — do not publish
+project-plan.md
+compatible-men-research.md
+dating-doc.md
+findable-strategy.md
+first-call-script.md
+hinge-screening-playbook.md
+reddit-posts-ai-findable.md
+specific-leads-board-*.md
+index.html.bak
