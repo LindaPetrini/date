@@ -49,7 +49,7 @@ const CONTENT = {
         main: "that's all for now.",
         note: "if you made it here, maybe we'd get along.",
         shareButton: "share your answers with me",
-        copyHint: "copy and paste this into an email to linda.petrini@gmail.com",
+        copyHint: "copy and paste this into an email to lindapetrini@gmail.com",
         backLink: "or say hello another way",
 
         // Link to your own answers

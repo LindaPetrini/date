@@ -1958,7 +1958,7 @@ const Playground = {
             const subject = 'Playground Answers';
             const body = `Email: ${email}\n\nMessage:\n${message}\n\n=== Answers ===\n${answers}`;
 
-            window.location.href = `mailto:linda.petrini@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            window.location.href = `mailto:lindapetrini@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
             responseDiv.className = 'form-response success';
             responseDiv.textContent = "opening your email client...";
