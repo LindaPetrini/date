@@ -368,14 +368,20 @@ const Playground = {
         const checkBtn = document.getElementById('check-shades');
         const result = document.getElementById('shade-result');
 
-        // Generate random grey shades
+        // Generate colors with varying hue but similar saturation/lightness
         const generateShades = () => {
             const shades = [];
+            // Pick 5 hues spread across 0-360
+            const usedHues = new Set();
             for (let i = 0; i < 5; i++) {
-                const lightness = 20 + Math.random() * 60; // 20-80%
+                let hue;
+                do {
+                    hue = Math.floor(Math.random() * 360);
+                } while ([...usedHues].some(h => Math.abs(h - hue) < 40));
+                usedHues.add(hue);
                 shades.push({
-                    lightness,
-                    color: `hsl(0, 0%, ${lightness}%)`
+                    hue,
+                    color: `hsl(${hue}, 55%, 55%)`
                 });
             }
             return shades;
@@ -413,10 +419,10 @@ const Playground = {
         render();
 
         checkBtn.addEventListener('click', () => {
-            // Check if sorted by lightness (dark to light)
+            // Check if sorted by hue (warm to cool, lowest to highest)
             let correct = true;
             for (let i = 1; i < shades.length; i++) {
-                if (shades[i].lightness < shades[i - 1].lightness) {
+                if (shades[i].hue < shades[i - 1].hue) {
                     correct = false;
                     break;
                 }

@@ -140,8 +140,8 @@ const CONTENT = {
     // TOY 3: SHADES
     // =====================================================
     shades: {
-        title: "order these by brightness",
-        hint: "darkest to lightest. drag or click to swap.",
+        title: "order these by hue",
+        hint: "warmest to coolest. click to swap.",
         button: "check",
         responses: {
             correct: "perfect. you have good eyes.",
