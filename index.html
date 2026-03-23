@@ -689,13 +689,20 @@
             <div class="toy-header">
                 <span class="toy-number">28</span>
                 <h2>assemble a good day</h2>
-                <p class="toy-hint">drag activities to your timetable, or add your own</p>
+                <p class="toy-hint">tap activities to add them to a time slot. tap × to remove. add multiple per slot.</p>
             </div>
             <div class="toy-content">
                 <div class="day-builder">
                     <!-- Left: Activity pool -->
                     <div class="activity-pool">
                         <h3>activities</h3>
+                        <div class="phase-selector" id="phase-selector">
+                            <span class="phase-selector-label">adding to:</span>
+                            <button class="phase-btn active" data-phase="morning">morning</button>
+                            <button class="phase-btn" data-phase="afternoon">afternoon</button>
+                            <button class="phase-btn" data-phase="evening">evening</button>
+                            <button class="phase-btn" data-phase="night">night</button>
+                        </div>
                         <div id="activity-list" class="activity-list"></div>
                         <div class="add-activity">
                             <input type="text" id="new-activity-input" placeholder="add your own..." maxlength="50">

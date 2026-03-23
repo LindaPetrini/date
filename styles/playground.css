@@ -1199,6 +1199,52 @@
     margin-bottom: 0.4rem;
 }
 
+/* Phase selector */
+.phase-selector {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.phase-selector-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--color-petrol);
+    opacity: 0.6;
+    text-transform: uppercase;
+}
+
+.phase-btn {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    padding: 0.25rem 0.5rem;
+    background: transparent;
+    border: 1px solid var(--color-rosa-light);
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--color-text);
+    transition: all 0.2s;
+}
+
+.phase-btn:hover {
+    border-color: var(--color-petrol);
+}
+
+.phase-btn.active {
+    background: var(--color-petrol);
+    color: white;
+    border-color: var(--color-petrol);
+}
+
+/* Activity tap feedback */
+.activity-item.just-added {
+    background: rgba(45, 106, 106, 0.2);
+    border-color: var(--color-petrol);
+    transform: scale(0.97);
+}
+
 .time-drop-zone {
     min-height: 36px;
     border: 2px dashed var(--color-rosa-light);
@@ -1206,7 +1252,9 @@
     padding: 0.4rem;
     transition: all 0.2s;
     display: flex;
-    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    align-items: flex-start;
 }
 
 .time-drop-zone.drag-over {
@@ -1217,12 +1265,50 @@
 .time-drop-zone.filled {
     border-style: solid;
     border-color: var(--color-petrol);
-    background: rgba(45, 106, 106, 0.1);
+    background: rgba(45, 106, 106, 0.05);
 }
 
 .time-drop-zone .activity-item {
     width: 100%;
     cursor: default;
+}
+
+/* Slot chips (items in drop zones) */
+.slot-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    padding: 0.3rem 0.5rem;
+    background: rgba(45, 106, 106, 0.12);
+    border: 1px solid var(--color-petrol);
+    border-radius: 4px;
+    color: var(--color-text);
+    max-width: 100%;
+}
+
+.slot-chip span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.slot-chip-remove {
+    background: none;
+    border: none;
+    color: var(--color-burgundy);
+    cursor: pointer;
+    font-size: 0.85rem;
+    line-height: 1;
+    padding: 0 0.1rem;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+    flex-shrink: 0;
+}
+
+.slot-chip-remove:hover {
+    opacity: 1;
 }
 
 .day-response {
@@ -1237,6 +1323,9 @@
 @media (max-width: 580px) {
     .day-builder {
         grid-template-columns: 1fr;
+    }
+    .slot-chip-remove {
+        opacity: 0.7;
     }
 }
 

@@ -907,35 +907,88 @@ const Playground = {
         }
     },
 
-    // ========== Toy 28: Assemble a Day (Draggable) ==========
+    // ========== Toy 28: Assemble a Day (Multi-item slots) ==========
     initDay() {
         const activityList = document.getElementById('activity-list');
         const newActivityInput = document.getElementById('new-activity-input');
         const addActivityBtn = document.getElementById('add-activity-btn');
         const response = document.getElementById('day-response');
+        const phaseSelector = document.getElementById('phase-selector');
         const C = CONTENT.day;
 
         if (!C || !activityList) return;
 
+        let selectedPhase = 'morning';
+
+        // Migrate old single-value format to arrays
+        const migrateOldFormat = (data) => {
+            ['morning', 'afternoon', 'evening', 'night'].forEach(phase => {
+                if (data[phase] && !Array.isArray(data[phase])) {
+                    data[phase] = [data[phase]];
+                }
+            });
+            return data;
+        };
+
         // Initialize responses storage
         if (!this.responses.day) {
             this.responses.day = {
-                morning: null,
-                afternoon: null,
-                evening: null,
-                night: null,
+                morning: [],
+                afternoon: [],
+                evening: [],
+                night: [],
                 customActivities: []
             };
         } else {
-            // Ensure customActivities exists for old saves
+            migrateOldFormat(this.responses.day);
             if (!this.responses.day.customActivities) {
                 this.responses.day.customActivities = [];
             }
+            ['morning', 'afternoon', 'evening', 'night'].forEach(phase => {
+                if (!this.responses.day[phase]) this.responses.day[phase] = [];
+            });
         }
 
-        let draggedElement = null;
+        // Phase selector buttons
+        if (phaseSelector) {
+            const phaseBtns = phaseSelector.querySelectorAll('.phase-btn');
+            phaseBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    phaseBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    selectedPhase = btn.dataset.phase;
+                });
+            });
+        }
 
-        // Render initial activities
+        // Add activity to a phase
+        const addToPhase = (phase, activity) => {
+            if (!this.responses.day[phase]) this.responses.day[phase] = [];
+            if (this.responses.day[phase].includes(activity)) return;
+            this.responses.day[phase].push(activity);
+            this.saveResponses();
+            renderSlots();
+            checkCompletion();
+        };
+
+        // Remove activity from a phase
+        const removeFromPhase = (phase, activity) => {
+            if (!this.responses.day[phase]) return;
+            this.responses.day[phase] = this.responses.day[phase].filter(a => a !== activity);
+            this.saveResponses();
+            renderSlots();
+            checkCompletion();
+        };
+
+        // Check if all slots have at least one item
+        const checkCompletion = () => {
+            const allFilled = ['morning', 'afternoon', 'evening', 'night'].every(
+                p => this.responses.day[p] && this.responses.day[p].length > 0
+            );
+            response.textContent = allFilled ? C.response : '';
+        };
+
+        // Render activity pool
         const renderActivities = () => {
             activityList.innerHTML = '';
             const allActivities = [...C.activities, ...(this.responses.day.customActivities || [])];
@@ -945,35 +998,83 @@ const Playground = {
                 const item = document.createElement('div');
                 item.className = 'activity-item' + (isCustom ? ' custom' : '');
                 item.draggable = true;
-                item.textContent = activity;
                 item.dataset.activity = activity;
 
-                // Add remove button for custom activities
+                const textSpan = document.createElement('span');
+                textSpan.className = 'activity-text';
+                textSpan.textContent = activity;
+                item.appendChild(textSpan);
+
                 if (isCustom) {
                     const removeBtn = document.createElement('button');
                     removeBtn.className = 'remove-activity';
-                    removeBtn.textContent = '×';
+                    removeBtn.textContent = '\u00d7';
                     removeBtn.onclick = (e) => {
                         e.stopPropagation();
+                        ['morning', 'afternoon', 'evening', 'night'].forEach(phase => {
+                            if (this.responses.day[phase]) {
+                                this.responses.day[phase] = this.responses.day[phase].filter(a => a !== activity);
+                            }
+                        });
                         this.responses.day.customActivities = this.responses.day.customActivities.filter(a => a !== activity);
                         this.saveResponses();
                         renderActivities();
+                        renderSlots();
+                        checkCompletion();
                     };
                     item.appendChild(removeBtn);
                 }
 
-                // Drag events
-                item.addEventListener('dragstart', (e) => {
-                    draggedElement = item;
-                    item.classList.add('dragging');
+                // Tap to add to selected phase
+                item.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('remove-activity')) return;
+                    addToPhase(selectedPhase, activity);
+                    item.classList.add('just-added');
+                    setTimeout(() => item.classList.remove('just-added'), 300);
                 });
 
+                // Drag events (desktop)
+                item.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', activity);
+                    item.classList.add('dragging');
+                });
                 item.addEventListener('dragend', () => {
                     item.classList.remove('dragging');
-                    draggedElement = null;
                 });
 
                 activityList.appendChild(item);
+            });
+        };
+
+        // Render all drop zone slots
+        const renderSlots = () => {
+            const zones = document.querySelectorAll('.time-drop-zone');
+            zones.forEach(zone => {
+                const phase = zone.dataset.phase;
+                const items = this.responses.day[phase] || [];
+                zone.innerHTML = '';
+
+                items.forEach(activity => {
+                    const chip = document.createElement('div');
+                    chip.className = 'slot-chip';
+
+                    const text = document.createElement('span');
+                    text.textContent = activity;
+                    chip.appendChild(text);
+
+                    const removeBtn = document.createElement('button');
+                    removeBtn.className = 'slot-chip-remove';
+                    removeBtn.textContent = '\u00d7';
+                    removeBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        removeFromPhase(phase, activity);
+                    });
+                    chip.appendChild(removeBtn);
+
+                    zone.appendChild(chip);
+                });
+
+                zone.classList.toggle('filled', items.length > 0);
             });
         };
 
@@ -996,7 +1097,7 @@ const Playground = {
             if (e.key === 'Enter') addCustomActivity();
         });
 
-        // Setup drop zones
+        // Setup drop zones for drag-and-drop (desktop)
         const dropZones = document.querySelectorAll('.time-drop-zone');
         dropZones.forEach(zone => {
             zone.addEventListener('dragover', (e) => {
@@ -1011,86 +1112,38 @@ const Playground = {
             zone.addEventListener('drop', (e) => {
                 e.preventDefault();
                 zone.classList.remove('drag-over');
+                const activity = e.dataTransfer.getData('text/plain');
+                if (activity) {
+                    addToPhase(zone.dataset.phase, activity);
+                }
+            });
 
-                if (draggedElement) {
-                    const phase = zone.dataset.phase;
-                    const activity = draggedElement.dataset.activity;
-
-                    // Clear existing activity in this slot
-                    zone.innerHTML = '';
-
-                    // Create non-draggable copy for the slot
-                    const slotItem = document.createElement('div');
-                    slotItem.className = 'activity-item';
-                    slotItem.textContent = activity;
-                    zone.appendChild(slotItem);
-
-                    zone.classList.add('filled');
-
-                    // Save
-                    this.responses.day[phase] = activity;
-                    this.saveResponses();
-
-                    // Check if all slots filled
-                    const allFilled = ['morning', 'afternoon', 'evening', 'night'].every(
-                        p => this.responses.day[p]
-                    );
-                    if (allFilled) {
-                        response.textContent = C.response;
-                    }
+            // Tap on empty drop zone to select it as target phase
+            zone.addEventListener('click', (e) => {
+                if (e.target.classList.contains('slot-chip-remove')) return;
+                if (e.target.closest('.slot-chip')) return;
+                const phase = zone.dataset.phase;
+                selectedPhase = phase;
+                if (phaseSelector) {
+                    const phaseBtns = phaseSelector.querySelectorAll('.phase-btn');
+                    phaseBtns.forEach(b => b.classList.remove('active'));
+                    const btn = phaseSelector.querySelector(`.phase-btn[data-phase="${phase}"]`);
+                    if (btn) btn.classList.add('active');
                 }
             });
         });
-
-        // Initial render
-        renderActivities();
 
         // Touch support for dragging activities to drop zones
         this.addTouchDragToDropZones(activityList, '.activity-item', dropZones, (zone, item) => {
             const phase = zone.dataset.phase;
             const activity = item.dataset.activity;
-
-            zone.innerHTML = '';
-            const slotItem = document.createElement('div');
-            slotItem.className = 'activity-item';
-            slotItem.textContent = activity;
-            zone.appendChild(slotItem);
-            zone.classList.add('filled');
-
-            this.responses.day[phase] = activity;
-            this.saveResponses();
-
-            const allFilled = ['morning', 'afternoon', 'evening', 'night'].every(
-                p => this.responses.day[p]
-            );
-            if (allFilled) {
-                response.textContent = C.response;
-            }
+            addToPhase(phase, activity);
         });
 
-        // Restore saved state
-        if (this.responses.day) {
-            ['morning', 'afternoon', 'evening', 'night'].forEach(phase => {
-                const activity = this.responses.day[phase];
-                if (activity) {
-                    const zone = document.querySelector(`.time-drop-zone[data-phase="${phase}"]`);
-                    if (zone) {
-                        const slotItem = document.createElement('div');
-                        slotItem.className = 'activity-item';
-                        slotItem.textContent = activity;
-                        zone.appendChild(slotItem);
-                        zone.classList.add('filled');
-                    }
-                }
-            });
-
-            const allFilled = ['morning', 'afternoon', 'evening', 'night'].every(
-                p => this.responses.day[p]
-            );
-            if (allFilled) {
-                response.textContent = C.response;
-            }
-        }
+        // Initial render
+        renderActivities();
+        renderSlots();
+        checkCompletion();
     },
 
     // ========== Toy 29: Embodiment ==========
@@ -2312,12 +2365,15 @@ const Playground = {
                 const babyLabels = CONTENT.babies ? CONTENT.babies.labels : [];
                 addAnswer('babies', babyLabels[r.babies] || r.babies);
             }
-            if (r.day && r.day.morning) {
+            if (r.day) {
                 const dayParts = [];
-                if (r.day.morning) dayParts.push(`morning: ${r.day.morning}`);
-                if (r.day.afternoon) dayParts.push(`afternoon: ${r.day.afternoon}`);
-                if (r.day.evening) dayParts.push(`evening: ${r.day.evening}`);
-                if (r.day.night) dayParts.push(`night: ${r.day.night}`);
+                const fmt = (arr) => Array.isArray(arr) ? arr.join(', ') : arr;
+                ['morning', 'afternoon', 'evening', 'night'].forEach(phase => {
+                    const val = r.day[phase];
+                    if (val && (Array.isArray(val) ? val.length > 0 : true)) {
+                        dayParts.push(`${phase}: ${fmt(val)}`);
+                    }
+                });
                 if (dayParts.length > 0) addAnswer('perfect day', dayParts.join(' | '));
             }
 
