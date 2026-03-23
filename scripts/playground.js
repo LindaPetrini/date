@@ -368,21 +368,30 @@ const Playground = {
         const checkBtn = document.getElementById('check-shades');
         const result = document.getElementById('shade-result');
 
-        // Generate colors with varying hue but similar saturation/lightness
+        // Generate colors from pink/rose through red to green/teal
         const generateShades = () => {
             const shades = [];
-            // Pick 5 hues spread across 0-360
-            const usedHues = new Set();
+            // Range: hue 330 (pink) wrapping through 0 (red) to 150 (green/teal)
+            // Unwrapped: 330 to 510 (510 mod 360 = 150)
+            const startHue = 330;
+            const totalRange = 180; // 330 to 510
             for (let i = 0; i < 5; i++) {
-                let hue;
-                do {
-                    hue = Math.floor(Math.random() * 360);
-                } while ([...usedHues].some(h => Math.abs(h - hue) < 40));
-                usedHues.add(hue);
+                const base = startHue + (totalRange / 4) * i; // evenly spaced
+                const offset = (Math.random() - 0.5) * 20; // ±10 random jitter
+                const sortKey = base + offset;
+                const hue = ((sortKey % 360) + 360) % 360;
+                const sat = 50 + Math.random() * 10; // 50-60%
+                const lit = 55 + Math.random() * 10; // 55-65%
                 shades.push({
                     hue,
-                    color: `hsl(${hue}, 55%, 55%)`
+                    sortKey,
+                    color: `hsl(${hue}, ${sat.toFixed(0)}%, ${lit.toFixed(0)}%)`
                 });
+            }
+            // Shuffle randomly for the user to sort
+            for (let i = shades.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shades[i], shades[j]] = [shades[j], shades[i]];
             }
             return shades;
         };
@@ -419,10 +428,10 @@ const Playground = {
         render();
 
         checkBtn.addEventListener('click', () => {
-            // Check if sorted by hue (warm to cool, lowest to highest)
+            // Check if sorted by sortKey (warmest/pink to coolest/green)
             let correct = true;
             for (let i = 1; i < shades.length; i++) {
-                if (shades[i].hue < shades[i - 1].hue) {
+                if (shades[i].sortKey < shades[i - 1].sortKey) {
                     correct = false;
                     break;
                 }
@@ -2439,6 +2448,7 @@ const Playground = {
         try {
             localStorage.setItem('playground_responses', JSON.stringify(this.responses));
             this.populateAnswerSections(); // Update answer sections when saved
+            this.updateScore(); // Update character card when answers change
         } catch (e) {
             console.log('Could not save responses:', e);
         }
