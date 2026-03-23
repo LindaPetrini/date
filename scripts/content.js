@@ -71,13 +71,13 @@ const CONTENT = {
     // =====================================================
     toyOrder: [
         "texture",    // 6
-        "day",        // 28 - assemble a day
         "shades",     // 3
         "autocomplete", // 5
         "ai",         // 14
         "toes",       // 7
         "untangle",   // untangle this
         "sequence",   // 8
+        "day",        // 28 - assemble a day (moved later, takes time)
         "images",     // 9
         "message",    // 10
         "music",      // 11
@@ -544,7 +544,7 @@ const CONTENT = {
         buttonText: "hold",
         responses: {
             complete: "patience. you have it.",
-            incomplete: "{seconds} seconds. try again?"
+            incomplete: "{seconds}s. try again?"
         }
     },
 
@@ -572,7 +572,7 @@ const CONTENT = {
     // =====================================================
     day: {
         title: "assemble a good day",
-        hint: "drag activities to your timetable, or add your own",
+        hint: "tap activities to add them to a time slot. tap × to remove. add multiple per slot.",
         activities: [
             "slow start, minimal talking",
             "movement first",

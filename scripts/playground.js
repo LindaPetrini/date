@@ -1746,12 +1746,12 @@ const Playground = {
 
             interval = setInterval(() => {
                 const elapsed = (Date.now() - startTime) / 1000;
-                timerSpan.textContent = `${elapsed.toFixed(1)}s`;
+                timerSpan.textContent = `${elapsed.toFixed(2)}s`;
 
                 if (elapsed >= 10) {
                     endHold(true);
                 }
-            }, 100);
+            }, 50);
         };
 
         const endHold = (success = false) => {
@@ -1761,13 +1761,13 @@ const Playground = {
 
             if (success || elapsed >= 10) {
                 completed = true;
-                timerSpan.textContent = "10.0s";
+                timerSpan.textContent = `${elapsed.toFixed(2)}s`;
                 response.textContent = C.responses.complete;
                 this.responses.hold = 'completed';
             } else {
-                timerSpan.textContent = `${elapsed.toFixed(1)}s`;
-                response.textContent = C.responses.incomplete.replace('{seconds}', elapsed.toFixed(1));
-                this.responses.hold = elapsed.toFixed(1);
+                timerSpan.textContent = `${elapsed.toFixed(2)}s`;
+                response.textContent = C.responses.incomplete.replace('{seconds}', elapsed.toFixed(2));
+                this.responses.hold = elapsed.toFixed(2);
             }
             this.saveResponses();
         };
@@ -1780,7 +1780,7 @@ const Playground = {
 
         if (this.responses.hold === 'completed') {
             completed = true;
-            timerSpan.textContent = "10.0s";
+            timerSpan.textContent = "10.00s";
             response.textContent = C.responses.complete;
         }
     },
