@@ -540,11 +540,13 @@ const CONTENT = {
     // TOY 25: HOLD
     // =====================================================
     hold: {
-        title: "hold this for 10 seconds",
+        title: "release at exactly 10 seconds",
         buttonText: "hold",
         responses: {
-            complete: "patience. you have it.",
-            incomplete: "{seconds}s. try again?"
+            perfect: "perfect timing. {elapsed}s",
+            close: "so close. {elapsed}s",
+            decent: "not bad. {elapsed}s",
+            miss: "try again? {elapsed}s"
         }
     },
 

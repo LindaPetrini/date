@@ -371,21 +371,21 @@ const Playground = {
         // Generate colors from pink/rose through red to green/teal
         const generateShades = () => {
             const shades = [];
-            // Range: hue 330 (pink) wrapping through 0 (red) to 150 (green/teal)
-            // Unwrapped: 330 to 510 (510 mod 360 = 150)
-            const startHue = 330;
-            const totalRange = 180; // 330 to 510
-            for (let i = 0; i < 5; i++) {
-                const base = startHue + (totalRange / 4) * i; // evenly spaced
-                const offset = (Math.random() - 0.5) * 20; // ±10 random jitter
+            // Pick a random starting hue, then span ~60 degrees (subtle range)
+            const startHue = Math.floor(Math.random() * 360);
+            const totalRange = 60;
+            // Fixed saturation and lightness so only hue varies
+            const sat = 40 + Math.floor(Math.random() * 15); // fixed per round
+            const lit = 50 + Math.floor(Math.random() * 10); // fixed per round
+            for (let i = 0; i < 8; i++) {
+                const base = startHue + (totalRange / 7) * i;
+                const offset = (Math.random() - 0.5) * 4; // ±2 jitter
                 const sortKey = base + offset;
                 const hue = ((sortKey % 360) + 360) % 360;
-                const sat = 50 + Math.random() * 10; // 50-60%
-                const lit = 55 + Math.random() * 10; // 55-65%
                 shades.push({
                     hue,
                     sortKey,
-                    color: `hsl(${hue}, ${sat.toFixed(0)}%, ${lit.toFixed(0)}%)`
+                    color: `hsl(${hue}, ${sat}%, ${lit}%)`
                 });
             }
             // Shuffle randomly for the user to sort
@@ -1805,30 +1805,35 @@ const Playground = {
             if (completed) return;
             startTime = Date.now();
             button.classList.add('holding');
+            response.textContent = '';
 
             interval = setInterval(() => {
                 const elapsed = (Date.now() - startTime) / 1000;
                 timerSpan.textContent = `${elapsed.toFixed(2)}s`;
-
-                if (elapsed >= 10) {
-                    endHold(true);
-                }
             }, 50);
         };
 
-        const endHold = (success = false) => {
+        const endHold = () => {
             clearInterval(interval);
             button.classList.remove('holding');
             const elapsed = (Date.now() - startTime) / 1000;
+            const diff = Math.abs(elapsed - 10);
+            timerSpan.textContent = `${elapsed.toFixed(2)}s`;
 
-            if (success || elapsed >= 10) {
+            if (diff <= 0.05) {
                 completed = true;
-                timerSpan.textContent = `${elapsed.toFixed(2)}s`;
-                response.textContent = C.responses.complete;
-                this.responses.hold = 'completed';
+                response.textContent = C.responses.perfect.replace('{elapsed}', elapsed.toFixed(2));
+                this.responses.hold = 'perfect';
+            } else if (diff <= 0.20) {
+                completed = true;
+                response.textContent = C.responses.close.replace('{elapsed}', elapsed.toFixed(2));
+                this.responses.hold = 'close';
+            } else if (diff <= 0.50) {
+                completed = true;
+                response.textContent = C.responses.decent.replace('{elapsed}', elapsed.toFixed(2));
+                this.responses.hold = 'decent';
             } else {
-                timerSpan.textContent = `${elapsed.toFixed(2)}s`;
-                response.textContent = C.responses.incomplete.replace('{seconds}', elapsed.toFixed(2));
+                response.textContent = C.responses.miss.replace('{elapsed}', elapsed.toFixed(2));
                 this.responses.hold = elapsed.toFixed(2);
             }
             this.saveResponses();
@@ -1840,10 +1845,12 @@ const Playground = {
         button.addEventListener('mouseleave', () => { if (!completed && startTime) endHold(); });
         button.addEventListener('touchend', () => { if (!completed && startTime) endHold(); });
 
-        if (this.responses.hold === 'completed') {
+        if (['perfect', 'close', 'decent'].includes(this.responses.hold)) {
             completed = true;
-            timerSpan.textContent = "10.00s";
-            response.textContent = C.responses.complete;
+            const storedPrecision = this.responses.hold;
+            response.textContent = C.responses[storedPrecision].replace('{elapsed}', '');
+            // Clean up the display for restored state
+            response.textContent = `completed (${storedPrecision})`;
         }
     },
 
@@ -2144,20 +2151,28 @@ const Playground = {
             });
         }
 
-        // Calculate compatibility label
+        // Calculate character archetype based on stat profile
         if (compatMax === 0) {
             scoreValue.textContent = "--";
             scoreNote.textContent = "answer some things to see your character card";
         } else {
             const percentage = Math.round((compatPoints / compatMax) * 100);
-            let label;
-            if (percentage >= 85) label = "intriguing";
-            else if (percentage >= 70) label = "promising";
-            else if (percentage >= 50) label = "curious";
-            else if (percentage >= 30) label = "different";
-            else label = "wildcard";
 
-            scoreValue.textContent = label;
+            // Determine archetype from stat profile
+            const high = (stat) => (stats[stat] || 50) > 60;
+            const low = (stat) => (stats[stat] || 50) < 40;
+
+            let archetype;
+            if (high('playfulness') && high('spirituality')) archetype = "the fool";
+            else if (high('tech affinity') && high('emotional openness')) archetype = "the alchemist";
+            else if (high('adventurousness') && high('playfulness')) archetype = "the explorer";
+            else if (high('quietness') && high('spirituality')) archetype = "the hermit";
+            else if (high('emotional openness') && high('adventurousness')) archetype = "the lover";
+            else if (high('tech affinity') && low('emotional openness')) archetype = "the architect";
+            else if (high('playfulness') && low('spirituality')) archetype = "the trickster";
+            else archetype = "the magician";
+
+            scoreValue.textContent = archetype;
             scoreNote.textContent = `${percentage}% compatibility with linda`;
         }
 
