@@ -2494,17 +2494,17 @@ const Playground = {
 
             // ---- a good day ----
             if (r.day) {
-                const dayParts = [];
                 const fmt = (arr) => Array.isArray(arr) ? arr.join(', ') : arr;
-                ['morning', 'afternoon', 'evening', 'night'].forEach(phase => {
-                    const val = r.day[phase];
-                    if (val && (Array.isArray(val) ? val.length > 0 : true)) {
-                        dayParts.push(`${phase}: ${fmt(val)}`);
-                    }
-                });
-                if (dayParts.length > 0) {
+                const phases = ['morning', 'afternoon', 'evening', 'night'];
+                const hasDay = phases.some(p => r.day[p] && (Array.isArray(r.day[p]) ? r.day[p].length > 0 : true));
+                if (hasDay) {
                     addSectionHeader('a good day');
-                    addAnswer('', dayParts.join(' | '));
+                    phases.forEach(phase => {
+                        const val = r.day[phase];
+                        if (val && (Array.isArray(val) ? val.length > 0 : true)) {
+                            addAnswer(phase, fmt(val));
+                        }
+                    });
                 }
             }
 
@@ -2512,11 +2512,17 @@ const Playground = {
             const hasAuto = r['auto-1'] || r['auto-2'] || r['auto-3'] || r['auto-4'] || r['auto-5'];
             if (hasAuto) {
                 addSectionHeader('in their own words');
-                if (r['auto-1']) addAnswer('', `"in the middle of the night I ${r['auto-1']}"`);
-                if (r['auto-2']) addAnswer('', `"pleasure is ${r['auto-2']}"`);
-                if (r['auto-3']) addAnswer('', `"all parts of me ${r['auto-3']}"`);
-                if (r['auto-4']) addAnswer('', `"the point of life is ${r['auto-4']}"`);
-                if (r['auto-5']) addAnswer('', `"I never leave the house without ${r['auto-5']}"`);
+                const addQuote = (text) => {
+                    const div = document.createElement('div');
+                    div.className = 'my-answer';
+                    div.innerHTML = `<em>"${text}"</em>`;
+                    yourAnswersContent.appendChild(div);
+                };
+                if (r['auto-1']) addQuote(`in the middle of the night I ${r['auto-1']}`);
+                if (r['auto-2']) addQuote(`pleasure is ${r['auto-2']}`);
+                if (r['auto-3']) addQuote(`all parts of me ${r['auto-3']}`);
+                if (r['auto-4']) addQuote(`the point of life is ${r['auto-4']}`);
+                if (r['auto-5']) addQuote(`I never leave the house without ${r['auto-5']}`);
             }
 
             if (yourAnswersContent.children.length === 0) {
