@@ -1617,7 +1617,7 @@ const Playground = {
         const C = CONTENT.precision;
 
         slider.addEventListener('input', () => {
-            valueDiv.textContent = slider.value;
+            // don't show the number — that's the challenge
         });
 
         checkBtn.addEventListener('click', () => {
@@ -1638,7 +1638,6 @@ const Playground = {
 
         if (this.responses.precision !== undefined) {
             slider.value = this.responses.precision;
-            valueDiv.textContent = this.responses.precision;
             if (this.responses.precision === 50) {
                 response.textContent = C.responses.perfect;
             } else {
