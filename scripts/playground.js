@@ -795,6 +795,38 @@ const Playground = {
 
         if (!C || !activityList) return;
 
+        // Viewing mode: render day as read-only
+        if (this.viewingMode) {
+            // Hide interactive elements
+            const activityPool = activityList.closest('.activity-pool');
+            if (activityPool) activityPool.style.display = 'none';
+
+            // Render schedule as read-only text
+            const dayData = this.responses.day;
+            if (dayData) {
+                const zones = document.querySelectorAll('.time-drop-zone');
+                zones.forEach(zone => {
+                    const phase = zone.dataset.phase;
+                    const items = dayData[phase] || [];
+                    zone.innerHTML = '';
+                    items.forEach(activity => {
+                        const chip = document.createElement('div');
+                        chip.className = 'slot-chip';
+                        chip.style.cursor = 'default';
+                        const text = document.createElement('span');
+                        text.textContent = activity;
+                        chip.appendChild(text);
+                        zone.appendChild(chip);
+                    });
+                    zone.classList.toggle('filled', items.length > 0);
+                    // Disable drop functionality
+                    zone.style.pointerEvents = 'none';
+                    zone.style.cursor = 'default';
+                });
+            }
+            return; // Skip all interactive setup
+        }
+
         let selectedPhase = 'morning';
 
         // Migrate old single-value format to arrays
@@ -2048,7 +2080,7 @@ const Playground = {
         // Draw the image/pattern in canvas
         if (scoreCanvas && r.color) {
             const ctx = scoreCanvas.getContext('2d');
-            const size = 120;
+            const size = 80;
             scoreCanvas.width = size;
             scoreCanvas.height = size;
 
@@ -2065,7 +2097,7 @@ const Playground = {
                     ctx.arc(
                         Math.random() * size,
                         Math.random() * size,
-                        Math.random() * 40 + 10,
+                        Math.random() * 25 + 8,
                         0,
                         Math.PI * 2
                     );
@@ -2669,10 +2701,38 @@ const Playground = {
 
         const r = this.responses;
 
+        // Pre-calculate answers to determine card height
+        const preAnswers = [];
+        if (r.texture) preAnswers.push(1);
+        if (r.nature) preAnswers.push(1);
+        if (r.babies !== undefined) preAnswers.push(1);
+        if (r.music !== undefined) preAnswers.push(1);
+        if (r.spirit !== undefined) preAnswers.push(1);
+        if (r.crying) preAnswers.push(1);
+        if (r.god) preAnswers.push(1);
+        if (r.lead) preAnswers.push(1);
+        if (r.therapyHours) preAnswers.push(1);
+        if (r.upside) preAnswers.push(1);
+        const answerRows = Math.ceil(preAnswers.length / 2);
+        const preAutoAnswers = [r['auto-1'], r['auto-2'], r['auto-4']].filter(Boolean).length;
+        const statsCount = Object.keys(this._calculateStats()).length;
+
+        // Calculate dynamic height: base sections + stats + answers + auto-answers + footer
+        let estimatedH = 60 + 35 + 28 + 30; // top through archetype
+        if (r.color) estimatedH += 20;
+        estimatedH += 30; // divider
+        if (statsCount > 0) estimatedH += 18 + statsCount * 28; // stats header + bars
+        estimatedH += 25; // divider
+        estimatedH += 18 + answerRows * 36; // key answers header + rows
+        estimatedH += 15; // gap
+        if (preAutoAnswers > 0) estimatedH += 16 + 15 + preAutoAnswers * 20; // auto-answers section
+        estimatedH += 60; // footer watermark
+
         // Handle devicePixelRatio for crisp text
         const dpr = window.devicePixelRatio || 1;
         const W = 600;
-        const H = 820;
+        const H = Math.max(600, estimatedH);
+
         canvas.width = W * dpr;
         canvas.height = H * dpr;
         canvas.style.width = W + 'px';
@@ -2811,11 +2871,11 @@ const Playground = {
                 ctx.roundRect(barX, y, barW * (value / 100), barH, 8);
                 ctx.fill();
 
-                // Value
+                // Value (right-aligned for consistent number alignment)
                 ctx.fillStyle = textLight;
                 ctx.font = `10px ${fontMono}`;
-                ctx.textAlign = 'left';
-                ctx.fillText(Math.round(value), barX + barW + 8, y + 12);
+                ctx.textAlign = 'right';
+                ctx.fillText(Math.round(value), barX + barW + 32, y + 12);
 
                 y += 28;
             });
@@ -2868,7 +2928,7 @@ const Playground = {
             const [label, value] = pair;
             col = i % 2;
             const cx = 30 + col * colW;
-            const cy = startY + Math.floor(i / 2) * 24;
+            const cy = startY + Math.floor(i / 2) * 36;
 
             ctx.fillStyle = textLight;
             ctx.font = `11px ${fontMono}`;
@@ -2882,9 +2942,9 @@ const Playground = {
             while (ctx.measureText(displayVal).width > colW - 10 && displayVal.length > 10) {
                 displayVal = displayVal.slice(0, -4) + '...';
             }
-            ctx.fillText(displayVal, cx, cy + 14);
+            ctx.fillText(displayVal, cx, cy + 15);
 
-            maxY = cy + 24;
+            maxY = cy + 36;
         });
 
         y = maxY + 15;

@@ -657,10 +657,11 @@
     position: absolute;
     bottom: 0;
     right: 0;
-    width: 120px;
-    height: 120px;
-    opacity: 0.3;
+    width: 80px;
+    height: 80px;
+    opacity: 0.15;
     border-radius: 0 0 16px 0;
+    pointer-events: none;
 }
 
 .score-content {
