@@ -61,6 +61,12 @@
 <body>
     <div class="background-decoration"></div>
 
+    <!-- Banner for viewing someone else's results -->
+    <div class="viewing-banner" id="viewing-banner" style="display:none;">
+        <p>you're viewing someone's playground results</p>
+        <a href="?" class="viewing-play-btn">play yourself</a>
+    </div>
+
     <main class="playground-container">
         <noscript>
             <div style="max-width: 600px; margin: 2em auto; padding: 2em; font-family: Georgia, serif; line-height: 1.7; color: #333;">
@@ -825,6 +831,14 @@
                     </div>
                     <div class="score-note" id="score-note"></div>
                 </div>
+            </div>
+
+            <!-- Visual results card (canvas-rendered) -->
+            <div class="results-card-section" id="results-card-section">
+                <canvas id="results-card-canvas"></canvas>
+                <button class="save-card-btn" id="save-card-btn">save card as image</button>
+                <button class="share-link-btn" id="share-link-btn">copy share link</button>
+                <div class="share-link-response" id="share-link-response"></div>
             </div>
 
             <div class="share-section">

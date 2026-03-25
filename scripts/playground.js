@@ -6,9 +6,18 @@
 const Playground = {
     // Store responses
     responses: {},
+    viewingMode: false, // true when viewing someone else's results via ?r= param
 
     init() {
-        this.loadResponses();
+        // Check for shared results URL first
+        const sharedData = this._checkSharedUrl();
+        if (sharedData) {
+            this.viewingMode = true;
+            this.responses = sharedData;
+            this._showViewingMode();
+        } else {
+            this.loadResponses();
+        }
         this.reorderToys();
         this.initColorMaker();
         this.initBodyCheck();
@@ -43,6 +52,8 @@ const Playground = {
         this.initUntangle();
         this.initShare();
         this.populateAnswerSections();
+        this.initResultsCard();
+        this.initShareLink();
     },
 
     // ========== Reorder toys based on CONTENT.toyOrder ==========
@@ -1887,7 +1898,9 @@ const Playground = {
             const answers = answersInput.value;
 
             const subject = 'Playground Answers';
-            const body = `Email: ${email}\n\nMessage:\n${message}\n\n=== Answers ===\n${answers}`;
+            const resultsUrl = this._getResultsUrl();
+            const urlLine = resultsUrl ? `\n\nView my visual card: ${resultsUrl}` : '';
+            const body = `Email: ${email}\n\nMessage:\n${message}\n\n=== Answers ===\n${answers}${urlLine}`;
 
             window.location.href = `mailto:lindapetrini@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
@@ -2326,6 +2339,13 @@ const Playground = {
 
         lines.push('\u2726');
 
+        // Append results URL
+        const resultsUrl = this._getResultsUrl();
+        if (resultsUrl) {
+            lines.push('');
+            lines.push('view my visual card: ' + resultsUrl);
+        }
+
         return lines.join('\n');
     },
 
@@ -2524,12 +2544,431 @@ const Playground = {
         }
     },
 
+    // ========== URL-Encoded Results Sharing ==========
+    _encodeResponses() {
+        try {
+            const json = JSON.stringify(this.responses);
+            // Use btoa for base64, make it URL-safe
+            const base64 = btoa(unescape(encodeURIComponent(json)));
+            return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+        } catch (e) {
+            console.log('Could not encode responses:', e);
+            return null;
+        }
+    },
+
+    _decodeResponses(encoded) {
+        try {
+            // Restore standard base64 from URL-safe version
+            let base64 = encoded.replace(/-/g, '+').replace(/_/g, '/');
+            // Add padding back
+            while (base64.length % 4) base64 += '=';
+            const json = decodeURIComponent(escape(atob(base64)));
+            return JSON.parse(json);
+        } catch (e) {
+            console.log('Could not decode responses:', e);
+            return null;
+        }
+    },
+
+    _checkSharedUrl() {
+        const params = new URLSearchParams(window.location.search);
+        const encoded = params.get('r');
+        if (!encoded) return null;
+        return this._decodeResponses(encoded);
+    },
+
+    _getResultsUrl() {
+        const encoded = this._encodeResponses();
+        if (!encoded) return null;
+        return window.location.origin + window.location.pathname + '?r=' + encoded;
+    },
+
+    _showViewingMode() {
+        const banner = document.getElementById('viewing-banner');
+        if (banner) {
+            banner.style.display = 'block';
+            // Set play yourself link to clean URL
+            const playBtn = banner.querySelector('.viewing-play-btn');
+            if (playBtn) {
+                playBtn.href = window.location.origin + window.location.pathname;
+            }
+        }
+    },
+
+    // ========== Share Link Button ==========
+    initShareLink() {
+        const btn = document.getElementById('share-link-btn');
+        const responseDiv = document.getElementById('share-link-response');
+        if (!btn) return;
+
+        btn.addEventListener('click', () => {
+            const url = this._getResultsUrl();
+            if (!url) {
+                if (responseDiv) responseDiv.textContent = 'answer some things first';
+                return;
+            }
+            navigator.clipboard.writeText(url).then(() => {
+                if (responseDiv) responseDiv.textContent = 'link copied!';
+                btn.textContent = 'copied!';
+                setTimeout(() => { btn.textContent = 'copy share link'; }, 2000);
+            }).catch(() => {
+                // Fallback
+                const ta = document.createElement('textarea');
+                ta.value = url;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                if (responseDiv) responseDiv.textContent = 'link copied!';
+            });
+        });
+    },
+
+    // ========== Visual Results Card (Canvas) ==========
+    initResultsCard() {
+        const saveBtn = document.getElementById('save-card-btn');
+        if (saveBtn) {
+            saveBtn.addEventListener('click', () => {
+                const canvas = document.getElementById('results-card-canvas');
+                if (!canvas) return;
+                const link = document.createElement('a');
+                link.download = 'playground-results.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+        this.renderResultsCard();
+    },
+
+    renderResultsCard() {
+        const canvas = document.getElementById('results-card-canvas');
+        if (!canvas) return;
+
+        const card = this._getArchetypeAndCompat();
+        const r = this.responses;
+        const hasAnswers = Object.keys(r).length > 0;
+
+        if (!hasAnswers) {
+            canvas.style.display = 'none';
+            return;
+        }
+        canvas.style.display = 'block';
+
+        // Handle devicePixelRatio for crisp text
+        const dpr = window.devicePixelRatio || 1;
+        const W = 600;
+        const H = 820;
+        canvas.width = W * dpr;
+        canvas.height = H * dpr;
+        canvas.style.width = W + 'px';
+        canvas.style.height = H + 'px';
+
+        const ctx = canvas.getContext('2d');
+        ctx.scale(dpr, dpr);
+
+        // Polyfill roundRect for older browsers
+        if (!ctx.roundRect) {
+            ctx.roundRect = function(x, y, w, h, r) {
+                if (typeof r === 'number') r = [r, r, r, r];
+                this.beginPath();
+                this.moveTo(x + r[0], y);
+                this.lineTo(x + w - r[1], y);
+                this.quadraticCurveTo(x + w, y, x + w, y + r[1]);
+                this.lineTo(x + w, y + h - r[2]);
+                this.quadraticCurveTo(x + w, y + h, x + w - r[2], y + h);
+                this.lineTo(x + r[3], y + h);
+                this.quadraticCurveTo(x, y + h, x, y + h - r[3]);
+                this.lineTo(x, y + r[0]);
+                this.quadraticCurveTo(x, y, x + r[0], y);
+                this.closePath();
+            };
+        }
+
+        // Colors
+        const cream = '#FAF7F5';
+        const petrol = '#2D6A6A';
+        const petrolLight = '#4A8B8B';
+        const burgundy = '#8B4A5E';
+        const rosaLight = '#E0D0D0';
+        const textColor = '#2D2D2D';
+        const textLight = '#5A5A5A';
+
+        // Fonts (with fallbacks for canvas)
+        const fontDisplay = '"Playfair Display", Georgia, serif';
+        const fontMono = '"JetBrains Mono", "Courier New", monospace';
+        const fontBody = '"Playfair Display", Georgia, serif';
+
+        // Background
+        ctx.fillStyle = cream;
+        ctx.fillRect(0, 0, W, H);
+
+        // Subtle border
+        ctx.strokeStyle = rosaLight;
+        ctx.lineWidth = 2;
+        ctx.roundRect(4, 4, W - 8, H - 8, 16);
+        ctx.stroke();
+
+        // Top accent line
+        ctx.fillStyle = petrol;
+        ctx.fillRect(30, 30, W - 60, 3);
+
+        let y = 60;
+
+        // Title
+        ctx.fillStyle = petrol;
+        ctx.font = `11px ${fontMono}`;
+        ctx.textAlign = 'left';
+        ctx.fillText('PLAYGROUND RESULTS', 30, y);
+
+        // Archetype + compatibility
+        y += 35;
+        if (card) {
+            ctx.fillStyle = textColor;
+            ctx.font = `italic 32px ${fontDisplay}`;
+            ctx.fillText(card.archetype, 30, y);
+
+            ctx.fillStyle = burgundy;
+            ctx.font = `16px ${fontBody}`;
+            y += 28;
+            ctx.fillText(`${card.percentage}% compatibility with linda`, 30, y);
+        } else {
+            ctx.fillStyle = textLight;
+            ctx.font = `italic 20px ${fontBody}`;
+            ctx.fillText('in progress...', 30, y);
+        }
+
+        // Color swatch
+        y += 30;
+        if (r.color) {
+            const { h, s, l } = r.color;
+            const colorStr = `hsl(${h}, ${s}%, ${l}%)`;
+            ctx.fillStyle = colorStr;
+            ctx.beginPath();
+            ctx.arc(50, y, 16, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = rosaLight;
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+
+            ctx.fillStyle = textColor;
+            ctx.font = `13px ${fontBody}`;
+            ctx.fillText(this._describeColor(r.color), 75, y + 5);
+            y += 20;
+        }
+
+        // Divider
+        y += 10;
+        ctx.fillStyle = rosaLight;
+        ctx.fillRect(30, y, W - 60, 1);
+        y += 20;
+
+        // Stat bars
+        const stats = this._calculateStats();
+        if (Object.keys(stats).length > 0) {
+            ctx.fillStyle = petrol;
+            ctx.font = `11px ${fontMono}`;
+            ctx.fillText('STATS', 30, y);
+            y += 18;
+
+            const barX = 170;
+            const barW = 340;
+            const barH = 16;
+
+            Object.entries(stats).forEach(([label, value]) => {
+                // Label
+                ctx.fillStyle = textColor;
+                ctx.font = `12px ${fontMono}`;
+                ctx.textAlign = 'right';
+                ctx.fillText(label, barX - 12, y + 12);
+
+                // Bar background
+                ctx.fillStyle = rosaLight;
+                ctx.beginPath();
+                ctx.roundRect(barX, y, barW, barH, 8);
+                ctx.fill();
+
+                // Bar fill
+                const grad = ctx.createLinearGradient(barX, 0, barX + barW, 0);
+                grad.addColorStop(0, petrol);
+                grad.addColorStop(1, burgundy);
+                ctx.fillStyle = grad;
+                ctx.beginPath();
+                ctx.roundRect(barX, y, barW * (value / 100), barH, 8);
+                ctx.fill();
+
+                // Value
+                ctx.fillStyle = textLight;
+                ctx.font = `10px ${fontMono}`;
+                ctx.textAlign = 'left';
+                ctx.fillText(Math.round(value), barX + barW + 8, y + 12);
+
+                y += 28;
+            });
+        }
+
+        // Divider
+        y += 5;
+        ctx.fillStyle = rosaLight;
+        ctx.fillRect(30, y, W - 60, 1);
+        y += 20;
+
+        // Key answers section
+        ctx.textAlign = 'left';
+        ctx.fillStyle = petrol;
+        ctx.font = `11px ${fontMono}`;
+        ctx.fillText('KEY ANSWERS', 30, y);
+        y += 18;
+
+        const answers = [];
+        if (r.texture) answers.push(['texture', r.texture]);
+        if (r.nature) answers.push(['nature', r.nature.join(' > ')]);
+        if (r.babies !== undefined) {
+            const babyLabels = CONTENT.babies ? CONTENT.babies.labels : [];
+            answers.push(['babies', babyLabels[r.babies] || String(r.babies)]);
+        }
+        if (r.music !== undefined) answers.push(['music', `${this._describeMusicVolume(r.music)} (${r.music}/100)`]);
+        if (r.spirit !== undefined) answers.push(['spirituality', `${this._describeSpirit(r.spirit)} (${r.spirit}/100)`]);
+        if (r.crying) {
+            const cryLabels = { hug: 'goes to hug them', ask: 'asks what they need', space: 'gives them space', cry: 'also starts crying', depends: 'depends on who' };
+            answers.push(['when someone cries', cryLabels[r.crying] || r.crying]);
+        }
+        if (r.god) answers.push(['calls it', `"${r.god}"`]);
+        if (r.lead) {
+            const leadLabels = { lead: 'leads', follow: 'follows', both: 'context-dependent', neither: 'collaborative' };
+            answers.push(['lead/follow', leadLabels[r.lead] || r.lead]);
+        }
+        if (r.therapyHours) answers.push(['therapy', `${r.therapyHours} hours`]);
+        if (r.upside) {
+            const upsideLabels = { love: 'loves it', fine: 'fine', uncomfortable: 'uncomfortable', never: 'avoids it', when: 'can\'t remember' };
+            answers.push(['upside down', upsideLabels[r.upside] || r.upside]);
+        }
+
+        // Render answers in two columns
+        const colW = (W - 60) / 2;
+        const startY = y;
+        let col = 0;
+        let maxY = y;
+
+        answers.forEach((pair, i) => {
+            const [label, value] = pair;
+            col = i % 2;
+            const cx = 30 + col * colW;
+            const cy = startY + Math.floor(i / 2) * 24;
+
+            ctx.fillStyle = textLight;
+            ctx.font = `11px ${fontMono}`;
+            ctx.fillText(label + ':', cx, cy);
+
+            ctx.fillStyle = textColor;
+            ctx.font = `12px ${fontBody}`;
+            // Truncate if too long
+            let displayVal = value;
+            ctx.font = `12px ${fontBody}`;
+            while (ctx.measureText(displayVal).width > colW - 10 && displayVal.length > 10) {
+                displayVal = displayVal.slice(0, -4) + '...';
+            }
+            ctx.fillText(displayVal, cx, cy + 14);
+
+            maxY = cy + 24;
+        });
+
+        y = maxY + 15;
+
+        // Autocomplete answers
+        const autoAnswers = [];
+        if (r['auto-1']) autoAnswers.push(`"in the middle of the night I ${r['auto-1']}"`);
+        if (r['auto-2']) autoAnswers.push(`"pleasure is ${r['auto-2']}"`);
+        if (r['auto-4']) autoAnswers.push(`"the point of life is ${r['auto-4']}"`);
+
+        if (autoAnswers.length > 0 && y < H - 80) {
+            ctx.fillStyle = rosaLight;
+            ctx.fillRect(30, y, W - 60, 1);
+            y += 15;
+
+            ctx.fillStyle = petrol;
+            ctx.font = `11px ${fontMono}`;
+            ctx.fillText('IN THEIR OWN WORDS', 30, y);
+            y += 16;
+
+            ctx.fillStyle = textColor;
+            ctx.font = `italic 12px ${fontBody}`;
+            autoAnswers.forEach(line => {
+                if (y < H - 60) {
+                    // Truncate if needed
+                    let display = line;
+                    while (ctx.measureText(display).width > W - 70 && display.length > 15) {
+                        display = display.slice(0, -4) + '..."';
+                    }
+                    ctx.fillText(display, 30, y);
+                    y += 20;
+                }
+            });
+        }
+
+        // Bottom watermark
+        ctx.fillStyle = rosaLight;
+        ctx.fillRect(30, H - 45, W - 60, 1);
+
+        ctx.fillStyle = textLight;
+        ctx.font = `10px ${fontMono}`;
+        ctx.textAlign = 'center';
+        ctx.fillText('lindapetrini.com/dateme', W / 2, H - 22);
+
+        // Petrol accent line at bottom
+        ctx.fillStyle = petrol;
+        ctx.fillRect(30, H - 33, W - 60, 2);
+    },
+
+    // Helper to calculate stats (shared between updateScore and renderResultsCard)
+    _calculateStats() {
+        const r = this.responses;
+        const stats = {};
+
+        if (r.music !== undefined) stats.quietness = 100 - parseInt(r.music);
+
+        let playfulness = 0, playCount = 0;
+        if (r.upside) {
+            playCount++;
+            if (r.upside === 'love') playfulness += 100;
+            else if (r.upside === 'fine') playfulness += 60;
+            else playfulness += 20;
+        }
+        if (r.hold === 'completed') { playCount++; playfulness += 80; }
+        if (playCount > 0) stats.playfulness = Math.round(playfulness / playCount);
+
+        if (r.ai && r.ai.length > 0) stats['tech affinity'] = Math.min(100, (r.ai.length / 6) * 100);
+        if (r.spirit !== undefined) stats.spirituality = parseInt(r.spirit);
+
+        let emotional = 0, emotionalCount = 0;
+        if (r.crying) {
+            emotionalCount++;
+            if (r.crying === 'cry' || r.crying === 'ask') emotional += 100;
+            else if (r.crying === 'hug') emotional += 70;
+            else emotional += 40;
+        }
+        if (r.message) {
+            emotionalCount++;
+            emotional += r.message === 'soft' ? 80 : 60;
+        }
+        if (emotionalCount > 0) stats['emotional openness'] = Math.round(emotional / emotionalCount);
+
+        if (r.nature && r.nature.length > 0) {
+            const adventureMap = { sea: 85, mountain: 90, river: 75, forest: 70, lake: 60 };
+            stats.adventurousness = adventureMap[r.nature[0]] || 70;
+        }
+
+        return stats;
+    },
+
     // ========== Storage ==========
     saveResponses() {
+        if (this.viewingMode) return; // Don't save when viewing someone else's results
         try {
             localStorage.setItem('playground_responses', JSON.stringify(this.responses));
             this.populateAnswerSections(); // Update answer sections when saved
             this.updateScore(); // Update character card when answers change
+            this.renderResultsCard(); // Update visual results card
         } catch (e) {
             console.log('Could not save responses:', e);
         }
