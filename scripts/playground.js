@@ -18,7 +18,6 @@ const Playground = {
         this.initToeTest();
         this.initSequence();
         this.initAutocomplete();
-        this.initImageChoice();
         this.initMessagePreference();
         this.initMusicDial();
         this.initNatureRank();
@@ -63,7 +62,6 @@ const Playground = {
             texture: document.getElementById('toy-texture'),
             toes: document.getElementById('toy-toes'),
             sequence: document.getElementById('toy-sequence'),
-            images: document.getElementById('toy-images'),
             message: document.getElementById('toy-message'),
             music: document.getElementById('toy-music'),
             nature: document.getElementById('toy-nature'),
@@ -539,12 +537,9 @@ const Playground = {
         const chosen = document.getElementById('texture-chosen');
 
         const names = {
-            linen: 'linen',
-            wool: 'wool',
-            silk: 'silk',
-            stone: 'stone',
-            wood: 'wood',
-            water: 'water'
+            sandstone: 'honed sandstone',
+            plaster: 'textured plaster',
+            concrete: 'concrete slate-teal'
         };
 
         options.forEach(opt => {
@@ -695,144 +690,6 @@ const Playground = {
     },
 
     // ========== Toy 9: Image Choice ==========
-    initImageChoice() {
-        const canvases = [
-            document.getElementById('image-1'),
-            document.getElementById('image-2'),
-            document.getElementById('image-3')
-        ];
-        const chosen = document.getElementById('image-chosen');
-
-        // Generate three different abstract patterns
-        const patterns = [
-            this.drawSpirals,
-            this.drawFlowField,
-            this.drawOrganicBlobs
-        ];
-
-        canvases.forEach((canvas, index) => {
-            if (canvas) {
-                patterns[index].call(this, canvas);
-
-                canvas.addEventListener('click', () => {
-                    canvases.forEach(c => c.classList.remove('selected'));
-                    canvas.classList.add('selected');
-                    const names = ['spirals', 'flow', 'organic'];
-                    chosen.textContent = names[index];
-                    this.responses.image = index;
-                    this.saveResponses();
-                });
-            }
-        });
-
-        // Restore if saved
-        if (this.responses.image !== undefined) {
-            canvases[this.responses.image]?.classList.add('selected');
-            const names = ['spirals', 'flow', 'organic'];
-            chosen.textContent = names[this.responses.image];
-        }
-    },
-
-    drawSpirals(canvas) {
-        const ctx = canvas.getContext('2d');
-        const size = canvas.width;
-
-        ctx.fillStyle = '#FAF7F5';
-        ctx.fillRect(0, 0, size, size);
-
-        ctx.strokeStyle = '#8B4A5E';
-        ctx.lineWidth = 1.5;
-
-        for (let s = 0; s < 3; s++) {
-            const cx = size * (0.3 + Math.random() * 0.4);
-            const cy = size * (0.3 + Math.random() * 0.4);
-
-            ctx.beginPath();
-            for (let i = 0; i < 100; i++) {
-                const angle = i * 0.2;
-                const radius = i * 0.5;
-                const x = cx + Math.cos(angle) * radius;
-                const y = cy + Math.sin(angle) * radius;
-                if (i === 0) ctx.moveTo(x, y);
-                else ctx.lineTo(x, y);
-            }
-            ctx.globalAlpha = 0.4;
-            ctx.stroke();
-        }
-        ctx.globalAlpha = 1;
-    },
-
-    drawFlowField(canvas) {
-        const ctx = canvas.getContext('2d');
-        const size = canvas.width;
-
-        ctx.fillStyle = '#FAF7F5';
-        ctx.fillRect(0, 0, size, size);
-
-        ctx.strokeStyle = '#2D6A6A';
-        ctx.lineWidth = 1;
-        ctx.globalAlpha = 0.5;
-
-        for (let i = 0; i < 40; i++) {
-            let x = Math.random() * size;
-            let y = Math.random() * size;
-
-            ctx.beginPath();
-            ctx.moveTo(x, y);
-
-            for (let j = 0; j < 20; j++) {
-                const angle = Math.sin(x * 0.02) * Math.cos(y * 0.02) * Math.PI * 2;
-                x += Math.cos(angle) * 3;
-                y += Math.sin(angle) * 3;
-                ctx.lineTo(x, y);
-            }
-            ctx.stroke();
-        }
-        ctx.globalAlpha = 1;
-    },
-
-    drawOrganicBlobs(canvas) {
-        const ctx = canvas.getContext('2d');
-        const size = canvas.width;
-
-        ctx.fillStyle = '#FAF7F5';
-        ctx.fillRect(0, 0, size, size);
-
-        const colors = ['#C4A4A4', '#8B4A5E', '#2D6A6A'];
-
-        for (let b = 0; b < 5; b++) {
-            ctx.beginPath();
-            ctx.globalAlpha = 0.2 + Math.random() * 0.15;
-            ctx.fillStyle = colors[b % 3];
-
-            const cx = size * (0.2 + Math.random() * 0.6);
-            const cy = size * (0.2 + Math.random() * 0.6);
-            const radius = size * (0.1 + Math.random() * 0.15);
-
-            const points = 6;
-            for (let i = 0; i <= points; i++) {
-                const angle = (i / points) * Math.PI * 2;
-                const r = radius * (0.7 + Math.random() * 0.6);
-                const x = cx + Math.cos(angle) * r;
-                const y = cy + Math.sin(angle) * r;
-
-                if (i === 0) ctx.moveTo(x, y);
-                else {
-                    const prevAngle = ((i - 1) / points) * Math.PI * 2;
-                    const cpAngle = (angle + prevAngle) / 2;
-                    const cpR = radius * 1.2;
-                    ctx.quadraticCurveTo(
-                        cx + Math.cos(cpAngle) * cpR,
-                        cy + Math.sin(cpAngle) * cpR,
-                        x, y
-                    );
-                }
-            }
-            ctx.fill();
-        }
-        ctx.globalAlpha = 1;
-    },
-
     // ========== Toy 10: Message Preference ==========
     initMessagePreference() {
         const options = document.querySelectorAll('.message-option');
@@ -2186,14 +2043,8 @@ const Playground = {
             const { h, s, l } = r.color;
             const color = `hsl(${h}, ${s}%, ${l}%)`;
 
-            // Use the selected image pattern or color-based pattern
-            if (r.image !== undefined) {
-                // Redraw the selected pattern
-                if (r.image === 0) this.drawSpirals(scoreCanvas);
-                else if (r.image === 1) this.drawFlowField(scoreCanvas);
-                else if (r.image === 2) this.drawOrganicBlobs(scoreCanvas);
-            } else {
-                // Draw a color-based pattern
+            // Draw a color-based pattern
+            {
                 ctx.fillStyle = color;
                 ctx.fillRect(0, 0, size, size);
                 ctx.globalAlpha = 0.5;
@@ -2243,10 +2094,6 @@ const Playground = {
             lines.push(`sequence: ${r.sequence}`);
         }
 
-        if (r.image !== undefined) {
-            const names = ['spirals', 'flow', 'organic'];
-            lines.push(`image: ${names[r.image]}`);
-        }
 
         if (r.message) {
             lines.push(`message style: ${r.message}`);

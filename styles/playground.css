@@ -382,11 +382,12 @@
 }
 
 .texture-option {
-    aspect-ratio: 1;
+    aspect-ratio: 3/4;
     border-radius: 8px;
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
     border: 2px solid transparent;
+    overflow: hidden;
 }
 
 .texture-option:hover {
@@ -398,76 +399,11 @@
     box-shadow: 0 0 0 2px var(--color-petrol);
 }
 
-/* Texture patterns using CSS */
-.texture-option[data-texture="linen"] {
-    background:
-        repeating-linear-gradient(
-            0deg,
-            transparent,
-            transparent 2px,
-            rgba(139, 74, 94, 0.1) 2px,
-            rgba(139, 74, 94, 0.1) 4px
-        ),
-        repeating-linear-gradient(
-            90deg,
-            transparent,
-            transparent 2px,
-            rgba(139, 74, 94, 0.1) 2px,
-            rgba(139, 74, 94, 0.1) 4px
-        ),
-        #F5EDE8;
-}
-
-.texture-option[data-texture="wool"] {
-    background:
-        radial-gradient(circle at 25% 25%, rgba(139, 74, 94, 0.15) 1px, transparent 1px),
-        radial-gradient(circle at 75% 75%, rgba(139, 74, 94, 0.15) 1px, transparent 1px),
-        radial-gradient(circle at 50% 50%, rgba(139, 74, 94, 0.1) 2px, transparent 2px),
-        #E8DDD5;
-    background-size: 8px 8px, 8px 8px, 12px 12px;
-}
-
-.texture-option[data-texture="silk"] {
-    background: linear-gradient(
-        135deg,
-        #F0E6E0 0%,
-        #FAF5F0 25%,
-        #E8DED8 50%,
-        #FAF5F0 75%,
-        #F0E6E0 100%
-    );
-}
-
-.texture-option[data-texture="stone"] {
-    background:
-        radial-gradient(ellipse at 30% 40%, rgba(100, 100, 100, 0.1) 0%, transparent 50%),
-        radial-gradient(ellipse at 70% 60%, rgba(80, 80, 80, 0.1) 0%, transparent 40%),
-        radial-gradient(ellipse at 50% 80%, rgba(90, 90, 90, 0.08) 0%, transparent 30%),
-        #D5D0CC;
-}
-
-.texture-option[data-texture="wood"] {
-    background:
-        repeating-linear-gradient(
-            90deg,
-            transparent 0px,
-            transparent 20px,
-            rgba(139, 90, 43, 0.1) 20px,
-            rgba(139, 90, 43, 0.1) 22px
-        ),
-        repeating-linear-gradient(
-            85deg,
-            transparent 0px,
-            rgba(139, 90, 43, 0.05) 100px
-        ),
-        #DEC8A8;
-}
-
-.texture-option[data-texture="water"] {
-    background:
-        radial-gradient(ellipse at 30% 30%, rgba(45, 106, 106, 0.2) 0%, transparent 50%),
-        radial-gradient(ellipse at 70% 70%, rgba(45, 106, 106, 0.15) 0%, transparent 40%),
-        linear-gradient(180deg, #C5DAD8 0%, #A8C8C8 100%);
+.texture-option img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 
 .texture-chosen {
@@ -942,37 +878,6 @@
 }
 
 /* Toy 9: Image Choice */
-.image-grid {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin-bottom: 1rem;
-}
-
-.image-option {
-    border-radius: 8px;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-    border: 2px solid transparent;
-}
-
-.image-option:hover {
-    transform: scale(1.03);
-}
-
-.image-option.selected {
-    border-color: var(--color-petrol);
-    box-shadow: 0 0 0 2px var(--color-petrol);
-}
-
-.image-chosen {
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
-    color: var(--color-petrol);
-    text-align: center;
-    min-height: 1.2em;
-}
 
 /* Toy 10: Message Preference */
 .message-options {
@@ -2335,7 +2240,7 @@
     }
 
     .texture-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
     }
 
     .shade-box {

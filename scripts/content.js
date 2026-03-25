@@ -78,7 +78,6 @@ const CONTENT = {
         "untangle",   // untangle this
         "sequence",   // 8
         "day",        // 28 - assemble a day (moved later, takes time)
-        "images",     // 9
         "message",    // 10
         "music",      // 11
         "hold",       // 25
@@ -213,7 +212,7 @@ const CONTENT = {
     // =====================================================
     texture: {
         title: "pick a texture",
-        options: ["linen", "wool", "silk", "stone", "wood", "water"]
+        options: ["sandstone", "plaster", "concrete"]
     },
 
     // =====================================================
@@ -247,14 +246,6 @@ const CONTENT = {
             correct: "yes. you see the pattern.",
             incorrect: "not that one. look again?"
         }
-    },
-
-    // =====================================================
-    // TOY 9: IMAGE CHOICE
-    // =====================================================
-    images: {
-        title: "pick one",
-        names: ["spirals", "flow", "organic"]
     },
 
     // =====================================================
@@ -666,7 +657,7 @@ const CONTENT = {
     myAnswers: {
         color: "a muted teal, like the sea on a cloudy day",
         body: "usually tilted, if I'm honest",
-        texture: "linen in summer, wool in winter",
+        texture: "sandstone — warm and textured",
         toes: "yes — barefoot life",
         music: "10/100 — I love silence",
         nature: "sea > river > forest > mountain > lake > ",
