@@ -2063,126 +2063,268 @@ const Playground = {
         }
     },
 
+    // ========== Summary Helpers ==========
+    _describeColor(color) {
+        if (!color) return null;
+        const { h, s, l } = color;
+        // Temperature
+        const temp = (h >= 0 && h < 70) || h > 330 ? 'warm' : (h >= 70 && h < 170) ? 'fresh' : 'cool';
+        // Rough color name from hue
+        let name;
+        if (h < 15) name = 'red';
+        else if (h < 40) name = 'orange';
+        else if (h < 65) name = 'yellow';
+        else if (h < 90) name = 'lime';
+        else if (h < 150) name = 'green';
+        else if (h < 180) name = 'teal';
+        else if (h < 210) name = 'cyan';
+        else if (h < 250) name = 'blue';
+        else if (h < 280) name = 'indigo';
+        else if (h < 310) name = 'purple';
+        else if (h < 340) name = 'pink';
+        else name = 'red';
+        // Modifiers
+        if (s < 20) name = 'grey';
+        else if (s < 40) name = 'muted ' + name;
+        if (l < 30) name = 'dark ' + name;
+        else if (l > 70) name = 'light ' + name;
+        return `a ${temp} ${name}`;
+    },
+
+    _describeMusicVolume(val) {
+        const v = parseInt(val);
+        if (v === 0) return 'silence';
+        if (v < 20) return 'barely there';
+        if (v < 40) return 'quiet background';
+        if (v < 60) return 'moderate';
+        if (v < 80) return 'fairly loud';
+        return 'blasting';
+    },
+
+    _describeRoom(val) {
+        const v = parseInt(val);
+        if (v < 15) return 'minimal';
+        if (v < 35) return 'cozy';
+        if (v < 55) return 'balanced';
+        if (v < 75) return 'spacious';
+        return 'mansion-sized';
+    },
+
+    _describeSpirit(val) {
+        const v = parseInt(val);
+        if (v < 15) return 'pure materialist';
+        if (v < 35) return 'mostly materialist';
+        if (v < 55) return 'agnostic';
+        if (v < 75) return 'leaning believer';
+        return 'believer';
+    },
+
+    _describePrecision(val) {
+        const v = parseInt(val);
+        if (v === 50) return 'nailed it (50/50)';
+        if (v >= 49 && v <= 51) return `close (${v}/50)`;
+        return `off by ${Math.abs(v - 50)} (${v}/50)`;
+    },
+
+    _describeHold(val) {
+        if (val === 'perfect') return 'perfect timing';
+        if (val === 'close') return 'so close';
+        if (val === 'decent') return 'not bad';
+        // Numeric string like "10.42"
+        const num = parseFloat(val);
+        if (!isNaN(num)) return `${num}s`;
+        return val;
+    },
+
+    _getArchetypeAndCompat() {
+        const r = this.responses;
+        // Replicate stat calculation from updateScore
+        const stats = {};
+        if (r.music !== undefined) stats.quietness = 100 - parseInt(r.music);
+        let playfulness = 0, playCount = 0;
+        if (r.upside) {
+            playCount++;
+            if (r.upside === 'love') playfulness += 100;
+            else if (r.upside === 'fine') playfulness += 60;
+            else playfulness += 20;
+        }
+        if (r.hold === 'completed') { playCount++; playfulness += 80; }
+        if (playCount > 0) stats.playfulness = Math.round(playfulness / playCount);
+        if (r.ai && r.ai.length > 0) stats['tech affinity'] = Math.min(100, (r.ai.length / 6) * 100);
+        if (r.spirit !== undefined) stats.spirituality = parseInt(r.spirit);
+        let emotional = 0, emotionalCount = 0;
+        if (r.crying) {
+            emotionalCount++;
+            if (r.crying === 'cry' || r.crying === 'ask') emotional += 100;
+            else if (r.crying === 'hug') emotional += 70;
+            else emotional += 40;
+        }
+        if (r.message) {
+            emotionalCount++;
+            emotional += r.message === 'soft' ? 80 : 60;
+        }
+        if (emotionalCount > 0) stats['emotional openness'] = Math.round(emotional / emotionalCount);
+        if (r.nature && r.nature.length > 0) {
+            const adventureMap = { sea: 85, mountain: 90, river: 75, forest: 70, lake: 60 };
+            stats.adventurousness = adventureMap[r.nature[0]] || 70;
+        }
+        // Compatibility
+        let compatPoints = 0, compatMax = 0;
+        if (r.music !== undefined) { compatMax += 10; if (r.music < 35) compatPoints += 10; else if (r.music < 55) compatPoints += 5; }
+        if (r.upside === 'love') { compatMax += 10; compatPoints += 10; } else if (r.upside) { compatMax += 10; compatPoints += 5; }
+        if (r.ai && r.ai.length >= 4) { compatMax += 10; compatPoints += 10; } else if (r.ai && r.ai.length > 0) { compatMax += 10; compatPoints += 5; }
+        if (r.spirit !== undefined) { compatMax += 10; if (r.spirit >= 55) compatPoints += 10; else if (r.spirit >= 35) compatPoints += 5; }
+        if (r.crying) { compatMax += 10; if (r.crying === 'cry' || r.crying === 'ask') compatPoints += 10; else if (r.crying === 'hug') compatPoints += 7; else compatPoints += 3; }
+        if (compatMax === 0) return null;
+        const percentage = Math.round((compatPoints / compatMax) * 100);
+        const high = (stat) => (stats[stat] || 50) > 60;
+        const low = (stat) => (stats[stat] || 50) < 40;
+        let archetype;
+        if (high('playfulness') && high('spirituality')) archetype = 'the fool';
+        else if (high('tech affinity') && high('emotional openness')) archetype = 'the alchemist';
+        else if (high('adventurousness') && high('playfulness')) archetype = 'the explorer';
+        else if (high('quietness') && high('spirituality')) archetype = 'the hermit';
+        else if (high('emotional openness') && high('adventurousness')) archetype = 'the lover';
+        else if (high('tech affinity') && low('emotional openness')) archetype = 'the architect';
+        else if (high('playfulness') && low('spirituality')) archetype = 'the trickster';
+        else archetype = 'the magician';
+        return { archetype, percentage };
+    },
+
     generateSummary() {
         const r = this.responses;
         let lines = [];
 
-        lines.push("=== playground results ===\n");
+        lines.push('\u2726 playground results \u2726\n');
 
-        if (r.color) {
-            lines.push(`color: hsl(${r.color.h}, ${r.color.s}%, ${r.color.l}%)`);
+        // Archetype + compatibility
+        const card = this._getArchetypeAndCompat();
+        if (card) {
+            lines.push(`[ ${card.archetype} \u2014 ${card.percentage}% compatibility ]\n`);
         }
 
+        // ---- the senses ----
+        const senses = [];
+        if (r.color) senses.push(`picked color: ${this._describeColor(r.color)}`);
+        if (r.texture) senses.push(`texture: ${r.texture}`);
+        if (r.music !== undefined) senses.push(`music when working: ${this._describeMusicVolume(r.music)} (${r.music}/100)`);
+        if (r.nature) senses.push(`nature: ${r.nature.join(' > ')}`);
         if (r.body) {
-            lines.push(`pelvis: ${r.body}`);
+            const bodyLabels = { forward: 'forward', tucked: 'tucked under', tilted: 'tilted to one side', back: 'pushed back', unsure: 'no idea' };
+            senses.push(`pelvis: ${bodyLabels[r.body] || r.body}`);
         }
-
-        if (r.shades) {
-            lines.push(`shade ordering: ${r.shades}`);
-        }
-
-        if (r.texture) {
-            lines.push(`texture: ${r.texture}`);
-        }
-
         if (r.toes) {
-            lines.push(`toes: ${r.toes}`);
+            const toeLabels = { yes: 'yes, easily', some: 'some of them', no: 'not really', trying: 'tried it right now' };
+            senses.push(`toes: ${toeLabels[r.toes] || r.toes}`);
+        }
+        if (r.food && r.food.length > 0) senses.push(`food: ${r.food.join(', ')}`);
+        if (senses.length > 0) {
+            lines.push('\u2014\u2014 the senses \u2014\u2014');
+            senses.forEach(l => lines.push(l));
+            lines.push('');
         }
 
-        if (r.sequence) {
-            lines.push(`sequence: ${r.sequence}`);
-        }
-
-
-        if (r.message) {
-            lines.push(`message style: ${r.message}`);
-        }
-
-        if (r.music !== undefined) {
-            lines.push(`music volume: ${r.music}/100`);
-        }
-
-        if (r.nature) {
-            lines.push(`nature ranking: ${r.nature.join(' > ')}`);
-        }
-
-        if (r.upside) {
-            lines.push(`upside down: ${r.upside}`);
-        }
-
-        if (r.ai && r.ai.length > 0) {
-            lines.push(`ai quiz: ${r.ai.join(', ')}`);
-        }
-
-        if (r.room !== undefined) {
-            lines.push(`room preference: ${r.room}/100 (0=one room, 100=mansion)`);
-        }
-
-        if (r.crying) {
-            lines.push(`crying scenario: ${r.crying}`);
-        }
-
+        // ---- the mind ----
+        const mind = [];
+        if (r.ai && r.ai.length > 0) mind.push(`AI knowledge: ${r.ai.join(', ')} (${r.ai.length}/6)`);
         if (r.readingWpm) {
-            lines.push(`reading: ${r.readingWpm} wpm, ${r.readingCorrect ? 'correct' : 'wrong'}`);
+            let readLine = `reading speed: ${r.readingWpm} wpm`;
+            readLine += r.readingCorrect ? ' (got the question right)' : ' (got the question wrong though)';
+            mind.push(readLine);
+        }
+        if (r.sequence) mind.push(`sequence puzzle: ${r.sequence}`);
+        if (r.precision !== undefined) mind.push(`precision challenge: ${this._describePrecision(r.precision)}`);
+        if (r.hold) mind.push(`hold at 10s: ${this._describeHold(r.hold)}`);
+        if (r.shades) mind.push(`shade ordering: ${r.shades}`);
+        if (r.neuro && r.neuro.length > 0) mind.push(`neuro: ${r.neuro.join(', ')}`);
+        if (r.untangle) mind.push(`can this be untangled: ${r.untangle}`);
+        if (mind.length > 0) {
+            lines.push('\u2014\u2014 the mind \u2014\u2014');
+            mind.forEach(l => lines.push(l));
+            lines.push('');
         }
 
-        if (r.spirit !== undefined) {
-            lines.push(`spirituality: ${r.spirit}/100 (0=materialist, 100=believer)`);
+        // ---- the feels ----
+        const feels = [];
+        if (r.crying) {
+            const cryLabels = { hug: 'goes to hug them', ask: 'asks what they need', space: 'gives them space', cry: 'also starts crying', depends: 'depends on who' };
+            feels.push(`when someone cries: ${cryLabels[r.crying] || r.crying}`);
+        }
+        if (r.message) {
+            feels.push(`message preference: ${r.message === 'soft' ? 'soft' : 'direct'}`);
+        }
+        if (r.upside) {
+            const upsideLabels = { love: 'loves it', fine: 'it\'s fine', uncomfortable: 'uncomfortable', never: 'actively avoids it', when: 'can\'t even remember' };
+            feels.push(`upside down: ${upsideLabels[r.upside] || r.upside}`);
+        }
+        if (r.spirit !== undefined) feels.push(`spirituality: ${this._describeSpirit(r.spirit)} (${r.spirit}/100)`);
+        if (r.meta) {
+            const metaLabels = { hate: 'hates it', loveHating: 'loves hating it', hateLove: 'hates loving it', dontStart: 'don\'t get them started' };
+            feels.push(`going meta: ${metaLabels[r.meta] || r.meta}`);
+        }
+        if (r.god) feels.push(`calls it: "${r.god}"`);
+        if (feels.length > 0) {
+            lines.push('\u2014\u2014 the feels \u2014\u2014');
+            feels.forEach(l => lines.push(l));
+            lines.push('');
         }
 
-        if (r.neuro && r.neuro.length > 0) {
-            lines.push(`neuro: ${r.neuro.join(', ')}`);
-        }
-
+        // ---- the vibes ----
+        const vibes = [];
         if (r.lead) {
-            lines.push(`lead/follow: ${r.lead}`);
+            const leadLabels = { lead: 'leads', follow: 'follows', both: 'depends on context', neither: 'figures it out together' };
+            vibes.push(`lead or follow: ${leadLabels[r.lead] || r.lead}`);
         }
-
-        if (r.therapyHours) {
-            lines.push(`therapy: ${r.therapyHours} hours`);
-        }
-
-        if (r.god) {
-            lines.push(`god/source: "${r.god}"`);
-        }
-
-        if (r.food && r.food.length > 0) {
-            lines.push(`food: ${r.food.join(', ')}`);
-        }
-
-        if (r.precision !== undefined) {
-            lines.push(`precision slider: ${r.precision} (target: 50)`);
-        }
-
-        if (r.hold) {
-            lines.push(`hold button: ${r.hold}`);
-        }
-
-        if (r.fun) {
-            lines.push(`having fun: ${r.fun}`);
-        }
-
-        if (r.untangle) {
-            lines.push(`can this be untangled: ${r.untangle}`);
-        }
-
+        if (r.room !== undefined) vibes.push(`living space: ${this._describeRoom(r.room)} (${r.room}/100)`);
         if (r.babies !== undefined) {
             const babyLabels = CONTENT.babies ? CONTENT.babies.labels : [];
-            lines.push(`babies: ${babyLabels[r.babies] || r.babies}`);
+            vibes.push(`babies: ${babyLabels[r.babies] || r.babies}`);
+        }
+        if (r.therapyHours) vibes.push(`therapy: ${r.therapyHours} hours`);
+        if (r.embodiment) vibes.push(`learning physical things: ${r.embodiment}`);
+        if (r.patterns) vibes.push(`meeting someone interesting: ${r.patterns}`);
+        if (r.fun) {
+            const funLabels = { yes: 'yes', 'kind-of': 'kind of', 'not-sure': 'not sure what this is', no: 'no' };
+            vibes.push(`having fun: ${funLabels[r.fun] || r.fun}`);
+        }
+        if (vibes.length > 0) {
+            lines.push('\u2014\u2014 the vibes \u2014\u2014');
+            vibes.forEach(l => lines.push(l));
+            lines.push('');
         }
 
-        // Autocomplete responses
-        if (r['auto-1']) {
-            lines.push(`\n"in the middle of the night I ${r['auto-1']}"`);
-        }
-        if (r['auto-2']) {
-            lines.push(`"my pleasure is ${r['auto-2']}"`);
-        }
-        if (r['auto-3']) {
-            lines.push(`"all parts of me ${r['auto-3']}"`);
+        // ---- perfect day ----
+        if (r.day) {
+            const dayParts = [];
+            const fmt = (arr) => Array.isArray(arr) ? arr.join(', ') : arr;
+            ['morning', 'afternoon', 'evening', 'night'].forEach(phase => {
+                const val = r.day[phase];
+                if (val && (Array.isArray(val) ? val.length > 0 : true)) {
+                    dayParts.push(`  ${phase}: ${fmt(val)}`);
+                }
+            });
+            if (dayParts.length > 0) {
+                lines.push('\u2014\u2014 a good day \u2014\u2014');
+                dayParts.forEach(l => lines.push(l));
+                lines.push('');
+            }
         }
 
-        lines.push("\n===");
+        // ---- in their own words ----
+        const prompts = CONTENT.autocomplete ? CONTENT.autocomplete.prompts : [];
+        const words = [];
+        if (r['auto-1']) words.push(`"${prompts[0] || 'in the middle of the night I'} ${r['auto-1']}"`);
+        if (r['auto-2']) words.push(`"${prompts[1] || 'pleasure is'} ${r['auto-2']}"`);
+        if (r['auto-3']) words.push(`"${prompts[2] || 'all parts of me'} ${r['auto-3']}"`);
+        if (r['auto-4']) words.push(`"${prompts[3] || 'the point of life is'} ${r['auto-4']}"`);
+        if (r['auto-5']) words.push(`"${prompts[4] || 'I never leave the house without'} ${r['auto-5']}"`);
+        if (words.length > 0) {
+            lines.push('\u2014\u2014 in their own words \u2014\u2014');
+            words.forEach(l => lines.push(l));
+            lines.push('');
+        }
+
+        lines.push('\u2726');
 
         return lines.join('\n');
     },
@@ -2196,6 +2338,14 @@ const Playground = {
             yourAnswersContent.innerHTML = '';
             const r = this.responses;
 
+            const addSectionHeader = (title) => {
+                const h = document.createElement('h4');
+                h.className = 'answer-section-header';
+                h.textContent = title;
+                h.style.cssText = 'margin: 1.2em 0 0.4em; font-family: var(--font-display, "Cinzel Decorative", serif); font-size: 0.85em; letter-spacing: 0.08em; text-transform: lowercase; opacity: 0.7;';
+                yourAnswersContent.appendChild(h);
+            };
+
             const addAnswer = (label, value) => {
                 if (value !== undefined && value !== null && value !== '') {
                     const div = document.createElement('div');
@@ -2205,36 +2355,99 @@ const Playground = {
                 }
             };
 
-            // Format responses
-            if (r.color) {
-                addAnswer('color', `hsl(${r.color.h}, ${r.color.s}%, ${r.color.l}%)`);
+            // Archetype + compatibility at top
+            const card = this._getArchetypeAndCompat();
+            if (card) {
+                const cardDiv = document.createElement('div');
+                cardDiv.className = 'my-answer';
+                cardDiv.style.cssText = 'font-style: italic; margin-bottom: 0.8em;';
+                cardDiv.innerHTML = `<strong>${card.archetype}</strong> \u2014 ${card.percentage}% compatibility`;
+                yourAnswersContent.appendChild(cardDiv);
             }
-            if (r.body) addAnswer('pelvis', r.body);
-            if (r.texture) addAnswer('texture', r.texture);
-            if (r.toes) addAnswer('toes', r.toes);
-            if (r.music !== undefined) addAnswer('music', `${r.music}/100`);
-            if (r.nature) addAnswer('nature', r.nature.join(' > '));
-            if (r.upside) addAnswer('upside down', r.upside);
-            if (r.ai) addAnswer('AI', r.ai.join(', '));
-            if (r.room !== undefined) addAnswer('living space', `${r.room}/100`);
-            if (r.crying) addAnswer('crying scenario', r.crying);
-            if (r.spirit !== undefined) addAnswer('spirituality', `${r.spirit}/100`);
-            if (r.lead) addAnswer('lead/follow', r.lead);
-            if (r.therapyHours) addAnswer('therapy hours', r.therapyHours);
-            if (r.god) addAnswer('god/source', r.god);
-            if (r.food) addAnswer('food', r.food.join(', '));
-            if (r.message) addAnswer('message preference', r.message);
-            if (r.precision !== undefined) addAnswer('precision', `${r.precision}/100`);
-            if (r.hold) addAnswer('hold button', r.hold);
-            if (r.fun) addAnswer('having fun', r.fun);
-            if (r.meta) addAnswer('going meta', r.meta);
-            if (r.embodiment) addAnswer('learning physical things', r.embodiment);
-            if (r.patterns) addAnswer('meeting someone interesting', r.patterns);
-            if (r.untangle) addAnswer('can this be untangled', r.untangle);
-            if (r.babies !== undefined) {
-                const babyLabels = CONTENT.babies ? CONTENT.babies.labels : [];
-                addAnswer('babies', babyLabels[r.babies] || r.babies);
+
+            // ---- the senses ----
+            const hasSenses = r.color || r.texture || r.music !== undefined || r.nature || r.body || r.toes || (r.food && r.food.length > 0);
+            if (hasSenses) {
+                addSectionHeader('the senses');
+                if (r.color) {
+                    const colorSwatch = `<span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:hsl(${r.color.h},${r.color.s}%,${r.color.l}%);vertical-align:middle;margin-right:4px;"></span>`;
+                    addAnswer('color', `${colorSwatch} ${this._describeColor(r.color)}`);
+                }
+                if (r.texture) addAnswer('texture', r.texture);
+                if (r.music !== undefined) addAnswer('music', `${this._describeMusicVolume(r.music)} (${r.music}/100)`);
+                if (r.nature) addAnswer('nature', r.nature.join(' > '));
+                if (r.body) {
+                    const bodyLabels = { forward: 'forward', tucked: 'tucked under', tilted: 'tilted to one side', back: 'pushed back', unsure: 'no idea' };
+                    addAnswer('pelvis', bodyLabels[r.body] || r.body);
+                }
+                if (r.toes) {
+                    const toeLabels = { yes: 'yes, easily', some: 'some of them', no: 'not really', trying: 'tried it right now' };
+                    addAnswer('toes', toeLabels[r.toes] || r.toes);
+                }
+                if (r.food && r.food.length > 0) addAnswer('food', r.food.join(', '));
             }
+
+            // ---- the mind ----
+            const hasMind = (r.ai && r.ai.length > 0) || r.readingWpm || r.sequence || r.precision !== undefined || r.hold || r.shades || (r.neuro && r.neuro.length > 0) || r.untangle;
+            if (hasMind) {
+                addSectionHeader('the mind');
+                if (r.ai && r.ai.length > 0) addAnswer('AI', `${r.ai.join(', ')} (${r.ai.length}/6)`);
+                if (r.readingWpm) {
+                    const readResult = r.readingCorrect ? 'correct' : 'wrong answer';
+                    addAnswer('reading speed', `${r.readingWpm} wpm (${readResult})`);
+                }
+                if (r.sequence) addAnswer('sequence puzzle', r.sequence);
+                if (r.precision !== undefined) addAnswer('precision', this._describePrecision(r.precision));
+                if (r.hold) addAnswer('hold at 10s', this._describeHold(r.hold));
+                if (r.shades) addAnswer('shade ordering', r.shades);
+                if (r.neuro && r.neuro.length > 0) addAnswer('neuro', r.neuro.join(', '));
+                if (r.untangle) addAnswer('untangle', r.untangle);
+            }
+
+            // ---- the feels ----
+            const hasFeels = r.crying || r.message || r.upside || r.spirit !== undefined || r.meta || r.god;
+            if (hasFeels) {
+                addSectionHeader('the feels');
+                if (r.crying) {
+                    const cryLabels = { hug: 'goes to hug them', ask: 'asks what they need', space: 'gives them space', cry: 'also starts crying', depends: 'depends on who' };
+                    addAnswer('when someone cries', cryLabels[r.crying] || r.crying);
+                }
+                if (r.message) addAnswer('message preference', r.message === 'soft' ? 'soft' : 'direct');
+                if (r.upside) {
+                    const upsideLabels = { love: 'loves it', fine: 'it\'s fine', uncomfortable: 'uncomfortable', never: 'actively avoids it', when: 'can\'t even remember' };
+                    addAnswer('upside down', upsideLabels[r.upside] || r.upside);
+                }
+                if (r.spirit !== undefined) addAnswer('spirituality', `${this._describeSpirit(r.spirit)} (${r.spirit}/100)`);
+                if (r.meta) {
+                    const metaLabels = { hate: 'hates it', loveHating: 'loves hating it', hateLove: 'hates loving it', dontStart: 'don\'t get them started' };
+                    addAnswer('going meta', metaLabels[r.meta] || r.meta);
+                }
+                if (r.god) addAnswer('calls it', `"${r.god}"`);
+            }
+
+            // ---- the vibes ----
+            const hasVibes = r.lead || r.room !== undefined || r.babies !== undefined || r.therapyHours || r.embodiment || r.patterns || r.fun;
+            if (hasVibes) {
+                addSectionHeader('the vibes');
+                if (r.lead) {
+                    const leadLabels = { lead: 'leads', follow: 'follows', both: 'depends on context', neither: 'figures it out together' };
+                    addAnswer('lead or follow', leadLabels[r.lead] || r.lead);
+                }
+                if (r.room !== undefined) addAnswer('living space', `${this._describeRoom(r.room)} (${r.room}/100)`);
+                if (r.babies !== undefined) {
+                    const babyLabels = CONTENT.babies ? CONTENT.babies.labels : [];
+                    addAnswer('babies', babyLabels[r.babies] || r.babies);
+                }
+                if (r.therapyHours) addAnswer('therapy', `${r.therapyHours} hours`);
+                if (r.embodiment) addAnswer('learning physical things', r.embodiment);
+                if (r.patterns) addAnswer('meeting someone interesting', r.patterns);
+                if (r.fun) {
+                    const funLabels = { yes: 'yes', 'kind-of': 'kind of', 'not-sure': 'not sure what this is', no: 'no' };
+                    addAnswer('having fun', funLabels[r.fun] || r.fun);
+                }
+            }
+
+            // ---- a good day ----
             if (r.day) {
                 const dayParts = [];
                 const fmt = (arr) => Array.isArray(arr) ? arr.join(', ') : arr;
@@ -2244,15 +2457,22 @@ const Playground = {
                         dayParts.push(`${phase}: ${fmt(val)}`);
                     }
                 });
-                if (dayParts.length > 0) addAnswer('perfect day', dayParts.join(' | '));
+                if (dayParts.length > 0) {
+                    addSectionHeader('a good day');
+                    addAnswer('', dayParts.join(' | '));
+                }
             }
 
-            // Autocomplete answers
-            if (r['auto-1']) addAnswer('in the middle of the night I', r['auto-1']);
-            if (r['auto-2']) addAnswer('pleasure is', r['auto-2']);
-            if (r['auto-3']) addAnswer('all parts of me', r['auto-3']);
-            if (r['auto-4']) addAnswer('the point of life is', r['auto-4']);
-            if (r['auto-5']) addAnswer('I never leave the house without', r['auto-5']);
+            // ---- in their own words ----
+            const hasAuto = r['auto-1'] || r['auto-2'] || r['auto-3'] || r['auto-4'] || r['auto-5'];
+            if (hasAuto) {
+                addSectionHeader('in their own words');
+                if (r['auto-1']) addAnswer('', `"in the middle of the night I ${r['auto-1']}"`);
+                if (r['auto-2']) addAnswer('', `"pleasure is ${r['auto-2']}"`);
+                if (r['auto-3']) addAnswer('', `"all parts of me ${r['auto-3']}"`);
+                if (r['auto-4']) addAnswer('', `"the point of life is ${r['auto-4']}"`);
+                if (r['auto-5']) addAnswer('', `"I never leave the house without ${r['auto-5']}"`);
+            }
 
             if (yourAnswersContent.children.length === 0) {
                 yourAnswersContent.innerHTML = '<p style="opacity: 0.6; font-style: italic;">answer some things first</p>';
