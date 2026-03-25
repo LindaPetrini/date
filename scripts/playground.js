@@ -2674,6 +2674,8 @@ const Playground = {
         if (section) section.style.display = '';
         canvas.style.display = 'block';
 
+        const r = this.responses;
+
         // Handle devicePixelRatio for crisp text
         const dpr = window.devicePixelRatio || 1;
         const W = 600;
