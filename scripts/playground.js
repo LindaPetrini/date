@@ -2339,13 +2339,6 @@ const Playground = {
 
         lines.push('\u2726');
 
-        // Append results URL
-        const resultsUrl = this._getResultsUrl();
-        if (resultsUrl) {
-            lines.push('');
-            lines.push('view my visual card: ' + resultsUrl);
-        }
-
         return lines.join('\n');
     },
 
@@ -3020,5 +3013,8 @@ if (document.readyState === 'loading') {
 } else {
     Playground.init();
 }
+
+// Render results card after everything has settled (window.onload fires after all resources)
+window.addEventListener('load', () => Playground.renderResultsCard());
 
 window.Playground = Playground;
