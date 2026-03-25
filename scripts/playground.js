@@ -2641,18 +2641,37 @@ const Playground = {
         this.renderResultsCard();
     },
 
+    // Count meaningful answers (excludes empty day object and similar non-answers)
+    _countMeaningfulAnswers() {
+        const r = this.responses;
+        let count = 0;
+        for (const key of Object.keys(r)) {
+            if (key === 'day') {
+                // Day only counts if at least one phase has items
+                const d = r.day;
+                if (d && ['morning', 'afternoon', 'evening', 'night'].some(
+                    p => Array.isArray(d[p]) && d[p].length > 0
+                )) count++;
+            } else {
+                count++;
+            }
+        }
+        return count;
+    },
+
     renderResultsCard() {
         const canvas = document.getElementById('results-card-canvas');
         if (!canvas) return;
 
+        const section = document.getElementById('results-card-section');
         const card = this._getArchetypeAndCompat();
-        const r = this.responses;
-        const hasAnswers = Object.keys(r).length > 0;
+        const meaningfulCount = this._countMeaningfulAnswers();
 
-        if (!hasAnswers) {
-            canvas.style.display = 'none';
+        if (meaningfulCount < 3) {
+            if (section) section.style.display = 'none';
             return;
         }
+        if (section) section.style.display = '';
         canvas.style.display = 'block';
 
         // Handle devicePixelRatio for crisp text

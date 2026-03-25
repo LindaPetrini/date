@@ -2309,6 +2309,16 @@
     height: auto;
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+    display: block;
+    margin: 0 auto;
+}
+
+.results-card-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
 }
 
 .save-card-btn,
@@ -2322,7 +2332,6 @@
     border-radius: 6px;
     cursor: pointer;
     transition: all 0.2s;
-    margin: 0.75rem 0.25rem 0;
 }
 
 .save-card-btn:hover,
@@ -2335,6 +2344,7 @@
     font-family: var(--font-mono);
     font-size: 0.8rem;
     color: var(--color-petrol);
+    text-align: center;
     margin-top: 0.5rem;
     min-height: 1.2em;
 }
