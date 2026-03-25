@@ -1975,8 +1975,8 @@
 }
 
 .lead-option {
-    font-family: var(--font-body);
-    font-size: 0.9rem;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
     padding: 0.75rem 1rem;
     background: transparent;
     border: 1px solid var(--color-rosa-light);
@@ -2042,10 +2042,48 @@
     border-color: var(--color-petrol);
 }
 
+.therapy-buzzword-hint {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-petrol);
+    margin-top: 1rem;
+    margin-bottom: 0;
+}
+
+.therapy-buzzwords {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.therapy-chip {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    padding: 0.4rem 0.8rem;
+    border: 1px solid var(--color-rosa-light);
+    border-radius: 20px;
+    background: transparent;
+    cursor: pointer;
+    color: var(--color-text);
+    transition: all 0.2s ease;
+}
+
+.therapy-chip:hover {
+    border-color: var(--color-petrol);
+    background: rgba(45, 106, 106, 0.05);
+}
+
+.therapy-chip.selected {
+    border-color: var(--color-petrol);
+    background: rgba(45, 106, 106, 0.1);
+    color: var(--color-petrol);
+}
+
 .therapy-response {
-    font-family: var(--font-body);
+    font-family: var(--font-mono);
     font-style: italic;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: var(--color-petrol);
     margin-top: 1rem;
     min-height: 1.5em;

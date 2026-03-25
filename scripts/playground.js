@@ -1555,29 +1555,80 @@ const Playground = {
     initTherapy() {
         const hoursInput = document.getElementById('therapy-hours');
         const response = document.getElementById('therapy-response');
+        const buzzwordsContainer = document.getElementById('therapy-buzzwords');
         const C = CONTENT.therapy;
+
+        // Initialize saved buzzwords array
+        if (!this.responses.therapyBuzzwords) {
+            this.responses.therapyBuzzwords = [];
+        }
+
+        // Create buzzword chips
+        if (buzzwordsContainer && C.buzzwords) {
+            C.buzzwords.forEach(word => {
+                const chip = document.createElement('button');
+                chip.className = 'therapy-chip';
+                chip.textContent = word;
+                chip.dataset.word = word;
+
+                // Restore saved state
+                if (this.responses.therapyBuzzwords.includes(word)) {
+                    chip.classList.add('selected');
+                }
+
+                chip.addEventListener('click', () => {
+                    chip.classList.toggle('selected');
+                    const selected = this.responses.therapyBuzzwords;
+                    if (chip.classList.contains('selected')) {
+                        if (!selected.includes(word)) selected.push(word);
+                    } else {
+                        const idx = selected.indexOf(word);
+                        if (idx > -1) selected.splice(idx, 1);
+                    }
+                    this.responses.therapyBuzzwords = selected;
+                    this.saveResponses();
+                    updateResponse();
+                });
+
+                buzzwordsContainer.appendChild(chip);
+            });
+        }
 
         const updateResponse = () => {
             const hours = parseInt(hoursInput.value) || 0;
+            const buzzCount = (this.responses.therapyBuzzwords || []).length;
 
             this.responses.therapyHours = hours;
             this.saveResponses();
 
-            if (hours === 0) {
-                response.textContent = "";
-            } else if (hours > 500) {
-                response.textContent = C.responses.lots;
+            // Build response parts
+            const parts = [];
+
+            // Hours response
+            if (hours > 500) {
+                parts.push(C.responses.lots);
             } else if (hours > 100) {
-                response.textContent = C.responses.some;
+                parts.push(C.responses.some);
             } else if (hours > 0) {
-                response.textContent = C.responses.default;
+                parts.push(C.responses.default);
             }
+
+            // Buzzword response
+            if (buzzCount >= 9) {
+                parts.push(C.buzzwordResponses.deep);
+            } else if (buzzCount >= 4) {
+                parts.push(C.buzzwordResponses.medium);
+            } else if (buzzCount >= 1) {
+                parts.push(C.buzzwordResponses.light);
+            }
+
+            response.textContent = parts.join(' · ');
         };
 
         hoursInput.addEventListener('change', updateResponse);
 
         if (this.responses.therapyHours) hoursInput.value = this.responses.therapyHours;
-        if (this.responses.therapyHours) updateResponse();
+        if (this.responses.therapyHours || (this.responses.therapyBuzzwords && this.responses.therapyBuzzwords.length)) updateResponse();
     },
 
     // ========== Toy 22: God ==========
@@ -2325,7 +2376,12 @@ const Playground = {
             const babyLabels = CONTENT.babies ? CONTENT.babies.labels : [];
             vibes.push(`babies: ${babyLabels[r.babies] || r.babies}`);
         }
-        if (r.therapyHours) vibes.push(`therapy: ${r.therapyHours} hours`);
+        if (r.therapyHours || (r.therapyBuzzwords && r.therapyBuzzwords.length)) {
+            const parts = [];
+            if (r.therapyHours) parts.push(`${r.therapyHours} hours`);
+            if (r.therapyBuzzwords && r.therapyBuzzwords.length) parts.push(r.therapyBuzzwords.join(', '));
+            vibes.push(`therapy: ${parts.join(' · ')}`);
+        }
         if (r.embodiment) vibes.push(`learning physical things: ${r.embodiment}`);
         if (r.patterns) vibes.push(`meeting someone interesting: ${r.patterns}`);
         if (r.fun) {
@@ -2471,7 +2527,7 @@ const Playground = {
             }
 
             // ---- the vibes ----
-            const hasVibes = r.lead || r.room !== undefined || r.babies !== undefined || r.therapyHours || r.embodiment || r.patterns || r.fun;
+            const hasVibes = r.lead || r.room !== undefined || r.babies !== undefined || r.therapyHours || (r.therapyBuzzwords && r.therapyBuzzwords.length) || r.embodiment || r.patterns || r.fun;
             if (hasVibes) {
                 addSectionHeader('the vibes');
                 if (r.lead) {
@@ -2483,7 +2539,12 @@ const Playground = {
                     const babyLabels = CONTENT.babies ? CONTENT.babies.labels : [];
                     addAnswer('babies', babyLabels[r.babies] || r.babies);
                 }
-                if (r.therapyHours) addAnswer('therapy', `${r.therapyHours} hours`);
+                if (r.therapyHours || (r.therapyBuzzwords && r.therapyBuzzwords.length)) {
+                    const parts = [];
+                    if (r.therapyHours) parts.push(`${r.therapyHours} hours`);
+                    if (r.therapyBuzzwords && r.therapyBuzzwords.length) parts.push(r.therapyBuzzwords.join(', '));
+                    addAnswer('therapy', parts.join(' · '));
+                }
                 if (r.embodiment) addAnswer('learning physical things', r.embodiment);
                 if (r.patterns) addAnswer('meeting someone interesting', r.patterns);
                 if (r.fun) {
@@ -2717,7 +2778,7 @@ const Playground = {
         if (r.crying) preAnswers.push(1);
         if (r.god) preAnswers.push(1);
         if (r.lead) preAnswers.push(1);
-        if (r.therapyHours) preAnswers.push(1);
+        if (r.therapyHours || (r.therapyBuzzwords && r.therapyBuzzwords.length)) preAnswers.push(1);
         if (r.upside) preAnswers.push(1);
         const answerRows = Math.ceil(preAnswers.length / 2);
         const preAutoAnswers = [r['auto-1'], r['auto-2'], r['auto-4']].filter(Boolean).length;
@@ -2918,7 +2979,12 @@ const Playground = {
             const leadLabels = { lead: 'leads', follow: 'follows', both: 'context-dependent', neither: 'collaborative' };
             answers.push(['lead/follow', leadLabels[r.lead] || r.lead]);
         }
-        if (r.therapyHours) answers.push(['therapy', `${r.therapyHours} hours`]);
+        if (r.therapyHours || (r.therapyBuzzwords && r.therapyBuzzwords.length)) {
+            const parts = [];
+            if (r.therapyHours) parts.push(`${r.therapyHours} hours`);
+            if (r.therapyBuzzwords && r.therapyBuzzwords.length) parts.push(r.therapyBuzzwords.join(', '));
+            answers.push(['therapy', parts.join(' · ')]);
+        }
         if (r.upside) {
             const upsideLabels = { love: 'loves it', fine: 'fine', uncomfortable: 'uncomfortable', never: 'avoids it', when: 'can\'t remember' };
             answers.push(['upside down', upsideLabels[r.upside] || r.upside]);

@@ -152,8 +152,8 @@ const CONTENT = {
     // TOY 4: EMOTION / NVC
     // =====================================================
     emotion: {
-        title: "feeling or not?",
-        hint: "feeling or thinking? — 6 quick rounds",
+        title: "NVC nerd check",
+        hint: "if you don't know what this is, it's probably not that important — 6 quick rounds",
         buttons: { yes: "yes, a feeling", no: "no, something else" },
         endText: "that's all of them",
         summary: "you got {correct} out of {total}. turns out a lot of what we call feelings are actually thoughts about what someone else did. most people find this weird at first.",
@@ -475,10 +475,22 @@ const CONTENT = {
         labels: {
             hours: "hours spent in therapy (lifetime estimate)"
         },
+        buzzwords: [
+            "IFS", "parts work", "SE", "polyvagal", "EMDR", "attachment theory",
+            "CBT", "DBT", "Jung", "shadow work", "jhāna", "vipassana",
+            "breathwork", "psychedelics", "NVC", "nervous system regulation",
+            "inner child", "somatic", "ego death", "plant medicine"
+        ],
+        buzzwordHint: "check all that ring a bell",
         responses: {
             lots: "you've done the work.",
             some: "significant investment in yourself.",
             default: "noted."
+        },
+        buzzwordResponses: {
+            deep: "oh you're deep in it",
+            medium: "you've been around",
+            light: "dipping your toes in"
         }
     },
 
@@ -667,7 +679,7 @@ const CONTENT = {
         crying: "ask, I value giving people agency a lot",
         spirit: "85/100 — something's def going on",
         lead: "depends on the context, but I lean follow",
-        therapy: "500+ hours",
+        therapy: "500+ hours, IFS + SE + jhāna + shadow work + psychedelics — the deep end",
         god: "to my big surprise, these days the answer is Jesus",
         food: "cook, joy, ingredients — food is connection",
         untangle: "yes. everything can.",
