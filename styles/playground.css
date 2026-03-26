@@ -387,7 +387,6 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
     margin-bottom: 1rem;
-    max-width: 500px;
 }
 
 .texture-option {
@@ -397,7 +396,6 @@
     transition: transform 0.2s, box-shadow 0.2s;
     border: 2px solid transparent;
     overflow: hidden;
-    max-height: 200px;
 }
 
 .texture-option:hover {
