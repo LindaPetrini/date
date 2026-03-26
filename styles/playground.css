@@ -264,6 +264,8 @@
 
 .shade-box {
     width: 50px;
+    padding: 0;
+    font: inherit;
     height: 50px;
     border-radius: 6px;
     cursor: pointer;
@@ -407,6 +409,9 @@
 
 .texture-option {
     aspect-ratio: 3/4;
+    background: none;
+    padding: 0;
+    font: inherit;
     border-radius: 8px;
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
@@ -2447,4 +2452,60 @@
     background: white;
 }
 
+/* ========== Micro-animations ========== */
+
+@keyframes toy-complete {
+    0% { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); }
+    50% { box-shadow: 0 2px 12px rgba(45, 106, 106, 0.15); }
+    100% { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); }
+}
+
+.toy.answered {
+    animation: toy-complete 0.6s ease;
+}
+
+@keyframes option-select {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
+}
+
+.toy .selected {
+    animation: option-select 0.3s ease;
+}
+
 /* ========== Patience Test ========== */
+
+/* Progress bar */
+.progress-bar-fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--color-rosa-light);
+    z-index: 100;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: var(--color-petrol);
+    width: 0%;
+    transition: width 0.5s ease;
+}
+
+.progress-bar-text {
+    position: absolute;
+    right: 8px;
+    top: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--color-petrol);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.progress-bar-fixed:hover .progress-bar-text {
+    opacity: 0.7;
+}

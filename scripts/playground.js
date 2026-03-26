@@ -51,6 +51,7 @@ const Playground = {
         this.initBabies();
         this.initUntangle();
         this.initShare();
+        this.restoreAnsweredState();
         this.populateAnswerSections();
         this.initResultsCard();
         this.initShareLink();
@@ -411,7 +412,8 @@ const Playground = {
         const render = () => {
             container.innerHTML = '';
             shades.forEach((shade, index) => {
-                const box = document.createElement('div');
+                const box = document.createElement('button');
+                box.type = 'button';
                 box.className = 'shade-box';
                 box.style.background = shade.color;
                 box.dataset.index = index;
@@ -907,6 +909,8 @@ const Playground = {
                 const item = document.createElement('div');
                 item.className = 'activity-item' + (isCustom ? ' custom' : '');
                 item.draggable = true;
+                item.tabIndex = 0;
+                item.setAttribute('role', 'option');
                 item.dataset.activity = activity;
 
                 const textSpan = document.createElement('span');
@@ -3106,6 +3110,15 @@ const Playground = {
     },
 
     // ========== Storage ==========
+    restoreAnsweredState() {
+        Object.keys(this.responses).forEach(key => {
+            const toyEl = document.getElementById(key);
+            if (toyEl) {
+                toyEl.closest('.toy')?.classList.add('answered');
+            }
+        });
+    },
+
     saveResponses() {
         if (this.viewingMode) return; // Don't save when viewing someone else's results
         try {
@@ -3116,6 +3129,13 @@ const Playground = {
         } catch (e) {
             console.log('Could not save responses:', e);
         }
+        // Mark answered toys
+        Object.keys(this.responses).forEach(key => {
+            const toyEl = document.getElementById(key);
+            if (toyEl) {
+                toyEl.closest('.toy')?.classList.add('answered');
+            }
+        });
     },
 
     loadResponses() {
