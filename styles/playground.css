@@ -135,6 +135,7 @@
     display: block;
     margin-left: auto;
     margin-right: auto;
+    width: fit-content;
 }
 
 .toy-action:hover {
