@@ -200,8 +200,8 @@
 
 .slider-group input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 16px;
-    height: 16px;
+    width: 22px;
+    height: 22px;
     background: var(--color-burgundy);
     border-radius: 50%;
     cursor: pointer;
