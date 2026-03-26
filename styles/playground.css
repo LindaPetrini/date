@@ -2476,36 +2476,4 @@
 
 /* ========== Patience Test ========== */
 
-/* Progress bar */
-.progress-bar-fixed {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: var(--color-rosa-light);
-    z-index: 100;
-    overflow: hidden;
-}
 
-.progress-bar-fill {
-    height: 100%;
-    background: var(--color-petrol);
-    width: 0%;
-    transition: width 0.5s ease;
-}
-
-.progress-bar-text {
-    position: absolute;
-    right: 8px;
-    top: 6px;
-    font-family: var(--font-mono);
-    font-size: 0.65rem;
-    color: var(--color-petrol);
-    opacity: 0;
-    transition: opacity 0.3s;
-}
-
-.progress-bar-fixed:hover .progress-bar-text {
-    opacity: 0.7;
-}
