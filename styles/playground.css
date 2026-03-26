@@ -38,7 +38,8 @@
 
 .nav-link {
     font-family: var(--font-mono);
-    font-size: 0.8rem;
+    font-size: 0.85rem;
+    padding: 0.25rem 0;
     color: var(--color-petrol);
     text-decoration: none;
     opacity: 0.7;
