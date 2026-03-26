@@ -2334,6 +2334,12 @@
     margin-top: 0.5rem;
 }
 
+.untangle-buttons .toy-action {
+    display: inline-block;
+    margin-left: 0;
+    margin-right: 0;
+}
+
 .untangle-response {
     font-family: var(--font-mono);
     font-size: 0.85rem;
