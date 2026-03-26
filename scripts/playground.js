@@ -55,6 +55,7 @@ const Playground = {
         this.populateAnswerSections();
         this.initResultsCard();
         this.initShareLink();
+        this.updateProgress();
     },
 
     // ========== Reorder toys based on CONTENT.toyOrder ==========
@@ -3136,6 +3137,19 @@ const Playground = {
                 toyEl.closest('.toy')?.classList.add('answered');
             }
         });
+        this.updateProgress();
+    },
+
+    updateProgress() {
+        const totalToys = 31;
+        const answered = Object.keys(this.responses).filter(k =>
+            this.responses[k] !== null && this.responses[k] !== undefined && this.responses[k] !== ''
+        ).length;
+        const pct = Math.round((answered / totalToys) * 100);
+        const fill = document.getElementById('progress-fill');
+        const text = document.getElementById('progress-text');
+        if (fill) fill.style.width = pct + '%';
+        if (text) text.textContent = answered + ' / ' + totalToys;
     },
 
     loadResponses() {

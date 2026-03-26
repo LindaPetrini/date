@@ -67,6 +67,11 @@
         <a href="?" class="viewing-play-btn">play yourself</a>
     </div>
 
+    <div class="progress-bar-fixed" id="progress-bar">
+        <div class="progress-bar-fill" id="progress-fill"></div>
+        <span class="progress-bar-text" id="progress-text">0 / 31</span>
+    </div>
+
     <main class="playground-container">
         <noscript>
             <div style="max-width: 600px; margin: 2em auto; padding: 2em; font-family: Georgia, serif; line-height: 1.7; color: #333;">
@@ -289,15 +294,15 @@
             </div>
             <div class="toy-content">
                 <div class="texture-grid" id="texture-grid">
-                    <div class="texture-option" data-texture="sandstone" title="honed sandstone">
+                    <button type="button" class="texture-option" data-texture="sandstone" title="honed sandstone" role="option" aria-label="honed sandstone">
                         <img src="assets/textures/sandstone.jpg" alt="Honed Sandstone">
-                    </div>
-                    <div class="texture-option" data-texture="plaster" title="textured plaster">
+                    </button>
+                    <button type="button" class="texture-option" data-texture="plaster" title="textured plaster" role="option" aria-label="textured plaster">
                         <img src="assets/textures/plaster.jpg" alt="Textured Plaster">
-                    </div>
-                    <div class="texture-option" data-texture="concrete" title="concrete slate-teal">
+                    </button>
+                    <button type="button" class="texture-option" data-texture="concrete" title="concrete slate-teal" role="option" aria-label="concrete slate-teal">
                         <img src="assets/textures/concrete.jpg" alt="Concrete Slate-Teal">
-                    </div>
+                    </button>
                 </div>
                 <div class="texture-chosen" id="texture-chosen"></div>
             </div>
@@ -401,11 +406,11 @@
             </div>
             <div class="toy-content">
                 <div class="rank-container" id="nature-rank">
-                    <div class="rank-item" data-item="sea" draggable="true">sea</div>
-                    <div class="rank-item" data-item="mountain" draggable="true">mountain</div>
-                    <div class="rank-item" data-item="lake" draggable="true">lake</div>
-                    <div class="rank-item" data-item="river" draggable="true">river</div>
-                    <div class="rank-item" data-item="forest" draggable="true">forest</div>
+                    <div class="rank-item" data-item="sea" draggable="true" tabindex="0" role="option">sea</div>
+                    <div class="rank-item" data-item="mountain" draggable="true" tabindex="0" role="option">mountain</div>
+                    <div class="rank-item" data-item="lake" draggable="true" tabindex="0" role="option">lake</div>
+                    <div class="rank-item" data-item="river" draggable="true" tabindex="0" role="option">river</div>
+                    <div class="rank-item" data-item="forest" draggable="true" tabindex="0" role="option">forest</div>
                 </div>
                 <p class="rank-hint">drag to reorder</p>
                 <button class="toy-action" id="save-nature">this order</button>
