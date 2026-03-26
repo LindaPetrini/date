@@ -123,7 +123,7 @@
 
 .toy-action {
     font-family: var(--font-mono);
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     padding: 0.5rem 1rem;
     background: var(--color-petrol);
     color: white;
@@ -304,7 +304,7 @@
 
 .emotion-btn {
     font-family: var(--font-body);
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     padding: 0.6rem 1.2rem;
     background: transparent;
     border: 1px solid var(--color-petrol);
