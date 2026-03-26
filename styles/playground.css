@@ -1035,7 +1035,7 @@
 .activity-pool h3,
 .day-timetable h3 {
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: 0.85rem;
     color: var(--color-petrol);
     text-transform: uppercase;
     margin-bottom: 0.75rem;
