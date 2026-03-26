@@ -84,6 +84,10 @@
     border: 1px solid var(--color-rosa-light);
 }
 
+.toy input, .toy button, .toy select, .toy textarea {
+    font-family: inherit;
+}
+
 .toy-header {
     margin-bottom: 1.25rem;
 }
