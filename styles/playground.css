@@ -117,6 +117,16 @@
     margin-top: 0.25rem;
 }
 
+.toy h3 {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-petrol);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.75rem;
+}
+
 .toy-content {
     /* Container for toy interactions */
 }
