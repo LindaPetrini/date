@@ -295,8 +295,8 @@
 }
 
 .emotion-btn {
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
     padding: 0.6rem 1.2rem;
     background: transparent;
     border: 1px solid var(--color-petrol);
@@ -931,8 +931,8 @@
 }
 
 .fun-option {
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
     padding: 0.5rem 1rem;
     background: transparent;
     border: 1px solid var(--color-rosa-light);
@@ -970,8 +970,8 @@
 }
 
 .meta-option {
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
     padding: 0.5rem 1rem;
     background: transparent;
     border: 1px solid var(--color-rosa-light);
@@ -1276,8 +1276,8 @@
 }
 
 .embodiment-option {
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
     padding: 0.6rem 1rem;
     background: transparent;
     border: 1px solid var(--color-rosa-light);
@@ -1315,8 +1315,8 @@
 }
 
 .patterns-option {
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
     padding: 0.6rem 1rem;
     background: transparent;
     border: 1px solid var(--color-rosa-light);
@@ -1975,8 +1975,8 @@
 }
 
 .lead-option {
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
     padding: 0.75rem 1rem;
     background: transparent;
     border: 1px solid var(--color-rosa-light);
