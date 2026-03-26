@@ -547,9 +547,10 @@ const CONTENT = {
         buttonText: "hold",
         responses: {
             perfect: "perfect timing. {elapsed}s",
-            close: "so close. {elapsed}s",
-            decent: "not bad. {elapsed}s",
-            miss: "try again? {elapsed}s"
+            closeEarly: "a little eager. {elapsed}s",
+            closeLate: "held on a beat too long. {elapsed}s",
+            early: "too quick — {elapsed}s",
+            late: "couldn't let go? {elapsed}s"
         }
     },
 

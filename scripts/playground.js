@@ -1770,22 +1770,18 @@ const Playground = {
             const diff = Math.abs(elapsed - 10);
             timerSpan.textContent = `${elapsed.toFixed(2)}s`;
 
-            if (diff <= 0.05) {
-                completed = true;
-                response.textContent = C.responses.perfect.replace('{elapsed}', elapsed.toFixed(2));
-                this.responses.hold = 'perfect';
-            } else if (diff <= 0.20) {
-                completed = true;
-                response.textContent = C.responses.close.replace('{elapsed}', elapsed.toFixed(2));
-                this.responses.hold = 'close';
-            } else if (diff <= 0.50) {
-                completed = true;
-                response.textContent = C.responses.decent.replace('{elapsed}', elapsed.toFixed(2));
-                this.responses.hold = 'decent';
+            let key;
+            if (diff <= 0.2) {
+                key = 'perfect';
+            } else if (elapsed < 10) {
+                key = elapsed >= 9.0 ? 'closeEarly' : 'early';
             } else {
-                response.textContent = C.responses.miss.replace('{elapsed}', elapsed.toFixed(2));
-                this.responses.hold = elapsed.toFixed(2);
+                key = elapsed <= 11.0 ? 'closeLate' : 'late';
             }
+
+            response.textContent = C.responses[key].replace('{elapsed}', elapsed.toFixed(2));
+            completed = true;
+            this.responses.hold = key;
             this.saveResponses();
         };
 
@@ -1795,7 +1791,7 @@ const Playground = {
         button.addEventListener('mouseleave', () => { if (!completed && startTime) endHold(); });
         button.addEventListener('touchend', () => { if (!completed && startTime) endHold(); });
 
-        if (['perfect', 'close', 'decent'].includes(this.responses.hold)) {
+        if (['perfect', 'closeEarly', 'closeLate', 'early', 'late'].includes(this.responses.hold)) {
             completed = true;
             const storedPrecision = this.responses.hold;
             response.textContent = C.responses[storedPrecision].replace('{elapsed}', '');
@@ -2023,7 +2019,7 @@ const Playground = {
             else if (r.upside === 'fine') playfulness += 60;
             else playfulness += 20;
         }
-        if (r.hold === 'completed') {
+        if (r.hold && ['perfect', 'closeEarly', 'closeLate', 'early', 'late'].includes(r.hold)) {
             playCount++;
             playfulness += 80;
         }
@@ -2224,8 +2220,10 @@ const Playground = {
 
     _describeHold(val) {
         if (val === 'perfect') return 'perfect timing';
-        if (val === 'close') return 'so close';
-        if (val === 'decent') return 'not bad';
+        if (val === 'closeEarly') return 'a little eager';
+        if (val === 'closeLate') return 'held on a beat too long';
+        if (val === 'early') return 'too quick';
+        if (val === 'late') return "couldn't let go";
         // Numeric string like "10.42"
         const num = parseFloat(val);
         if (!isNaN(num)) return `${num}s`;
@@ -2244,7 +2242,7 @@ const Playground = {
             else if (r.upside === 'fine') playfulness += 60;
             else playfulness += 20;
         }
-        if (r.hold === 'completed') { playCount++; playfulness += 80; }
+        if (r.hold && ['perfect', 'closeEarly', 'closeLate', 'early', 'late'].includes(r.hold)) { playCount++; playfulness += 80; }
         if (playCount > 0) stats.playfulness = Math.round(playfulness / playCount);
         if (r.ai && r.ai.length > 0) stats['tech affinity'] = Math.min(100, (r.ai.length / 6) * 100);
         if (r.spirit !== undefined) stats.spirituality = parseInt(r.spirit);
@@ -3080,7 +3078,7 @@ const Playground = {
             else if (r.upside === 'fine') playfulness += 60;
             else playfulness += 20;
         }
-        if (r.hold === 'completed') { playCount++; playfulness += 80; }
+        if (r.hold && ['perfect', 'closeEarly', 'closeLate', 'early', 'late'].includes(r.hold)) { playCount++; playfulness += 80; }
         if (playCount > 0) stats.playfulness = Math.round(playfulness / playCount);
 
         if (r.ai && r.ai.length > 0) stats['tech affinity'] = Math.min(100, (r.ai.length / 6) * 100);
