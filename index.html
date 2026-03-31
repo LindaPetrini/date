@@ -834,6 +834,44 @@
                 <button class="share-btn" id="share-toggle">share your answers with me</button>
                 <div class="share-form-container" id="share-form-container" style="display: none;">
                     <form class="share-form" id="share-form">
+                        <!-- Photo upload -->
+                        <div class="share-field-group">
+                            <label class="share-label" for="share-photo">a picture of you</label>
+                            <span class="share-hint">so I can put a face to the answers</span>
+                            <div class="photo-upload-area" id="photo-upload-area">
+                                <input type="file" id="share-photo" name="photo" accept="image/*" class="photo-input">
+                                <div class="photo-placeholder" id="photo-placeholder">
+                                    <span class="photo-icon">+</span>
+                                    <span class="photo-text">choose a photo</span>
+                                </div>
+                                <div class="photo-preview" id="photo-preview" style="display: none;">
+                                    <img id="photo-preview-img" alt="preview">
+                                    <button type="button" class="photo-remove" id="photo-remove">&times;</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Voice note -->
+                        <div class="share-field-group">
+                            <label class="share-label">say something</label>
+                            <span class="share-hint">30 seconds, whatever comes to mind</span>
+                            <div class="voice-note-area" id="voice-note-area">
+                                <button type="button" class="voice-record-btn" id="voice-record-btn">
+                                    <span class="voice-icon" id="voice-icon">&#9679;</span>
+                                    <span class="voice-btn-text" id="voice-btn-text">record</span>
+                                </button>
+                                <div class="voice-timer" id="voice-timer" style="display: none;">0:00</div>
+                                <div class="voice-playback" id="voice-playback" style="display: none;">
+                                    <audio id="voice-audio" controls></audio>
+                                    <div class="voice-actions">
+                                        <button type="button" class="voice-action-btn" id="voice-download-btn">download to attach</button>
+                                        <button type="button" class="voice-action-btn voice-discard-btn" id="voice-discard-btn">discard</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <input type="text" id="share-name" name="name" placeholder="your name">
                         <input type="email" id="share-email" name="email" placeholder="your email" required>
                         <textarea id="share-message" name="message" placeholder="anything else you want to say..." rows="3"></textarea>
                         <input type="hidden" id="share-answers" name="answers">
@@ -842,7 +880,7 @@
                             <button type="submit" class="form-submit-btn mailto-btn">open email client</button>
                         </div>
                     </form>
-                    <p class="form-note">copy your answers and send them however you like — email, message, carrier pigeon. or use the email button as a shortcut. lindapetrini@gmail.com</p>
+                    <p class="form-note">copy your answers and send them however you like — email, message, carrier pigeon. or use the email button as a shortcut. remember to attach your photo and voice note if you recorded one! lindapetrini@gmail.com</p>
                     <div class="form-response" id="form-response"></div>
                 </div>
             </div>

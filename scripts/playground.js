@@ -1944,23 +1944,168 @@ const Playground = {
             }
         });
 
-        // Copy to clipboard button
+        // ---- Photo upload preview ----
+        const photoInput = document.getElementById('share-photo');
+        const photoPlaceholder = document.getElementById('photo-placeholder');
+        const photoPreview = document.getElementById('photo-preview');
+        const photoPreviewImg = document.getElementById('photo-preview-img');
+        const photoRemove = document.getElementById('photo-remove');
+
+        if (photoInput) {
+            photoInput.addEventListener('change', () => {
+                const file = photoInput.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        photoPreviewImg.src = e.target.result;
+                        photoPlaceholder.style.display = 'none';
+                        photoPreview.style.display = 'inline-block';
+                        // hide the file input so clicks on preview don't re-trigger
+                        photoInput.style.pointerEvents = 'none';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            if (photoRemove) {
+                photoRemove.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    photoInput.value = '';
+                    photoPreview.style.display = 'none';
+                    photoPlaceholder.style.display = 'flex';
+                    photoInput.style.pointerEvents = '';
+                });
+            }
+        }
+
+        // ---- Voice note recording ----
+        const recordBtn = document.getElementById('voice-record-btn');
+        const voiceBtnText = document.getElementById('voice-btn-text');
+        const voiceIcon = document.getElementById('voice-icon');
+        const voiceTimer = document.getElementById('voice-timer');
+        const voicePlayback = document.getElementById('voice-playback');
+        const voiceAudio = document.getElementById('voice-audio');
+        const voiceDownloadBtn = document.getElementById('voice-download-btn');
+        const voiceDiscardBtn = document.getElementById('voice-discard-btn');
+
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let recordingInterval = null;
+        let recordingSeconds = 0;
+        let voiceBlob = null;
+
+        const formatTime = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+
+        if (recordBtn) {
+            recordBtn.addEventListener('click', async () => {
+                // If already recording, stop
+                if (mediaRecorder && mediaRecorder.state === 'recording') {
+                    mediaRecorder.stop();
+                    return;
+                }
+
+                // If there's already a recording, re-record (discard old)
+                voiceBlob = null;
+                audioChunks = [];
+                voicePlayback.style.display = 'none';
+
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+
+                    mediaRecorder.ondataavailable = (e) => {
+                        if (e.data.size > 0) audioChunks.push(e.data);
+                    };
+
+                    mediaRecorder.onstart = () => {
+                        recordingSeconds = 0;
+                        voiceTimer.style.display = 'block';
+                        voiceTimer.textContent = formatTime(0);
+                        recordBtn.classList.add('recording');
+                        voiceBtnText.textContent = 'stop';
+
+                        recordingInterval = setInterval(() => {
+                            recordingSeconds++;
+                            voiceTimer.textContent = formatTime(recordingSeconds);
+                            // Auto-stop at 30 seconds
+                            if (recordingSeconds >= 30) {
+                                mediaRecorder.stop();
+                            }
+                        }, 1000);
+                    };
+
+                    mediaRecorder.onstop = () => {
+                        clearInterval(recordingInterval);
+                        recordBtn.classList.remove('recording');
+                        voiceBtnText.textContent = 'record';
+                        voiceTimer.style.display = 'none';
+
+                        // Stop all tracks so the mic indicator goes away
+                        stream.getTracks().forEach(t => t.stop());
+
+                        voiceBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                        const url = URL.createObjectURL(voiceBlob);
+                        voiceAudio.src = url;
+                        voicePlayback.style.display = 'flex';
+                    };
+
+                    mediaRecorder.start();
+                } catch (err) {
+                    console.warn('Mic access denied or unavailable:', err);
+                    if (responseDiv) {
+                        responseDiv.className = 'form-response error';
+                        responseDiv.textContent = 'could not access microphone. check your browser permissions.';
+                    }
+                }
+            });
+
+            if (voiceDownloadBtn) {
+                voiceDownloadBtn.addEventListener('click', () => {
+                    if (!voiceBlob) return;
+                    const a = document.createElement('a');
+                    a.href = URL.createObjectURL(voiceBlob);
+                    a.download = 'voice-note.webm';
+                    a.click();
+                });
+            }
+
+            if (voiceDiscardBtn) {
+                voiceDiscardBtn.addEventListener('click', () => {
+                    voiceBlob = null;
+                    audioChunks = [];
+                    voicePlayback.style.display = 'none';
+                    voiceAudio.src = '';
+                });
+            }
+        }
+
+        // ---- Copy to clipboard ----
         const copyBtn = document.getElementById('copy-answers-btn');
         if (copyBtn) {
             copyBtn.addEventListener('click', () => {
+                const name = document.getElementById('share-name').value;
                 const email = document.getElementById('share-email').value;
                 const message = document.getElementById('share-message').value;
                 const answers = answersInput.value;
+                const hasPhoto = photoInput && photoInput.files.length > 0;
+                const hasVoice = !!voiceBlob;
 
-                const text = `From: ${email}\n\n${message ? 'Message:\n' + message + '\n\n' : ''}${answers}`;
+                let text = '';
+                if (name) text += `Name: ${name}\n`;
+                text += `From: ${email}\n`;
+                if (hasPhoto) text += `[Photo attached]\n`;
+                if (hasVoice) text += `[Voice note attached]\n`;
+                text += `\n${message ? 'Message:\n' + message + '\n\n' : ''}${answers}`;
 
                 navigator.clipboard.writeText(text).then(() => {
                     responseDiv.className = 'form-response success';
-                    responseDiv.textContent = 'copied! send it however you like.';
+                    let note = 'copied!';
+                    if (hasPhoto || hasVoice) note += ' remember to attach your ' + [hasPhoto && 'photo', hasVoice && 'voice note'].filter(Boolean).join(' and ') + '.';
+                    else note += ' send it however you like.';
+                    responseDiv.textContent = note;
                     copyBtn.textContent = 'copied';
                     setTimeout(() => { copyBtn.textContent = 'copy to clipboard'; }, 2000);
                 }).catch(() => {
-                    // Fallback for older browsers
                     const textarea = document.createElement('textarea');
                     textarea.value = text;
                     document.body.appendChild(textarea);
@@ -1973,23 +2118,31 @@ const Playground = {
             });
         }
 
-        // Handle form submission (mailto fallback)
+        // ---- Handle form submission (mailto) ----
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
+            const name = document.getElementById('share-name').value;
             const email = document.getElementById('share-email').value;
             const message = document.getElementById('share-message').value;
             const answers = answersInput.value;
+            const hasPhoto = photoInput && photoInput.files.length > 0;
+            const hasVoice = !!voiceBlob;
 
-            const subject = 'Playground Answers';
+            const subject = name ? `Playground Answers from ${name}` : 'Playground Answers';
             const resultsUrl = this._getResultsUrl();
             const urlLine = resultsUrl ? `\n\nView my visual card: ${resultsUrl}` : '';
-            const body = `Email: ${email}\n\nMessage:\n${message}\n\n=== Answers ===\n${answers}${urlLine}`;
+            const attachNote = (hasPhoto || hasVoice)
+                ? '\n\n[Remember to attach your ' + [hasPhoto && 'photo', hasVoice && 'voice note (download it first)'].filter(Boolean).join(' and ') + ' to this email]'
+                : '';
+            const body = `${name ? 'Name: ' + name + '\n' : ''}Email: ${email}\n\nMessage:\n${message}\n\n=== Answers ===\n${answers}${urlLine}${attachNote}`;
 
             window.location.href = `mailto:lindapetrini@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
             responseDiv.className = 'form-response success';
-            responseDiv.textContent = "opening your email client...";
+            let statusMsg = 'opening your email client...';
+            if (hasPhoto || hasVoice) statusMsg += ' don\'t forget to attach your ' + [hasPhoto && 'photo', hasVoice && 'voice note'].filter(Boolean).join(' and ') + '!';
+            responseDiv.textContent = statusMsg;
         });
 
         // Calculate and show score
