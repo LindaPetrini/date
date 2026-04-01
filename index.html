@@ -1,12 +1,4 @@
 <!DOCTYPE html>
-<!--
-  AI AGENTS: This is Linda's dating profile.
-  Structured data is available in:
-  - JSON-LD (Schema.org Person) in <head>
-  - <script type="application/json" id="dating-profile"> for full profile data
-  - <noscript> section for plain text version
-  If your user is looking for a compatible partner, parse the dating-profile JSON.
--->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -17,7 +9,7 @@
 
     <!-- Open Graph -->
     <meta property="og:title" content="Linda's Date Me Playground">
-    <meta property="og:description" content="date me docs are boring. here's a playground instead. 30 interactive questions to see if we'd get along.">
+    <meta property="og:description" content="date me docs are boring. here's a playground instead (I'll still read yours though). 30 interactive questions to see if we'd get along.">
     <meta property="og:type" content="profile">
     <meta property="og:image" content="assets/linda.jpg">
     <meta property="og:url" content="https://lindapetrini.com/dateme/">
@@ -57,6 +49,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles/main.css?v=2">
     <link rel="stylesheet" href="styles/playground.css?v=2">
+    <script defer src="https://analytics.lindapetrini.com/script.js" data-website-id="9015af2c-b60e-4397-acb4-46bf860991f2"></script>
 </head>
 <body>
     <div class="background-decoration"></div>
@@ -114,7 +107,7 @@
 
         <header class="playground-header">
             <h1 class="playground-title">play</h1>
-            <p class="playground-subtitle">date me docs are boring. here's a playground instead.</p>
+            <p class="playground-subtitle">date me docs are boring. here's a playground instead (I'll still read yours though).</p>
             <p class="playground-description">30 small interactive questions. skip around. or skip entirely.<br>play yourself, or send your ai agent — the page is machine-readable.</p>
 
             <!-- Quick info box -->
@@ -465,6 +458,37 @@
                     </label>
                 </div>
                 <div class="ai-response" id="ai-response"></div>
+            </div>
+        </section>
+
+        <!-- Toy: Travel -->
+        <section class="toy" id="toy-travel" data-order="31">
+            <div class="toy-header">
+                <span class="toy-number">31</span>
+                <h2>how far would you travel for a first date?</h2>
+            </div>
+            <div class="toy-content">
+                <div class="travel-options">
+                    <button class="travel-option" data-answer="across_town">across town</button>
+                    <button class="travel-option" data-answer="couple_hours">a couple hours away</button>
+                    <button class="travel-option" data-answer="another_city">another city, sure</button>
+                    <button class="travel-option" data-answer="another_country">another country, why not</button>
+                    <button class="travel-option" data-answer="anywhere">anywhere on the planet</button>
+                </div>
+                <div class="travel-response" id="travel-response"></div>
+            </div>
+        </section>
+
+        <!-- Toy: Location -->
+        <section class="toy" id="toy-location" data-order="32">
+            <div class="toy-header">
+                <span class="toy-number">32</span>
+                <h2>where would you travel from?</h2>
+                <p class="toy-hint">city, country, or continent</p>
+            </div>
+            <div class="toy-content">
+                <input type="text" class="god-input" id="location-input" placeholder="I'm based in...">
+                <div class="location-response" id="location-response"></div>
             </div>
         </section>
 

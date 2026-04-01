@@ -38,6 +38,8 @@ const Playground = {
         this.initSpiritSlider();
         this.initNeuroQuiz();
         this.initLeadFollow();
+        this.initTravel();
+        this.initLocation();
         this.initTherapy();
         this.initGod();
         this.initFood();
@@ -97,7 +99,9 @@ const Playground = {
             embodiment: document.getElementById('toy-embodiment'),
             patterns: document.getElementById('toy-patterns'),
             untangle: document.getElementById('toy-untangle'),
-            babies: document.getElementById('toy-babies')
+            babies: document.getElementById('toy-babies'),
+            travel: document.getElementById('toy-travel'),
+            location: document.getElementById('toy-location')
         };
 
         // Reorder toys after the path hint
@@ -1556,6 +1560,71 @@ const Playground = {
         }
     },
 
+    // ========== Toy: Travel ==========
+    initTravel() {
+        const options = document.querySelectorAll('.travel-option');
+        const response = document.getElementById('travel-response');
+        const C = CONTENT.travel;
+
+        options.forEach(btn => {
+            btn.addEventListener('click', () => {
+                options.forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                const answer = btn.dataset.answer;
+                response.textContent = C.responses[answer];
+                this.responses.travel = answer;
+                this.saveResponses();
+            });
+        });
+
+        if (this.responses.travel) {
+            const saved = document.querySelector(`.travel-option[data-answer="${this.responses.travel}"]`);
+            if (saved) {
+                saved.classList.add('selected');
+                response.textContent = C.responses[this.responses.travel];
+            }
+        }
+    },
+
+    // ========== Toy: Location ==========
+    initLocation() {
+        const input = document.getElementById('location-input');
+        const response = document.getElementById('location-response');
+        const C = CONTENT.location;
+
+        if (!input) return;
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const value = input.value.trim();
+                if (value) {
+                    response.textContent = C.response;
+                    this.responses.location = value;
+                    this.saveResponses();
+                    document.getElementById('toy-location').classList.add('answered');
+                    this.updateProgress();
+                }
+            }
+        });
+
+        // Also save on blur
+        input.addEventListener('blur', () => {
+            const value = input.value.trim();
+            if (value) {
+                response.textContent = C.response;
+                this.responses.location = value;
+                this.saveResponses();
+                document.getElementById('toy-location').classList.add('answered');
+                this.updateProgress();
+            }
+        });
+
+        if (this.responses.location) {
+            input.value = this.responses.location;
+            response.textContent = C.response;
+        }
+    },
+
     // ========== Toy 21: Therapy ==========
     initTherapy() {
         const hoursInput = document.getElementById('therapy-hours');
@@ -2239,6 +2308,40 @@ const Playground = {
             else compatPoints += 3;
         }
 
+        // Babies compatibility (important!)
+        if (r.babies !== undefined) {
+            compatMax += 15; // weighted higher
+            if (r.babies === 3 || r.babies === 4) compatPoints += 15;
+            else if (r.babies === 2) compatPoints += 10;
+            else if (r.babies === 5 || r.babies === 6) compatPoints += 8;
+            else if (r.babies === 1) compatPoints += 5;
+            // 0 gets 0 points
+        }
+
+        // Travel willingness
+        if (r.travel) {
+            compatMax += 5;
+            if (r.travel === 'another_country' || r.travel === 'anywhere') compatPoints += 5;
+            else if (r.travel === 'another_city') compatPoints += 3;
+            else compatPoints += 1;
+        }
+
+        // Therapy depth
+        if (r.therapyHours !== undefined) {
+            compatMax += 5;
+            if (r.therapyHours >= 100) compatPoints += 5;
+            else if (r.therapyHours >= 20) compatPoints += 3;
+            else compatPoints += 1;
+        }
+
+        // Body awareness (toes)
+        if (r.toes) {
+            compatMax += 5;
+            if (r.toes === 'yes' || r.toes === 'trying') compatPoints += 5;
+            else if (r.toes === 'some') compatPoints += 3;
+            else compatPoints += 1;
+        }
+
         // Render stats
         if (Object.keys(stats).length > 0) {
             scoreStats.innerHTML = '';
@@ -2269,17 +2372,18 @@ const Playground = {
             const low = (stat) => (stats[stat] || 50) < 40;
 
             let archetype;
-            if (high('playfulness') && high('spirituality')) archetype = "the fool";
-            else if (high('tech affinity') && high('emotional openness')) archetype = "the alchemist";
-            else if (high('adventurousness') && high('playfulness')) archetype = "the explorer";
-            else if (high('quietness') && high('spirituality')) archetype = "the hermit";
-            else if (high('emotional openness') && high('adventurousness')) archetype = "the lover";
-            else if (high('tech affinity') && low('emotional openness')) archetype = "the architect";
-            else if (high('playfulness') && low('spirituality')) archetype = "the trickster";
-            else archetype = "the magician";
+            if (percentage >= 85) archetype = "the alchemist";
+            else if (percentage >= 70 && high('adventurousness') && high('emotional openness')) archetype = "the lover";
+            else if (percentage >= 70 && high('tech affinity')) archetype = "the architect";
+            else if (percentage >= 55 && high('playfulness') && high('spirituality')) archetype = "the mystic";
+            else if (percentage >= 55 && high('adventurousness')) archetype = "the explorer";
+            else if (percentage >= 40 && high('quietness')) archetype = "the hermit";
+            else if (percentage >= 40 && high('playfulness')) archetype = "the trickster";
+            else if (high('tech affinity') && low('emotional openness')) archetype = "the engineer";
+            else archetype = "the wanderer";
 
             scoreValue.textContent = archetype;
-            scoreNote.textContent = `${percentage}% compatibility with linda`;
+            scoreNote.innerHTML = `${percentage}% compatibility with linda<br><span class="score-disclaimer">best guess — still calibrating</span>`;
         }
 
         // Draw the image/pattern in canvas
@@ -2427,19 +2531,24 @@ const Playground = {
         if (r.ai && r.ai.length >= 4) { compatMax += 10; compatPoints += 10; } else if (r.ai && r.ai.length > 0) { compatMax += 10; compatPoints += 5; }
         if (r.spirit !== undefined) { compatMax += 10; if (r.spirit >= 55) compatPoints += 10; else if (r.spirit >= 35) compatPoints += 5; }
         if (r.crying) { compatMax += 10; if (r.crying === 'cry' || r.crying === 'ask') compatPoints += 10; else if (r.crying === 'hug') compatPoints += 7; else compatPoints += 3; }
+        if (r.babies !== undefined) { compatMax += 15; if (r.babies === 3 || r.babies === 4) compatPoints += 15; else if (r.babies === 2) compatPoints += 10; else if (r.babies === 5 || r.babies === 6) compatPoints += 8; else if (r.babies === 1) compatPoints += 5; }
+        if (r.travel) { compatMax += 5; if (r.travel === 'another_country' || r.travel === 'anywhere') compatPoints += 5; else if (r.travel === 'another_city') compatPoints += 3; else compatPoints += 1; }
+        if (r.therapyHours !== undefined) { compatMax += 5; if (r.therapyHours >= 100) compatPoints += 5; else if (r.therapyHours >= 20) compatPoints += 3; else compatPoints += 1; }
+        if (r.toes) { compatMax += 5; if (r.toes === 'yes' || r.toes === 'trying') compatPoints += 5; else if (r.toes === 'some') compatPoints += 3; else compatPoints += 1; }
         if (compatMax === 0) return null;
         const percentage = Math.round((compatPoints / compatMax) * 100);
         const high = (stat) => (stats[stat] || 50) > 60;
         const low = (stat) => (stats[stat] || 50) < 40;
         let archetype;
-        if (high('playfulness') && high('spirituality')) archetype = 'the fool';
-        else if (high('tech affinity') && high('emotional openness')) archetype = 'the alchemist';
-        else if (high('adventurousness') && high('playfulness')) archetype = 'the explorer';
-        else if (high('quietness') && high('spirituality')) archetype = 'the hermit';
-        else if (high('emotional openness') && high('adventurousness')) archetype = 'the lover';
-        else if (high('tech affinity') && low('emotional openness')) archetype = 'the architect';
-        else if (high('playfulness') && low('spirituality')) archetype = 'the trickster';
-        else archetype = 'the magician';
+        if (percentage >= 85) archetype = 'the alchemist';
+        else if (percentage >= 70 && high('adventurousness') && high('emotional openness')) archetype = 'the lover';
+        else if (percentage >= 70 && high('tech affinity')) archetype = 'the architect';
+        else if (percentage >= 55 && high('playfulness') && high('spirituality')) archetype = 'the mystic';
+        else if (percentage >= 55 && high('adventurousness')) archetype = 'the explorer';
+        else if (percentage >= 40 && high('quietness')) archetype = 'the hermit';
+        else if (percentage >= 40 && high('playfulness')) archetype = 'the trickster';
+        else if (high('tech affinity') && low('emotional openness')) archetype = 'the engineer';
+        else archetype = 'the wanderer';
         return { archetype, percentage };
     },
 
@@ -2941,7 +3050,7 @@ const Playground = {
         const statsCount = Object.keys(this._calculateStats()).length;
 
         // Calculate dynamic height: base sections + stats + answers + auto-answers + footer
-        let estimatedH = 60 + 35 + 28 + 30; // top through archetype
+        let estimatedH = 60 + 35 + 28 + 18 + 30; // top through archetype + disclaimer
         if (r.color) estimatedH += 20;
         estimatedH += 30; // divider
         if (statsCount > 0) estimatedH += 18 + statsCount * 28; // stats header + bars
@@ -3029,6 +3138,14 @@ const Playground = {
             ctx.font = `16px ${fontBody}`;
             y += 28;
             ctx.fillText(`${card.percentage}% compatibility with linda`, 30, y);
+
+            // Disclaimer
+            ctx.fillStyle = textLight;
+            ctx.font = `11px ${fontBody}`;
+            ctx.globalAlpha = 0.55;
+            y += 18;
+            ctx.fillText('best guess — still calibrating', 30, y);
+            ctx.globalAlpha = 1.0;
         } else {
             ctx.fillStyle = textLight;
             ctx.font = `italic 20px ${fontBody}`;

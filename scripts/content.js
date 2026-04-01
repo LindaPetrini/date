@@ -20,7 +20,7 @@ const CONTENT = {
     // =====================================================
     intro: {
         title: "play",
-        subtitle: "date me docs are boring. here's a playground instead.",
+        subtitle: "date me docs are boring. here's a playground instead (I'll still read yours though).",
         description: "get to know some things about me. for dating or otherwise.",
         pathHint: "suggested start",
 
@@ -73,6 +73,8 @@ const CONTENT = {
         "texture",    // 6
         "shades",     // 3
         "autocomplete", // 5
+        "travel",     // how far for a date
+        "location",   // where from
         "ai",         // 14
         "toes",       // 7
         "untangle",   // untangle this
@@ -336,6 +338,37 @@ const CONTENT = {
             autoencoder: "technical foundations. nice.",
             default: "noted."
         }
+    },
+
+    // =====================================================
+    // TOY: TRAVEL
+    // =====================================================
+    travel: {
+        title: "how far would you travel for a first date?",
+        options: {
+            across_town: "across town",
+            couple_hours: "a couple hours away",
+            another_city: "another city, sure",
+            another_country: "another country, why not",
+            anywhere: "anywhere on the planet"
+        },
+        responses: {
+            across_town: "practical. proximity matters.",
+            couple_hours: "a reasonable adventure.",
+            another_city: "you're open. that helps.",
+            another_country: "distance is just logistics.",
+            anywhere: "a romantic. or very frequent flyer."
+        }
+    },
+
+    // =====================================================
+    // TOY: LOCATION
+    // =====================================================
+    location: {
+        title: "where would you travel from?",
+        hint: "city, country, or continent",
+        placeholder: "I'm based in...",
+        response: "noted. distance is data, not a dealbreaker."
     },
 
     // =====================================================
