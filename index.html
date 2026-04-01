@@ -855,11 +855,11 @@
                             <label class="share-label" for="share-photo">a picture of you</label>
                             <span class="share-hint">so I can put a face to the answers</span>
                             <div class="photo-upload-area" id="photo-upload-area">
-                                <input type="file" id="share-photo" name="photo" accept="image/*" class="photo-input">
-                                <div class="photo-placeholder" id="photo-placeholder">
+                                <input type="file" id="share-photo" name="photo" accept="image/*" hidden>
+                                <button type="button" class="photo-placeholder" id="photo-placeholder" onclick="document.getElementById('share-photo').click()">
                                     <span class="photo-icon">+</span>
                                     <span class="photo-text">choose a photo</span>
-                                </div>
+                                </button>
                                 <div class="photo-preview" id="photo-preview" style="display: none;">
                                     <img id="photo-preview-img" alt="preview">
                                     <button type="button" class="photo-remove" id="photo-remove">&times;</button>
@@ -870,7 +870,7 @@
                         <!-- Voice note -->
                         <div class="share-field-group">
                             <label class="share-label">say something</label>
-                            <span class="share-hint">30 seconds, whatever comes to mind</span>
+                            <span class="share-hint">up to 30 seconds — whatever comes to mind</span>
                             <div class="voice-note-area" id="voice-note-area">
                                 <button type="button" class="voice-record-btn" id="voice-record-btn">
                                     <span class="voice-icon" id="voice-icon">&#9679;</span>
