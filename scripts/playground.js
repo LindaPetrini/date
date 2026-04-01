@@ -1944,6 +1944,7 @@ const Playground = {
 
         if (typeof THREE === 'undefined') return;
 
+        try {
         // Setup Three.js scene — small 180x180 canvas
         const width = 180;
         const height = 180;
@@ -1984,6 +1985,9 @@ const Playground = {
             renderer.render(scene, camera);
         };
         animate();
+        } catch (e) {
+            console.warn('WebGL unavailable for untangle toy:', e);
+        }
     },
 
     // ========== Toy: Patience Test (3D Knot) ==========
