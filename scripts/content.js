@@ -71,10 +71,9 @@ const CONTENT = {
     // =====================================================
     toyOrder: [
         "texture",    // 6
-        "shades",     // 3
         "autocomplete", // 5
-        "travel",     // how far for a date
-        "location",   // where from
+        "travel",     // how far for a date + where from
+        "shades",     // 3
         "ai",         // 14
         "toes",       // 7
         "untangle",   // untangle this

@@ -2186,7 +2186,7 @@ const Playground = {
             });
         }
 
-        // ---- Handle form submission (mailto) ----
+        // ---- Handle form submission (Formspree) ----
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -2194,23 +2194,52 @@ const Playground = {
             const email = document.getElementById('share-email').value;
             const message = document.getElementById('share-message').value;
             const answers = answersInput.value;
-            const hasPhoto = photoInput && photoInput.files.length > 0;
-            const hasVoice = !!voiceBlob;
-
-            const subject = name ? `Playground Answers from ${name}` : 'Playground Answers';
             const resultsUrl = this._getResultsUrl();
-            const urlLine = resultsUrl ? `\n\nView my visual card: ${resultsUrl}` : '';
-            const attachNote = (hasPhoto || hasVoice)
-                ? '\n\n[Remember to attach your ' + [hasPhoto && 'photo', hasVoice && 'voice note (download it first)'].filter(Boolean).join(' and ') + ' to this email]'
-                : '';
-            const body = `${name ? 'Name: ' + name + '\n' : ''}Email: ${email}\n\nMessage:\n${message}\n\n=== Answers ===\n${answers}${urlLine}${attachNote}`;
 
-            window.location.href = `mailto:lindapetrini@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            const formData = new FormData();
+            formData.append('name', name);
+            formData.append('email', email);
+            formData.append('_replyto', email);
+            formData.append('message', message);
+            formData.append('answers', answers);
+            if (resultsUrl) formData.append('results_url', resultsUrl);
 
-            responseDiv.className = 'form-response success';
-            let statusMsg = 'opening your email client...';
-            if (hasPhoto || hasVoice) statusMsg += ' don\'t forget to attach your ' + [hasPhoto && 'photo', hasVoice && 'voice note'].filter(Boolean).join(' and ') + '!';
-            responseDiv.textContent = statusMsg;
+            // Attach photo if present
+            if (photoInput && photoInput.files.length > 0) {
+                formData.append('photo', photoInput.files[0]);
+            }
+
+            // Attach voice note if recorded
+            if (voiceBlob) {
+                formData.append('voice_note', voiceBlob, 'voice-note.webm');
+            }
+
+            // Show sending state
+            const submitBtn = form.querySelector('.form-submit-btn.mailto-btn');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'sending...';
+            submitBtn.disabled = true;
+
+            try {
+                const res = await fetch('https://formspree.io/f/mlgoldkn', {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                if (res.ok) {
+                    responseDiv.className = 'form-response success';
+                    responseDiv.textContent = 'sent! thanks for sharing.';
+                    submitBtn.textContent = 'sent ✓';
+                } else {
+                    throw new Error('Form submission failed');
+                }
+            } catch (err) {
+                responseDiv.className = 'form-response error';
+                responseDiv.textContent = window.location.hostname === 'localhost' ? 'form submission doesn\'t work on localhost — it\'ll work on the live site. use copy to clipboard for now.' : 'something went wrong. try copying your answers instead.';
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
         });
 
         // Calculate and show score

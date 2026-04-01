@@ -476,19 +476,11 @@
                     <button class="travel-option" data-answer="anywhere">anywhere on the planet</button>
                 </div>
                 <div class="travel-response" id="travel-response"></div>
-            </div>
-        </section>
-
-        <!-- Toy: Location -->
-        <section class="toy" id="toy-location" data-order="32">
-            <div class="toy-header">
-                <span class="toy-number">32</span>
-                <h2>where would you travel from?</h2>
-                <p class="toy-hint">city, country, or continent</p>
-            </div>
-            <div class="toy-content">
-                <input type="text" class="god-input" id="location-input" placeholder="I'm based in...">
-                <div class="location-response" id="location-response"></div>
+                <div class="travel-location-followup">
+                    <label class="travel-location-label">and where from?</label>
+                    <input type="text" class="god-input" id="location-input" placeholder="city, country, or continent">
+                    <div class="location-response" id="location-response"></div>
+                </div>
             </div>
         </section>
 
@@ -888,7 +880,7 @@
                                 <div class="voice-playback" id="voice-playback" style="display: none;">
                                     <audio id="voice-audio" controls></audio>
                                     <div class="voice-actions">
-                                        <button type="button" class="voice-action-btn" id="voice-download-btn">download to attach</button>
+                                        <button type="button" class="voice-action-btn" id="voice-download-btn">download</button>
                                         <button type="button" class="voice-action-btn voice-discard-btn" id="voice-discard-btn">discard</button>
                                     </div>
                                 </div>
@@ -901,10 +893,10 @@
                         <input type="hidden" id="share-answers" name="answers">
                         <div class="share-actions">
                             <button type="button" class="form-submit-btn copy-btn" id="copy-answers-btn">copy to clipboard</button>
-                            <button type="submit" class="form-submit-btn mailto-btn">open email client</button>
+                            <button type="submit" class="form-submit-btn mailto-btn">send</button>
                         </div>
                     </form>
-                    <p class="form-note">copy your answers and send them however you like — email, message, carrier pigeon. or use the email button as a shortcut. remember to attach your photo and voice note if you recorded one! lindapetrini@gmail.com</p>
+                    <p class="form-note">your answers, photo, and voice note will be sent directly to linda. or copy to clipboard and send however you like.</p>
                     <div class="form-response" id="form-response"></div>
                 </div>
             </div>
