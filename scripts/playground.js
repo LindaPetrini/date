@@ -100,8 +100,7 @@ const Playground = {
             patterns: document.getElementById('toy-patterns'),
             untangle: document.getElementById('toy-untangle'),
             babies: document.getElementById('toy-babies'),
-            travel: document.getElementById('toy-travel'),
-            location: document.getElementById('toy-location')
+            travel: document.getElementById('toy-travel')
         };
 
         // Reorder toys after the path hint
@@ -1601,7 +1600,7 @@ const Playground = {
                     response.textContent = C.response;
                     this.responses.location = value;
                     this.saveResponses();
-                    document.getElementById('toy-location').classList.add('answered');
+                    // location is part of travel toy, no separate section
                     this.updateProgress();
                 }
             }
@@ -1614,7 +1613,7 @@ const Playground = {
                 response.textContent = C.response;
                 this.responses.location = value;
                 this.saveResponses();
-                document.getElementById('toy-location').classList.add('answered');
+                // location is part of travel toy, no separate section
                 this.updateProgress();
             }
         });
@@ -2294,8 +2293,9 @@ const Playground = {
         }
         if (r.upside === 'love') { compatMax += 10; compatPoints += 10; }
         else if (r.upside) { compatMax += 10; compatPoints += 5; }
-        if (r.ai && r.ai.length >= 4) { compatMax += 10; compatPoints += 10; }
-        else if (r.ai && r.ai.length > 0) { compatMax += 10; compatPoints += 5; }
+        if (r.ai && r.ai.length >= 5) { compatMax += 10; compatPoints += 10; }
+        else if (r.ai && r.ai.length >= 3) { compatMax += 10; compatPoints += 7; }
+        else if (r.ai && r.ai.length > 0) { compatMax += 10; compatPoints += 3; }
         if (r.spirit !== undefined) {
             compatMax += 10;
             if (r.spirit >= 55) compatPoints += 10;
@@ -2303,17 +2303,18 @@ const Playground = {
         }
         if (r.crying) {
             compatMax += 10;
-            if (r.crying === 'cry' || r.crying === 'ask') compatPoints += 10;
-            else if (r.crying === 'hug') compatPoints += 7;
-            else compatPoints += 3;
+            if (r.crying === 'ask') compatPoints += 10;
+            else if (r.crying === 'cry') compatPoints += 7;
+            else if (r.crying === 'hug') compatPoints += 5;
+            else compatPoints += 2;
         }
 
         // Babies compatibility (important!)
         if (r.babies !== undefined) {
             compatMax += 15; // weighted higher
             if (r.babies === 3 || r.babies === 4) compatPoints += 15;
+            else if (r.babies === 5 || r.babies === 6) compatPoints += 12;
             else if (r.babies === 2) compatPoints += 10;
-            else if (r.babies === 5 || r.babies === 6) compatPoints += 8;
             else if (r.babies === 1) compatPoints += 5;
             // 0 gets 0 points
         }
@@ -2340,6 +2341,54 @@ const Playground = {
             if (r.toes === 'yes' || r.toes === 'trying') compatPoints += 5;
             else if (r.toes === 'some') compatPoints += 3;
             else compatPoints += 1;
+        }
+
+        // Reading speed
+        if (r.readingWpm) {
+            compatMax += 5;
+            if (r.readingWpm >= 300 && r.readingCorrect) compatPoints += 5;
+            else if (r.readingWpm >= 200 && r.readingCorrect) compatPoints += 4;
+            else if (r.readingCorrect) compatPoints += 3;
+            else compatPoints += 1;
+        }
+
+        // Shade ordering
+        if (r.shades) {
+            compatMax += 5;
+            if (r.shades === 'correct') compatPoints += 5;
+            else compatPoints += 2;
+        }
+
+        // Nature preference
+        if (r.nature && r.nature.length > 0) {
+            compatMax += 5;
+            if (r.nature[0] === 'sea') compatPoints += 5;
+            else if (r.nature[0] === 'river') compatPoints += 4;
+            else if (r.nature[0] === 'forest') compatPoints += 3;
+            else compatPoints += 2;
+        }
+
+        // Day compatibility
+        if (r.day) {
+            const lindaDay = {
+                morning: ['slow start, minimal talking', 'coffee + reading'],
+                afternoon: ['focused solo work', 'wandering with no plan', 'making something with hands'],
+                evening: ['cooking together', 'long conversation'],
+                night: ['music, lights low', 'early sleep', 'talking until too late']
+            };
+            let dayOverlap = 0;
+            let dayTotal = 0;
+            ['morning', 'afternoon', 'evening', 'night'].forEach(phase => {
+                if (r.day[phase] && r.day[phase].length > 0) {
+                    dayTotal++;
+                    const match = r.day[phase].some(a => lindaDay[phase].includes(a));
+                    if (match) dayOverlap++;
+                }
+            });
+            if (dayTotal > 0) {
+                compatMax += 10;
+                compatPoints += Math.round((dayOverlap / dayTotal) * 10);
+            }
         }
 
         // Render stats
@@ -2528,13 +2577,17 @@ const Playground = {
         let compatPoints = 0, compatMax = 0;
         if (r.music !== undefined) { compatMax += 10; if (r.music < 35) compatPoints += 10; else if (r.music < 55) compatPoints += 5; }
         if (r.upside === 'love') { compatMax += 10; compatPoints += 10; } else if (r.upside) { compatMax += 10; compatPoints += 5; }
-        if (r.ai && r.ai.length >= 4) { compatMax += 10; compatPoints += 10; } else if (r.ai && r.ai.length > 0) { compatMax += 10; compatPoints += 5; }
+        if (r.ai && r.ai.length >= 5) { compatMax += 10; compatPoints += 10; } else if (r.ai && r.ai.length >= 3) { compatMax += 10; compatPoints += 7; } else if (r.ai && r.ai.length > 0) { compatMax += 10; compatPoints += 3; }
         if (r.spirit !== undefined) { compatMax += 10; if (r.spirit >= 55) compatPoints += 10; else if (r.spirit >= 35) compatPoints += 5; }
-        if (r.crying) { compatMax += 10; if (r.crying === 'cry' || r.crying === 'ask') compatPoints += 10; else if (r.crying === 'hug') compatPoints += 7; else compatPoints += 3; }
-        if (r.babies !== undefined) { compatMax += 15; if (r.babies === 3 || r.babies === 4) compatPoints += 15; else if (r.babies === 2) compatPoints += 10; else if (r.babies === 5 || r.babies === 6) compatPoints += 8; else if (r.babies === 1) compatPoints += 5; }
+        if (r.crying) { compatMax += 10; if (r.crying === 'ask') compatPoints += 10; else if (r.crying === 'cry') compatPoints += 7; else if (r.crying === 'hug') compatPoints += 5; else compatPoints += 2; }
+        if (r.babies !== undefined) { compatMax += 15; if (r.babies === 3 || r.babies === 4) compatPoints += 15; else if (r.babies === 5 || r.babies === 6) compatPoints += 12; else if (r.babies === 2) compatPoints += 10; else if (r.babies === 1) compatPoints += 5; }
         if (r.travel) { compatMax += 5; if (r.travel === 'another_country' || r.travel === 'anywhere') compatPoints += 5; else if (r.travel === 'another_city') compatPoints += 3; else compatPoints += 1; }
         if (r.therapyHours !== undefined) { compatMax += 5; if (r.therapyHours >= 100) compatPoints += 5; else if (r.therapyHours >= 20) compatPoints += 3; else compatPoints += 1; }
         if (r.toes) { compatMax += 5; if (r.toes === 'yes' || r.toes === 'trying') compatPoints += 5; else if (r.toes === 'some') compatPoints += 3; else compatPoints += 1; }
+        if (r.readingWpm) { compatMax += 5; if (r.readingWpm >= 300 && r.readingCorrect) compatPoints += 5; else if (r.readingWpm >= 200 && r.readingCorrect) compatPoints += 4; else if (r.readingCorrect) compatPoints += 3; else compatPoints += 1; }
+        if (r.shades) { compatMax += 5; if (r.shades === 'correct') compatPoints += 5; else compatPoints += 2; }
+        if (r.nature && r.nature.length > 0) { compatMax += 5; if (r.nature[0] === 'sea') compatPoints += 5; else if (r.nature[0] === 'river') compatPoints += 4; else if (r.nature[0] === 'forest') compatPoints += 3; else compatPoints += 2; }
+        if (r.day) { const lindaDay = { morning: ['slow start, minimal talking', 'coffee + reading'], afternoon: ['focused solo work', 'wandering with no plan', 'making something with hands'], evening: ['cooking together', 'long conversation'], night: ['music, lights low', 'early sleep', 'talking until too late'] }; let dayOverlap = 0, dayTotal = 0; ['morning', 'afternoon', 'evening', 'night'].forEach(phase => { if (r.day[phase] && r.day[phase].length > 0) { dayTotal++; if (r.day[phase].some(a => lindaDay[phase].includes(a))) dayOverlap++; } }); if (dayTotal > 0) { compatMax += 10; compatPoints += Math.round((dayOverlap / dayTotal) * 10); } }
         if (compatMax === 0) return null;
         const percentage = Math.round((compatPoints / compatMax) * 100);
         const high = (stat) => (stats[stat] || 50) > 60;
