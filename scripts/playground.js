@@ -2186,7 +2186,7 @@ const Playground = {
             });
         }
 
-        // ---- Handle form submission (Formspree) ----
+        // ---- Handle form submission ----
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -2196,6 +2196,9 @@ const Playground = {
             const answers = answersInput.value;
             const resultsUrl = this._getResultsUrl();
 
+            const hasPhoto = photoInput && photoInput.files.length > 0;
+            const hasVoice = !!voiceBlob;
+
             const formData = new FormData();
             formData.append('name', name);
             formData.append('email', email);
@@ -2203,16 +2206,8 @@ const Playground = {
             formData.append('message', message);
             formData.append('answers', answers);
             if (resultsUrl) formData.append('results_url', resultsUrl);
-
-            // Attach photo if present
-            if (photoInput && photoInput.files.length > 0) {
-                formData.append('photo', photoInput.files[0]);
-            }
-
-            // Attach voice note if recorded
-            if (voiceBlob) {
-                formData.append('voice_note', voiceBlob, 'voice-note.webm');
-            }
+            if (hasPhoto) formData.append('photo', photoInput.files[0]);
+            if (hasVoice) formData.append('voice_note', voiceBlob, 'voice_note.webm');
 
             // Show sending state
             const submitBtn = form.querySelector('.form-submit-btn.mailto-btn');
@@ -2220,23 +2215,28 @@ const Playground = {
             submitBtn.textContent = 'sending...';
             submitBtn.disabled = true;
 
+            // API endpoint — use custom backend, fall back to Formspree
+            const apiUrl = 'https://dateme-api.lindapetrini.com/api/submit';
+
             try {
-                const res = await fetch('https://formspree.io/f/mlgoldkn', {
+                const res = await fetch(apiUrl, {
                     method: 'POST',
                     body: formData,
                     headers: { 'Accept': 'application/json' }
                 });
 
-                if (res.ok) {
+                const data = await res.json().catch(() => ({}));
+                if (res.ok && data.ok) {
                     responseDiv.className = 'form-response success';
                     responseDiv.textContent = 'sent! thanks for sharing.';
-                    submitBtn.textContent = 'sent ✓';
+                    submitBtn.textContent = 'sent \u2713';
                 } else {
-                    throw new Error('Form submission failed');
+                    throw new Error(data.error || 'Submission failed');
                 }
             } catch (err) {
+                console.error('Form submit error:', err);
                 responseDiv.className = 'form-response error';
-                responseDiv.textContent = window.location.hostname === 'localhost' ? 'form submission doesn\'t work on localhost — it\'ll work on the live site. use copy to clipboard for now.' : 'something went wrong. try copying your answers instead.';
+                responseDiv.textContent = window.location.hostname === 'localhost' ? 'form submission doesn\'t work on localhost \u2014 it\'ll work on the live site. use copy to clipboard for now.' : 'something went wrong. try copying your answers instead.';
                 submitBtn.textContent = originalText;
                 submitBtn.disabled = false;
             }
