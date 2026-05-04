@@ -19,40 +19,19 @@ const Playground = {
             this.loadResponses();
         }
         this.reorderToys();
-        this.initColorMaker();
-        this.initBodyCheck();
-        this.initShadeOrder();
-        this.initEmotionGame();
-        this.initTexturePicker();
-        this.initToeTest();
-        this.initSequence();
-        this.initAutocomplete();
-        this.initMessagePreference();
-        this.initMusicDial();
-        this.initNatureRank();
-        this.initUpsideDown();
-        this.initAIQuiz();
-        this.initRoomSlider();
-        this.initCryingScenario();
-        this.initSpeedReading();
-        this.initSpiritSlider();
-        this.initNeuroQuiz();
-        this.initLeadFollow();
-        this.initTravel();
-        this.initLocation();
-        this.initTherapy();
-        this.initGod();
-        this.initFood();
-        this.initPrecision();
-        this.initHold();
-        this.initFunQuestion();
-        this.initMeta();
-        this.initDay();
-        this.initEmbodiment();
-        this.initPatterns();
-        this.initBabies();
-        this.initUntangle();
-        this.initShare();
+        const toys = [
+            'initColorMaker', 'initBodyCheck', 'initShadeOrder', 'initEmotionGame',
+            'initTexturePicker', 'initToeTest', 'initSequence', 'initAutocomplete',
+            'initMessagePreference', 'initMusicDial', 'initNatureRank', 'initUpsideDown',
+            'initAIQuiz', 'initRoomSlider', 'initCryingScenario', 'initSpeedReading',
+            'initSpiritSlider', 'initNeuroQuiz', 'initLeadFollow', 'initTravel',
+            'initLocation', 'initTherapy', 'initGod', 'initFood', 'initPrecision',
+            'initHold', 'initFunQuestion', 'initMeta', 'initDay', 'initEmbodiment',
+            'initPatterns', 'initBabies', 'initUntangle', 'initShare',
+        ];
+        for (const toy of toys) {
+            try { this[toy](); } catch (e) { console.warn(`${toy} failed:`, e); }
+        }
         this.restoreAnsweredState();
         this.populateAnswerSections();
         this.initResultsCard();
