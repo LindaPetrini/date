@@ -32,11 +32,13 @@ const Playground = {
         for (const toy of toys) {
             try { this[toy](); } catch (e) { console.warn(`${toy} failed:`, e); }
         }
-        this.restoreAnsweredState();
-        this.populateAnswerSections();
-        this.initResultsCard();
-        this.initShareLink();
-        this.updateProgress();
+        const postInit = [
+            'restoreAnsweredState', 'populateAnswerSections',
+            'initResultsCard', 'initShareLink', 'updateProgress'
+        ];
+        for (const fn of postInit) {
+            try { this[fn](); } catch (e) { console.warn(`${fn} failed:`, e); }
+        }
     },
 
     // ========== Reorder toys based on CONTENT.toyOrder ==========
@@ -587,7 +589,7 @@ const Playground = {
             });
         });
 
-        // Handle file upload
+        // Handle file upload — display only, not saved to localStorage (too large)
         uploadInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (file) {
@@ -597,7 +599,7 @@ const Playground = {
                     img.src = event.target.result;
                     preview.innerHTML = '';
                     preview.appendChild(img);
-                    this.responses.toeImage = event.target.result;
+                    this.responses.toeProof = true;
                     this.saveResponses();
                 };
                 reader.readAsDataURL(file);
@@ -616,11 +618,10 @@ const Playground = {
             }
         }
 
-        // Restore image if saved
+        // Clean up any legacy toeImage data from localStorage
         if (this.responses.toeImage) {
-            const img = document.createElement('img');
-            img.src = this.responses.toeImage;
-            preview.appendChild(img);
+            delete this.responses.toeImage;
+            this.saveResponses();
         }
     },
 
@@ -3458,12 +3459,18 @@ const Playground = {
     saveResponses() {
         if (this.viewingMode) return; // Don't save when viewing someone else's results
         try {
-            localStorage.setItem('playground_responses', JSON.stringify(this.responses));
-            this.populateAnswerSections(); // Update answer sections when saved
-            this.updateScore(); // Update character card when answers change
-            this.renderResultsCard(); // Update visual results card
+            const toSave = Object.assign({}, this.responses);
+            delete toSave.toeImage;
+            localStorage.setItem('playground_responses', JSON.stringify(toSave));
         } catch (e) {
-            console.log('Could not save responses:', e);
+            console.log('Could not save to localStorage:', e);
+        }
+        try {
+            this.populateAnswerSections();
+            this.updateScore();
+            this.renderResultsCard();
+        } catch (e) {
+            console.warn('Could not update UI:', e);
         }
         // Mark answered toys
         Object.keys(this.responses).forEach(key => {
