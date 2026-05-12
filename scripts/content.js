@@ -70,38 +70,30 @@ const CONTENT = {
     // TOY ORDER - Change this array to reorder toys
     // =====================================================
     toyOrder: [
-        "texture",    // 6
-        "autocomplete", // 5
-        "travel",     // how far for a date + where from
-        "shades",     // 3
-        "ai",         // 14
-        "toes",       // 7
-        "untangle",   // untangle this
-        "sequence",   // 8
-        "day",        // 28 - assemble a day (moved later, takes time)
-        "message",    // 10
-        "music",      // 11
-        "hold",       // 25
-        "nature",     // 12
-        "babies",     // babies slider
-        "color",      // 1
-        "precision",  // 24
-        "upside",     // 13
-        "room",       // 15
-        "body",       // 2 - moved later, after trust is built
-        "crying",     // 16
-        "reading",    // 17
-        "spirit",     // 18
-        "emotion",    // 4
-        "neuro",      // 19
-        "lead",       // 20
-        "embodiment", // 29 - learning with body
-        "therapy",    // 21
-        "god",        // 22
-        "food",       // 23
-        "patterns",   // 30 - meeting someone interesting
-        "meta",       // 27
-        "fun"         // 26
+        "texture",
+        "autocomplete",
+        "travel",
+        "ai",
+        "toes",
+        "untangle",
+        "day",
+        "message",
+        "hold",
+        "nature",
+        "babies",
+        "color",
+        "upside",
+        "body",
+        "crying",
+        "reading",
+        "spirit",
+        "emotion",
+        "lead",
+        "therapy",
+        "god",
+        "food",
+        "meta",
+        "fun"
     ],
 
     // =====================================================

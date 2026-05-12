@@ -1904,13 +1904,11 @@ const Playground = {
 
         if (!wrap || !buttonsDiv || !response) return;
 
-        // If already completed, hide buttons and show response
         if (this.responses.untangle) {
             buttonsDiv.style.display = 'none';
             response.textContent = C.responses[this.responses.untangle] || '';
         }
 
-        // Button click handlers (attach before THREE check so buttons always work)
         buttonsDiv.querySelectorAll('button').forEach(btn => {
             btn.addEventListener('click', () => {
                 const value = btn.dataset.value;
@@ -1922,10 +1920,15 @@ const Playground = {
             });
         });
 
+        this._initUntangleScene(wrap);
+    },
+
+    _initUntangleScene(wrap) {
+        if (this._untangleSceneReady) return;
         if (typeof THREE === 'undefined') return;
+        if (!wrap) return;
 
         try {
-        // Setup Three.js scene — small 180x180 canvas
         const width = 180;
         const height = 180;
 
@@ -1938,7 +1941,6 @@ const Playground = {
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         wrap.appendChild(renderer.domElement);
 
-        // Create complex torus knot — high p,q for visual intricacy
         const geometry = new THREE.TorusKnotGeometry(2.2, 0.18, 300, 20, 5, 3);
         const material = new THREE.MeshStandardMaterial({
             color: 0x2D6A6A,
@@ -1948,7 +1950,6 @@ const Playground = {
         const mesh = new THREE.Mesh(geometry, material);
         scene.add(mesh);
 
-        // Lighting
         scene.add(new THREE.AmbientLight(0xffffff, 0.4));
         const mainLight = new THREE.DirectionalLight(0xfff5e6, 1.0);
         mainLight.position.set(5, 5, 5);
@@ -1957,7 +1958,6 @@ const Playground = {
         fillLight.position.set(-3, 2, -3);
         scene.add(fillLight);
 
-        // Auto-rotation only, no interaction
         const animate = () => {
             requestAnimationFrame(animate);
             mesh.rotation.y += 0.003;
@@ -1965,6 +1965,7 @@ const Playground = {
             renderer.render(scene, camera);
         };
         animate();
+        this._untangleSceneReady = true;
         } catch (e) {
             console.warn('WebGL unavailable for untangle toy:', e);
         }
@@ -3483,7 +3484,7 @@ const Playground = {
     },
 
     updateProgress() {
-        const totalToys = 31;
+        const totalToys = 24;
         const answered = Object.keys(this.responses).filter(k =>
             this.responses[k] !== null && this.responses[k] !== undefined && this.responses[k] !== ''
         ).length;
@@ -3524,7 +3525,11 @@ if (document.readyState === 'loading') {
     Playground.init();
 }
 
-// Render results card after everything has settled (window.onload fires after all resources)
-window.addEventListener('load', () => Playground.renderResultsCard());
+// After all resources (including async Three.js) have loaded
+window.addEventListener('load', () => {
+    Playground.renderResultsCard();
+    const wrap = document.getElementById('untangle-canvas-wrap');
+    if (wrap) Playground._initUntangleScene(wrap);
+});
 
 window.Playground = Playground;
