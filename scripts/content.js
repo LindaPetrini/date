@@ -30,7 +30,7 @@ const CONTENT = {
             tooltip: "hover for the basics",
             items: [
                 "F looking for M",
-                "29",
+                "30",
                 "monogamous",
                 "wants kids",
                 "omnivore",
