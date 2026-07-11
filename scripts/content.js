@@ -257,21 +257,6 @@ const CONTENT = {
     },
 
     // =====================================================
-    // TOY 11: MUSIC
-    // =====================================================
-    music: {
-        title: "music volume",
-        labels: { min: "silence", max: "loud" },
-        responses: {
-            0: "silence. I like you.",
-            25: "quiet background. gentle.",
-            50: "moderate. fair enough.",
-            75: "you like your music present.",
-            100: "loud. we might have to negotiate."
-        }
-    },
-
-    // =====================================================
     // TOY 12: NATURE
     // =====================================================
     nature: {
@@ -696,7 +681,6 @@ const CONTENT = {
         body: "usually tilted, if I'm honest",
         texture: "sandstone — warm and textured",
         toes: "yes — barefoot life",
-        music: "10/100 — I love silence",
         nature: "sea > river > forest > mountain > lake > ",
         upside: "I love it. handstands are how I reset.",
         ai: "all of them really. I don't wanna talk about my API usage.",

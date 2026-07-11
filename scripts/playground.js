@@ -22,7 +22,7 @@ const Playground = {
         const toys = [
             'initColorMaker', 'initBodyCheck', 'initShadeOrder', 'initEmotionGame',
             'initTexturePicker', 'initToeTest', 'initSequence', 'initAutocomplete',
-            'initMessagePreference', 'initMusicDial', 'initNatureRank', 'initUpsideDown',
+            'initMessagePreference', 'initNatureRank', 'initUpsideDown',
             'initAIQuiz', 'initRoomSlider', 'initCryingScenario', 'initSpeedReading',
             'initSpiritSlider', 'initNeuroQuiz', 'initLeadFollow', 'initTravel',
             'initLocation', 'initTherapy', 'initGod', 'initFood', 'initPrecision',
@@ -59,7 +59,6 @@ const Playground = {
             toes: document.getElementById('toy-toes'),
             sequence: document.getElementById('toy-sequence'),
             message: document.getElementById('toy-message'),
-            music: document.getElementById('toy-music'),
             nature: document.getElementById('toy-nature'),
             upside: document.getElementById('toy-upside'),
             ai: document.getElementById('toy-ai'),
@@ -1099,44 +1098,6 @@ const Playground = {
         }
     },
 
-    // ========== Toy 11: Music Dial ==========
-    initMusicDial() {
-        const dial = document.getElementById('music-dial');
-        const response = document.getElementById('music-response');
-        const C = CONTENT.music;
-
-        const updateResponse = (value) => {
-            let text;
-            if (value < 15) {
-                text = C.responses[0];
-            } else if (value < 35) {
-                text = C.responses[25];
-            } else if (value < 55) {
-                text = C.responses[50];
-            } else if (value < 75) {
-                text = C.responses[75];
-            } else {
-                text = C.responses[100];
-            }
-            response.textContent = text;
-        };
-
-        dial.addEventListener('input', () => {
-            this.responses.music = dial.value;
-            updateResponse(dial.value);
-        });
-
-        dial.addEventListener('change', () => {
-            this.saveResponses();
-        });
-
-        // Restore if saved
-        if (this.responses.music !== undefined) {
-            dial.value = this.responses.music;
-            updateResponse(this.responses.music);
-        }
-    },
-
     // ========== Toy 12: Nature Ranking ==========
     initNatureRank() {
         const container = document.getElementById('nature-rank');
@@ -1982,7 +1943,6 @@ const Playground = {
 
         if (!toggleBtn || !formContainer || !form) {
             console.log('Share form elements not found');
-            this.updateScore();
             return;
         }
 
@@ -2226,258 +2186,6 @@ const Playground = {
                 submitBtn.disabled = false;
             }
         });
-
-        // Calculate and show score
-        this.updateScore();
-    },
-
-    // ========== Visual Scorecard ==========
-    updateScore() {
-        const scoreValue = document.getElementById('score-value');
-        const scoreNote = document.getElementById('score-note');
-        const scoreStats = document.getElementById('score-stats');
-        const scoreCanvas = document.getElementById('score-canvas');
-
-        if (!scoreValue || !scoreStats) return;
-
-        const r = this.responses;
-
-        // Calculate character stats (0-100 scale)
-        const stats = {};
-
-        // Quietness (based on music preference)
-        if (r.music !== undefined) {
-            stats.quietness = 100 - parseInt(r.music);
-        }
-
-        // Playfulness (based on upside down + hold button + fun)
-        let playfulness = 0;
-        let playCount = 0;
-        if (r.upside) {
-            playCount++;
-            if (r.upside === 'love') playfulness += 100;
-            else if (r.upside === 'fine') playfulness += 60;
-            else playfulness += 20;
-        }
-        if (r.hold && ['perfect', 'closeEarly', 'closeLate', 'early', 'late'].includes(r.hold)) {
-            playCount++;
-            playfulness += 80;
-        }
-        if (playCount > 0) stats.playfulness = Math.round(playfulness / playCount);
-
-        // Tech Affinity (based on AI quiz)
-        if (r.ai && r.ai.length > 0) {
-            stats['tech affinity'] = Math.min(100, (r.ai.length / 6) * 100);
-        }
-
-        // Spirituality
-        if (r.spirit !== undefined) {
-            stats.spirituality = parseInt(r.spirit);
-        }
-
-        // Emotional Openness (crying + message preference)
-        let emotional = 0;
-        let emotionalCount = 0;
-        if (r.crying) {
-            emotionalCount++;
-            if (r.crying === 'cry' || r.crying === 'ask') emotional += 100;
-            else if (r.crying === 'hug') emotional += 70;
-            else emotional += 40;
-        }
-        if (r.message) {
-            emotionalCount++;
-            emotional += r.message === 'soft' ? 80 : 60;
-        }
-        if (emotionalCount > 0) stats['emotional openness'] = Math.round(emotional / emotionalCount);
-
-        // Adventurousness (nature preference + patterns)
-        if (r.nature && r.nature.length > 0) {
-            const adventureMap = { sea: 85, mountain: 90, river: 75, forest: 70, lake: 60 };
-            stats.adventurousness = adventureMap[r.nature[0]] || 70;
-        }
-
-        // Calculate overall compatibility
-        let compatPoints = 0;
-        let compatMax = 0;
-
-        if (r.music !== undefined) {
-            compatMax += 10;
-            if (r.music < 35) compatPoints += 10;
-            else if (r.music < 55) compatPoints += 5;
-        }
-        if (r.upside === 'love') { compatMax += 10; compatPoints += 10; }
-        else if (r.upside) { compatMax += 10; compatPoints += 5; }
-        if (r.ai && r.ai.length >= 5) { compatMax += 10; compatPoints += 10; }
-        else if (r.ai && r.ai.length >= 3) { compatMax += 10; compatPoints += 7; }
-        else if (r.ai && r.ai.length > 0) { compatMax += 10; compatPoints += 3; }
-        if (r.spirit !== undefined) {
-            compatMax += 10;
-            if (r.spirit >= 55) compatPoints += 10;
-            else if (r.spirit >= 35) compatPoints += 5;
-        }
-        if (r.crying) {
-            compatMax += 10;
-            if (r.crying === 'ask') compatPoints += 10;
-            else if (r.crying === 'cry') compatPoints += 7;
-            else if (r.crying === 'hug') compatPoints += 5;
-            else compatPoints += 2;
-        }
-
-        // Babies compatibility (important!)
-        if (r.babies !== undefined) {
-            compatMax += 15; // weighted higher
-            if (r.babies === 3 || r.babies === 4) compatPoints += 15;
-            else if (r.babies === 5 || r.babies === 6) compatPoints += 12;
-            else if (r.babies === 2) compatPoints += 10;
-            else if (r.babies === 1) compatPoints += 5;
-            // 0 gets 0 points
-        }
-
-        // Travel willingness
-        if (r.travel) {
-            compatMax += 5;
-            if (r.travel === 'another_country' || r.travel === 'anywhere') compatPoints += 5;
-            else if (r.travel === 'another_city') compatPoints += 3;
-            else compatPoints += 1;
-        }
-
-        // Therapy depth
-        if (r.therapyHours !== undefined) {
-            compatMax += 5;
-            if (r.therapyHours >= 100) compatPoints += 5;
-            else if (r.therapyHours >= 20) compatPoints += 3;
-            else compatPoints += 1;
-        }
-
-        // Body awareness (toes)
-        if (r.toes) {
-            compatMax += 5;
-            if (r.toes === 'yes' || r.toes === 'trying') compatPoints += 5;
-            else if (r.toes === 'some') compatPoints += 3;
-            else compatPoints += 1;
-        }
-
-        // Reading speed
-        if (r.readingWpm) {
-            compatMax += 5;
-            if (r.readingWpm >= 300 && r.readingCorrect) compatPoints += 5;
-            else if (r.readingWpm >= 200 && r.readingCorrect) compatPoints += 4;
-            else if (r.readingCorrect) compatPoints += 3;
-            else compatPoints += 1;
-        }
-
-        // Shade ordering
-        if (r.shades) {
-            compatMax += 5;
-            if (r.shades === 'correct') compatPoints += 5;
-            else compatPoints += 2;
-        }
-
-        // Nature preference
-        if (r.nature && r.nature.length > 0) {
-            compatMax += 5;
-            if (r.nature[0] === 'sea') compatPoints += 5;
-            else if (r.nature[0] === 'river') compatPoints += 4;
-            else if (r.nature[0] === 'forest') compatPoints += 3;
-            else compatPoints += 2;
-        }
-
-        // Day compatibility
-        if (r.day) {
-            const lindaDay = {
-                morning: ['slow start, minimal talking', 'coffee + reading'],
-                afternoon: ['focused solo work', 'wandering with no plan', 'making something with hands'],
-                evening: ['cooking together', 'long conversation'],
-                night: ['music, lights low', 'early sleep', 'talking until too late']
-            };
-            let dayOverlap = 0;
-            let dayTotal = 0;
-            ['morning', 'afternoon', 'evening', 'night'].forEach(phase => {
-                if (r.day[phase] && r.day[phase].length > 0) {
-                    dayTotal++;
-                    const match = r.day[phase].some(a => lindaDay[phase].includes(a));
-                    if (match) dayOverlap++;
-                }
-            });
-            if (dayTotal > 0) {
-                compatMax += 10;
-                compatPoints += Math.round((dayOverlap / dayTotal) * 10);
-            }
-        }
-
-        // Render stats
-        if (Object.keys(stats).length > 0) {
-            scoreStats.innerHTML = '';
-            Object.entries(stats).forEach(([label, value]) => {
-                const row = document.createElement('div');
-                row.className = 'stat-row';
-
-                row.innerHTML = `
-                    <span class="stat-label">${label}</span>
-                    <div class="stat-bar-container">
-                        <div class="stat-bar" style="width: ${value}%"></div>
-                    </div>
-                    <span class="stat-value">${Math.round(value)}</span>
-                `;
-                scoreStats.appendChild(row);
-            });
-        }
-
-        // Calculate character archetype based on stat profile
-        if (compatMax === 0) {
-            scoreValue.textContent = "--";
-            scoreNote.textContent = "answer some things to see your character card";
-        } else {
-            const percentage = Math.round((compatPoints / compatMax) * 100);
-
-            // Determine archetype from stat profile
-            const high = (stat) => (stats[stat] || 50) > 60;
-            const low = (stat) => (stats[stat] || 50) < 40;
-
-            let archetype;
-            if (percentage >= 85) archetype = "the alchemist";
-            else if (percentage >= 70 && high('adventurousness') && high('emotional openness')) archetype = "the lover";
-            else if (percentage >= 70 && high('tech affinity')) archetype = "the architect";
-            else if (percentage >= 55 && high('playfulness') && high('spirituality')) archetype = "the mystic";
-            else if (percentage >= 55 && high('adventurousness')) archetype = "the explorer";
-            else if (percentage >= 40 && high('quietness')) archetype = "the hermit";
-            else if (percentage >= 40 && high('playfulness')) archetype = "the trickster";
-            else if (high('tech affinity') && low('emotional openness')) archetype = "the engineer";
-            else archetype = "the wanderer";
-
-            scoreValue.textContent = archetype;
-            scoreNote.innerHTML = `${percentage}% compatibility with linda<br><span class="score-disclaimer">best guess — still calibrating</span>`;
-        }
-
-        // Draw the image/pattern in canvas
-        if (scoreCanvas && r.color) {
-            const ctx = scoreCanvas.getContext('2d');
-            const size = 80;
-            scoreCanvas.width = size;
-            scoreCanvas.height = size;
-
-            const { h, s, l } = r.color;
-            const color = `hsl(${h}, ${s}%, ${l}%)`;
-
-            // Draw a color-based pattern
-            {
-                ctx.fillStyle = color;
-                ctx.fillRect(0, 0, size, size);
-                ctx.globalAlpha = 0.5;
-                for (let i = 0; i < 5; i++) {
-                    ctx.beginPath();
-                    ctx.arc(
-                        Math.random() * size,
-                        Math.random() * size,
-                        Math.random() * 25 + 8,
-                        0,
-                        Math.PI * 2
-                    );
-                    ctx.fillStyle = `hsl(${h}, ${Math.max(0, s - 20)}%, ${Math.min(100, l + 10)}%)`;
-                    ctx.fill();
-                }
-            }
-        }
     },
 
     // ========== Summary Helpers ==========
@@ -2506,16 +2214,6 @@ const Playground = {
         if (l < 30) name = 'dark ' + name;
         else if (l > 70) name = 'light ' + name;
         return `a ${temp} ${name}`;
-    },
-
-    _describeMusicVolume(val) {
-        const v = parseInt(val);
-        if (v === 0) return 'silence';
-        if (v < 20) return 'barely there';
-        if (v < 40) return 'quiet background';
-        if (v < 60) return 'moderate';
-        if (v < 80) return 'fairly loud';
-        return 'blasting';
     },
 
     _describeRoom(val) {
@@ -2557,9 +2255,7 @@ const Playground = {
 
     _getArchetypeAndCompat() {
         const r = this.responses;
-        // Replicate stat calculation from updateScore
-        const stats = {};
-        if (r.music !== undefined) stats.quietness = 100 - parseInt(r.music);
+        const stats = this._calculateStats();
         let playfulness = 0, playCount = 0;
         if (r.upside) {
             playCount++;
@@ -2589,7 +2285,6 @@ const Playground = {
         }
         // Compatibility
         let compatPoints = 0, compatMax = 0;
-        if (r.music !== undefined) { compatMax += 10; if (r.music < 35) compatPoints += 10; else if (r.music < 55) compatPoints += 5; }
         if (r.upside === 'love') { compatMax += 10; compatPoints += 10; } else if (r.upside) { compatMax += 10; compatPoints += 5; }
         if (r.ai && r.ai.length >= 5) { compatMax += 10; compatPoints += 10; } else if (r.ai && r.ai.length >= 3) { compatMax += 10; compatPoints += 7; } else if (r.ai && r.ai.length > 0) { compatMax += 10; compatPoints += 3; }
         if (r.spirit !== undefined) { compatMax += 10; if (r.spirit >= 55) compatPoints += 10; else if (r.spirit >= 35) compatPoints += 5; }
@@ -2612,7 +2307,6 @@ const Playground = {
         else if (percentage >= 70 && high('tech affinity')) archetype = 'the architect';
         else if (percentage >= 55 && high('playfulness') && high('spirituality')) archetype = 'the mystic';
         else if (percentage >= 55 && high('adventurousness')) archetype = 'the explorer';
-        else if (percentage >= 40 && high('quietness')) archetype = 'the hermit';
         else if (percentage >= 40 && high('playfulness')) archetype = 'the trickster';
         else if (high('tech affinity') && low('emotional openness')) archetype = 'the engineer';
         else archetype = 'the wanderer';
@@ -2635,7 +2329,6 @@ const Playground = {
         const senses = [];
         if (r.color) senses.push(`picked color: ${this._describeColor(r.color)}`);
         if (r.texture) senses.push(`texture: ${r.texture}`);
-        if (r.music !== undefined) senses.push(`music when working: ${this._describeMusicVolume(r.music)} (${r.music}/100)`);
         if (r.nature) senses.push(`nature: ${r.nature.join(' > ')}`);
         if (r.body) {
             const bodyLabels = { forward: 'forward', tucked: 'tucked under', tilted: 'tilted to one side', back: 'pushed back', unsure: 'no idea' };
@@ -2799,7 +2492,7 @@ const Playground = {
             }
 
             // ---- the senses ----
-            const hasSenses = r.color || r.texture || r.music !== undefined || r.nature || r.body || r.toes || (r.food && r.food.length > 0);
+            const hasSenses = r.color || r.texture || r.nature || r.body || r.toes || (r.food && r.food.length > 0);
             if (hasSenses) {
                 addSectionHeader('the senses');
                 if (r.color) {
@@ -2807,7 +2500,6 @@ const Playground = {
                     addAnswer('color', `${colorSwatch} ${this._describeColor(r.color)}`);
                 }
                 if (r.texture) addAnswer('texture', r.texture);
-                if (r.music !== undefined) addAnswer('music', `${this._describeMusicVolume(r.music)} (${r.music}/100)`);
                 if (r.nature) addAnswer('nature', r.nature.join(' > '));
                 if (r.body) {
                     const bodyLabels = { forward: 'forward', tucked: 'tucked under', tilted: 'tilted to one side', back: 'pushed back', unsure: 'no idea' };
@@ -2940,7 +2632,6 @@ const Playground = {
             if (m.body) addAnswer('pelvis', m.body);
             if (m.texture) addAnswer('texture', m.texture);
             if (m.toes) addAnswer('toes', m.toes);
-            if (m.music) addAnswer('music', m.music);
             if (m.nature) addAnswer('nature', m.nature);
             if (m.upside) addAnswer('upside down', m.upside);
             if (m.ai) addAnswer('AI', m.ai);
@@ -3051,9 +2742,11 @@ const Playground = {
 
     // ========== Visual Results Card (Canvas) ==========
     initResultsCard() {
+        const details = document.getElementById('results-card-section');
         const saveBtn = document.getElementById('save-card-btn');
         if (saveBtn) {
             saveBtn.addEventListener('click', () => {
+                this.renderResultsCard();
                 const canvas = document.getElementById('results-card-canvas');
                 if (!canvas) return;
                 const link = document.createElement('a');
@@ -3062,7 +2755,16 @@ const Playground = {
                 link.click();
             });
         }
-        this.renderResultsCard();
+        if (details) {
+            details.addEventListener('toggle', () => {
+                if (details.open) this.renderResultsCard();
+            });
+        }
+        this.updateResultsSummary();
+        if (this.viewingMode && details && details.style.display !== 'none') {
+            details.open = true;
+            this.renderResultsCard();
+        }
     },
 
     // Count meaningful answers (excludes empty day object and similar non-answers)
@@ -3083,54 +2785,121 @@ const Playground = {
         return count;
     },
 
+    updateResultsSummary() {
+        const summary = document.getElementById('results-summary-line');
+        const section = document.getElementById('results-card-section');
+        const meaningfulCount = this._countMeaningfulAnswers();
+        const card = this._getArchetypeAndCompat();
+        const showResults = meaningfulCount >= 3;
+
+        if (section) section.style.display = showResults ? '' : 'none';
+        if (!summary) return;
+
+        summary.textContent = '';
+        if (!showResults || !card) {
+            summary.style.display = 'none';
+            return;
+        }
+
+        const archetype = document.createElement('span');
+        archetype.className = 'results-summary-archetype';
+        archetype.textContent = card.archetype;
+        summary.appendChild(archetype);
+        summary.appendChild(document.createTextNode(` — ${card.percentage}% compatibility with linda`));
+        summary.style.display = '';
+    },
+
+    _buildResultsCardData(card) {
+        const r = this.responses;
+        const answers = [];
+        if (r.texture) answers.push(['texture', r.texture]);
+        if (r.nature) answers.push(['nature', r.nature.join(' > ')]);
+        if (r.babies !== undefined) {
+            const babyLabels = CONTENT.babies ? CONTENT.babies.labels : [];
+            answers.push(['babies', babyLabels[r.babies] || String(r.babies)]);
+        }
+        if (r.spirit !== undefined) answers.push(['spirituality', `${this._describeSpirit(r.spirit)} (${r.spirit}/100)`]);
+        if (r.crying) {
+            const cryLabels = { hug: 'goes to hug them', ask: 'asks what they need', space: 'gives them space', cry: 'also starts crying', depends: 'depends on who' };
+            answers.push(['when someone cries', cryLabels[r.crying] || r.crying]);
+        }
+        if (r.god) answers.push(['calls it', `"${r.god}"`]);
+        if (r.lead) {
+            const leadLabels = { lead: 'leads', follow: 'follows', both: 'context-dependent', neither: 'collaborative' };
+            answers.push(['lead/follow', leadLabels[r.lead] || r.lead]);
+        }
+        if (r.therapyHours || (r.therapyBuzzwords && r.therapyBuzzwords.length)) {
+            const parts = [];
+            if (r.therapyHours) parts.push(`${r.therapyHours} hours`);
+            if (r.therapyBuzzwords && r.therapyBuzzwords.length) parts.push(r.therapyBuzzwords.join(', '));
+            answers.push(['therapy', parts.join(' · ')]);
+        }
+        if (r.upside) {
+            const upsideLabels = { love: 'loves it', fine: 'fine', uncomfortable: 'uncomfortable', never: 'avoids it', when: 'can\'t remember' };
+            answers.push(['upside down', upsideLabels[r.upside] || r.upside]);
+        }
+
+        const autoAnswers = [];
+        if (r['auto-1']) autoAnswers.push(`"in the middle of the night I ${r['auto-1']}"`);
+        if (r['auto-2']) autoAnswers.push(`"pleasure is ${r['auto-2']}"`);
+        if (r['auto-4']) autoAnswers.push(`"the point of life is ${r['auto-4']}"`);
+
+        return {
+            card,
+            color: r.color || null,
+            colorDescription: r.color ? this._describeColor(r.color) : null,
+            stats: Object.entries(this._calculateStats()),
+            answers,
+            autoAnswers
+        };
+    },
+
+    _measureResultsCardHeight(data) {
+        let y = 60;
+        y += 35;
+        if (data.card) y += 28 + 18;
+        y += 30;
+        if (data.color) y += 20;
+        if (data.stats.length > 0) {
+            y += 10 + 20;
+            y += 18 + data.stats.length * 28;
+        }
+        if (data.answers.length > 0) {
+            const answerRows = Math.ceil(data.answers.length / 2);
+            y += 5 + 20;
+            y += 18 + answerRows * 36 + 15;
+        }
+        if (data.autoAnswers.length > 0) {
+            y += 15;
+            y += 16 + data.autoAnswers.length * 20;
+        }
+        return Math.ceil(y + 60);
+    },
+
     renderResultsCard() {
+        this.updateResultsSummary();
+
         const canvas = document.getElementById('results-card-canvas');
         if (!canvas) return;
 
         const section = document.getElementById('results-card-section');
-        const card = this._getArchetypeAndCompat();
         const meaningfulCount = this._countMeaningfulAnswers();
 
         if (meaningfulCount < 3) {
-            if (section) section.style.display = 'none';
+            canvas.style.display = 'none';
             return;
         }
-        if (section) section.style.display = '';
+        if (section && !section.open) return;
+
+        const card = this._getArchetypeAndCompat();
+        const data = this._buildResultsCardData(card);
+
         canvas.style.display = 'block';
-
-        const r = this.responses;
-
-        // Pre-calculate answers to determine card height
-        const preAnswers = [];
-        if (r.texture) preAnswers.push(1);
-        if (r.nature) preAnswers.push(1);
-        if (r.babies !== undefined) preAnswers.push(1);
-        if (r.music !== undefined) preAnswers.push(1);
-        if (r.spirit !== undefined) preAnswers.push(1);
-        if (r.crying) preAnswers.push(1);
-        if (r.god) preAnswers.push(1);
-        if (r.lead) preAnswers.push(1);
-        if (r.therapyHours || (r.therapyBuzzwords && r.therapyBuzzwords.length)) preAnswers.push(1);
-        if (r.upside) preAnswers.push(1);
-        const answerRows = Math.ceil(preAnswers.length / 2);
-        const preAutoAnswers = [r['auto-1'], r['auto-2'], r['auto-4']].filter(Boolean).length;
-        const statsCount = Object.keys(this._calculateStats()).length;
-
-        // Calculate dynamic height: base sections + stats + answers + auto-answers + footer
-        let estimatedH = 60 + 35 + 28 + 18 + 30; // top through archetype + disclaimer
-        if (r.color) estimatedH += 20;
-        estimatedH += 30; // divider
-        if (statsCount > 0) estimatedH += 18 + statsCount * 28; // stats header + bars
-        estimatedH += 25; // divider
-        estimatedH += 18 + answerRows * 36; // key answers header + rows
-        estimatedH += 15; // gap
-        if (preAutoAnswers > 0) estimatedH += 16 + 15 + preAutoAnswers * 20; // auto-answers section
-        estimatedH += 60; // footer watermark
 
         // Handle devicePixelRatio for crisp text
         const dpr = window.devicePixelRatio || 1;
         const W = 600;
-        const H = Math.max(600, estimatedH);
+        const H = this._measureResultsCardHeight(data);
 
         canvas.width = W * dpr;
         canvas.height = H * dpr;
@@ -3161,7 +2930,6 @@ const Playground = {
         // Colors
         const cream = '#FAF7F5';
         const petrol = '#2D6A6A';
-        const petrolLight = '#4A8B8B';
         const burgundy = '#8B4A5E';
         const rosaLight = '#E0D0D0';
         const textColor = '#2D2D2D';
@@ -3171,6 +2939,13 @@ const Playground = {
         const fontDisplay = '"Playfair Display", Georgia, serif';
         const fontMono = '"JetBrains Mono", "Courier New", monospace';
         const fontBody = '"Playfair Display", Georgia, serif';
+
+        const drawDivider = (topGap, bottomGap) => {
+            y += topGap;
+            ctx.fillStyle = rosaLight;
+            ctx.fillRect(30, y, W - 60, 1);
+            y += bottomGap;
+        };
 
         // Background
         ctx.fillStyle = cream;
@@ -3196,17 +2971,16 @@ const Playground = {
 
         // Archetype + compatibility
         y += 35;
-        if (card) {
+        if (data.card) {
             ctx.fillStyle = textColor;
             ctx.font = `italic 32px ${fontDisplay}`;
-            ctx.fillText(card.archetype, 30, y);
+            ctx.fillText(data.card.archetype, 30, y);
 
             ctx.fillStyle = burgundy;
             ctx.font = `16px ${fontBody}`;
             y += 28;
-            ctx.fillText(`${card.percentage}% compatibility with linda`, 30, y);
+            ctx.fillText(`${data.card.percentage}% compatibility with linda`, 30, y);
 
-            // Disclaimer
             ctx.fillStyle = textLight;
             ctx.font = `11px ${fontBody}`;
             ctx.globalAlpha = 0.55;
@@ -3219,10 +2993,9 @@ const Playground = {
             ctx.fillText('in progress...', 30, y);
         }
 
-        // Color swatch
         y += 30;
-        if (r.color) {
-            const { h, s, l } = r.color;
+        if (data.color) {
+            const { h, s, l } = data.color;
             const colorStr = `hsl(${h}, ${s}%, ${l}%)`;
             ctx.fillStyle = colorStr;
             ctx.beginPath();
@@ -3234,19 +3007,12 @@ const Playground = {
 
             ctx.fillStyle = textColor;
             ctx.font = `13px ${fontBody}`;
-            ctx.fillText(this._describeColor(r.color), 75, y + 5);
+            ctx.fillText(data.colorDescription, 75, y + 5);
             y += 20;
         }
 
-        // Divider
-        y += 10;
-        ctx.fillStyle = rosaLight;
-        ctx.fillRect(30, y, W - 60, 1);
-        y += 20;
-
-        // Stat bars
-        const stats = this._calculateStats();
-        if (Object.keys(stats).length > 0) {
+        if (data.stats.length > 0) {
+            drawDivider(10, 20);
             ctx.fillStyle = petrol;
             ctx.font = `11px ${fontMono}`;
             ctx.fillText('STATS', 30, y);
@@ -3256,20 +3022,17 @@ const Playground = {
             const barW = 340;
             const barH = 16;
 
-            Object.entries(stats).forEach(([label, value]) => {
-                // Label
+            data.stats.forEach(([label, value]) => {
                 ctx.fillStyle = textColor;
                 ctx.font = `12px ${fontMono}`;
                 ctx.textAlign = 'right';
                 ctx.fillText(label, barX - 12, y + 12);
 
-                // Bar background
                 ctx.fillStyle = rosaLight;
                 ctx.beginPath();
                 ctx.roundRect(barX, y, barW, barH, 8);
                 ctx.fill();
 
-                // Bar fill
                 const grad = ctx.createLinearGradient(barX, 0, barX + barW, 0);
                 grad.addColorStop(0, petrol);
                 grad.addColorStop(1, burgundy);
@@ -3278,7 +3041,6 @@ const Playground = {
                 ctx.roundRect(barX, y, barW * (value / 100), barH, 8);
                 ctx.fill();
 
-                // Value (right-aligned for consistent number alignment)
                 ctx.fillStyle = textLight;
                 ctx.font = `10px ${fontMono}`;
                 ctx.textAlign = 'right';
@@ -3288,107 +3050,59 @@ const Playground = {
             });
         }
 
-        // Divider
-        y += 5;
-        ctx.fillStyle = rosaLight;
-        ctx.fillRect(30, y, W - 60, 1);
-        y += 20;
-
-        // Key answers section
-        ctx.textAlign = 'left';
-        ctx.fillStyle = petrol;
-        ctx.font = `11px ${fontMono}`;
-        ctx.fillText('KEY ANSWERS', 30, y);
-        y += 18;
-
-        const answers = [];
-        if (r.texture) answers.push(['texture', r.texture]);
-        if (r.nature) answers.push(['nature', r.nature.join(' > ')]);
-        if (r.babies !== undefined) {
-            const babyLabels = CONTENT.babies ? CONTENT.babies.labels : [];
-            answers.push(['babies', babyLabels[r.babies] || String(r.babies)]);
-        }
-        if (r.music !== undefined) answers.push(['music', `${this._describeMusicVolume(r.music)} (${r.music}/100)`]);
-        if (r.spirit !== undefined) answers.push(['spirituality', `${this._describeSpirit(r.spirit)} (${r.spirit}/100)`]);
-        if (r.crying) {
-            const cryLabels = { hug: 'goes to hug them', ask: 'asks what they need', space: 'gives them space', cry: 'also starts crying', depends: 'depends on who' };
-            answers.push(['when someone cries', cryLabels[r.crying] || r.crying]);
-        }
-        if (r.god) answers.push(['calls it', `"${r.god}"`]);
-        if (r.lead) {
-            const leadLabels = { lead: 'leads', follow: 'follows', both: 'context-dependent', neither: 'collaborative' };
-            answers.push(['lead/follow', leadLabels[r.lead] || r.lead]);
-        }
-        if (r.therapyHours || (r.therapyBuzzwords && r.therapyBuzzwords.length)) {
-            const parts = [];
-            if (r.therapyHours) parts.push(`${r.therapyHours} hours`);
-            if (r.therapyBuzzwords && r.therapyBuzzwords.length) parts.push(r.therapyBuzzwords.join(', '));
-            answers.push(['therapy', parts.join(' · ')]);
-        }
-        if (r.upside) {
-            const upsideLabels = { love: 'loves it', fine: 'fine', uncomfortable: 'uncomfortable', never: 'avoids it', when: 'can\'t remember' };
-            answers.push(['upside down', upsideLabels[r.upside] || r.upside]);
-        }
-
-        // Render answers in two columns
-        const colW = (W - 60) / 2;
-        const startY = y;
-        let col = 0;
-        let maxY = y;
-
-        answers.forEach((pair, i) => {
-            const [label, value] = pair;
-            col = i % 2;
-            const cx = 30 + col * colW;
-            const cy = startY + Math.floor(i / 2) * 36;
-
-            ctx.fillStyle = textLight;
-            ctx.font = `11px ${fontMono}`;
-            ctx.fillText(label + ':', cx, cy);
-
-            ctx.fillStyle = textColor;
-            ctx.font = `12px ${fontBody}`;
-            // Truncate if too long
-            let displayVal = value;
-            ctx.font = `12px ${fontBody}`;
-            while (ctx.measureText(displayVal).width > colW - 10 && displayVal.length > 10) {
-                displayVal = displayVal.slice(0, -4) + '...';
-            }
-            ctx.fillText(displayVal, cx, cy + 15);
-
-            maxY = cy + 36;
-        });
-
-        y = maxY + 15;
-
-        // Autocomplete answers
-        const autoAnswers = [];
-        if (r['auto-1']) autoAnswers.push(`"in the middle of the night I ${r['auto-1']}"`);
-        if (r['auto-2']) autoAnswers.push(`"pleasure is ${r['auto-2']}"`);
-        if (r['auto-4']) autoAnswers.push(`"the point of life is ${r['auto-4']}"`);
-
-        if (autoAnswers.length > 0 && y < H - 80) {
-            ctx.fillStyle = rosaLight;
-            ctx.fillRect(30, y, W - 60, 1);
-            y += 15;
-
+        if (data.answers.length > 0) {
+            drawDivider(5, 20);
+            ctx.textAlign = 'left';
             ctx.fillStyle = petrol;
             ctx.font = `11px ${fontMono}`;
+            ctx.fillText('KEY ANSWERS', 30, y);
+            y += 18;
+
+            const colW = (W - 60) / 2;
+            const startY = y;
+            let maxY = y;
+
+            data.answers.forEach((pair, i) => {
+                const [label, value] = pair;
+                const col = i % 2;
+                const cx = 30 + col * colW;
+                const cy = startY + Math.floor(i / 2) * 36;
+
+                ctx.fillStyle = textLight;
+                ctx.font = `11px ${fontMono}`;
+                ctx.fillText(label + ':', cx, cy);
+
+                ctx.fillStyle = textColor;
+                ctx.font = `12px ${fontBody}`;
+                let displayVal = value;
+                while (ctx.measureText(displayVal).width > colW - 10 && displayVal.length > 10) {
+                    displayVal = displayVal.slice(0, -4) + '...';
+                }
+                ctx.fillText(displayVal, cx, cy + 15);
+
+                maxY = cy + 36;
+            });
+
+            y = maxY + 15;
+        }
+
+        if (data.autoAnswers.length > 0) {
+            drawDivider(0, 15);
+            ctx.fillStyle = petrol;
+            ctx.font = `11px ${fontMono}`;
+            ctx.textAlign = 'left';
             ctx.fillText('IN THEIR OWN WORDS', 30, y);
             y += 16;
 
             ctx.fillStyle = textColor;
             ctx.font = `italic 12px ${fontBody}`;
-            autoAnswers.forEach(line => {
-                if (y < H - 60) {
-                    // Truncate if needed
-                    let display = line;
-                    while (ctx.measureText(display).width > W - 70 && display.length > 15) {
-                        display = display.slice(0, -4) + '..."';
-                    }
-                    ctx.fillText(display, 30, y);
-                    y += 20;
+            data.autoAnswers.forEach(line => {
+                let display = line;
+                while (ctx.measureText(display).width > W - 70 && display.length > 15) {
+                    display = display.slice(0, -4) + '..."';
                 }
+                ctx.fillText(display, 30, y);
+                y += 20;
             });
         }
 
@@ -3406,12 +3120,10 @@ const Playground = {
         ctx.fillRect(30, H - 33, W - 60, 2);
     },
 
-    // Helper to calculate stats (shared between updateScore and renderResultsCard)
+    // Helper to calculate stats for the results card
     _calculateStats() {
         const r = this.responses;
         const stats = {};
-
-        if (r.music !== undefined) stats.quietness = 100 - parseInt(r.music);
 
         let playfulness = 0, playCount = 0;
         if (r.upside) {
@@ -3468,7 +3180,7 @@ const Playground = {
         }
         try {
             this.populateAnswerSections();
-            this.updateScore();
+            this.updateResultsSummary();
             this.renderResultsCard();
         } catch (e) {
             console.warn('Could not update UI:', e);
