@@ -20,14 +20,14 @@ const Playground = {
         }
         this.reorderToys();
         const toys = [
-            'initColorMaker', 'initBodyCheck', 'initShadeOrder', 'initEmotionGame',
-            'initTexturePicker', 'initToeTest', 'initSequence', 'initAutocomplete',
+            'initColorMaker', 'initBodyCheck', 'initEmotionGame',
+            'initTexturePicker', 'initToeTest', 'initAutocomplete',
             'initMessagePreference', 'initNatureRank', 'initUpsideDown',
-            'initAIQuiz', 'initRoomSlider', 'initCryingScenario', 'initSpeedReading',
-            'initSpiritSlider', 'initNeuroQuiz', 'initLeadFollow', 'initTravel',
-            'initLocation', 'initTherapy', 'initGod', 'initFood', 'initPrecision',
-            'initHold', 'initFunQuestion', 'initMeta', 'initDay', 'initEmbodiment',
-            'initPatterns', 'initBabies', 'initUntangle', 'initShare',
+            'initAIQuiz', 'initCryingScenario', 'initSpeedReading',
+            'initSpiritSlider', 'initLeadFollow', 'initTravel',
+            'initLocation', 'initTherapy', 'initGod', 'initFood',
+            'initHold', 'initFunQuestion', 'initMeta', 'initDay',
+            'initBabies', 'initUntangle', 'initShare',
         ];
         for (const toy of toys) {
             try { this[toy](); } catch (e) { console.warn(`${toy} failed:`, e); }
@@ -52,32 +52,25 @@ const Playground = {
         const toyMap = {
             color: document.getElementById('toy-color'),
             body: document.getElementById('toy-body'),
-            shades: document.getElementById('toy-shades'),
             emotion: document.getElementById('toy-emotion'),
             autocomplete: document.getElementById('toy-autocomplete'),
             texture: document.getElementById('toy-texture'),
             toes: document.getElementById('toy-toes'),
-            sequence: document.getElementById('toy-sequence'),
             message: document.getElementById('toy-message'),
             nature: document.getElementById('toy-nature'),
             upside: document.getElementById('toy-upside'),
             ai: document.getElementById('toy-ai'),
-            room: document.getElementById('toy-room'),
             crying: document.getElementById('toy-crying'),
             reading: document.getElementById('toy-reading'),
             spirit: document.getElementById('toy-spirit'),
-            neuro: document.getElementById('toy-neuro'),
             lead: document.getElementById('toy-lead'),
             therapy: document.getElementById('toy-therapy'),
             god: document.getElementById('toy-god'),
             food: document.getElementById('toy-food'),
-            precision: document.getElementById('toy-precision'),
             hold: document.getElementById('toy-hold'),
             fun: document.getElementById('toy-fun'),
             meta: document.getElementById('toy-meta'),
             day: document.getElementById('toy-day'),
-            embodiment: document.getElementById('toy-embodiment'),
-            patterns: document.getElementById('toy-patterns'),
             untangle: document.getElementById('toy-untangle'),
             babies: document.getElementById('toy-babies'),
             travel: document.getElementById('toy-travel')
@@ -356,95 +349,6 @@ const Playground = {
         }
     },
 
-    // ========== Toy 3: Shade Order ==========
-    initShadeOrder() {
-        const container = document.getElementById('shade-container');
-        const checkBtn = document.getElementById('check-shades');
-        const result = document.getElementById('shade-result');
-
-        // Generate colors from pink/rose through red to green/teal
-        const generateShades = () => {
-            const shades = [];
-            // Pick a random starting hue, then span ~60 degrees (subtle range)
-            const startHue = Math.floor(Math.random() * 360);
-            const totalRange = 60;
-            // Fixed saturation and lightness so only hue varies
-            const sat = 40 + Math.floor(Math.random() * 15); // fixed per round
-            const lit = 50 + Math.floor(Math.random() * 10); // fixed per round
-            for (let i = 0; i < 8; i++) {
-                const base = startHue + (totalRange / 7) * i;
-                const offset = (Math.random() - 0.5) * 4; // ±2 jitter
-                const sortKey = base + offset;
-                const hue = ((sortKey % 360) + 360) % 360;
-                shades.push({
-                    hue,
-                    sortKey,
-                    color: `hsl(${hue}, ${sat}%, ${lit}%)`
-                });
-            }
-            // Shuffle randomly for the user to sort
-            for (let i = shades.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [shades[i], shades[j]] = [shades[j], shades[i]];
-            }
-            return shades;
-        };
-
-        let shades = generateShades();
-        let selected = null;
-
-        const render = () => {
-            container.innerHTML = '';
-            shades.forEach((shade, index) => {
-                const box = document.createElement('button');
-                box.type = 'button';
-                box.className = 'shade-box';
-                box.style.background = shade.color;
-                box.dataset.index = index;
-
-                box.addEventListener('click', () => {
-                    if (selected === null) {
-                        selected = index;
-                        box.classList.add('selected');
-                    } else {
-                        // Swap
-                        const temp = shades[selected];
-                        shades[selected] = shades[index];
-                        shades[index] = temp;
-                        selected = null;
-                        render();
-                    }
-                });
-
-                container.appendChild(box);
-            });
-        };
-
-        render();
-
-        checkBtn.addEventListener('click', () => {
-            // Check if sorted by sortKey (warmest/pink to coolest/green)
-            let correct = true;
-            for (let i = 1; i < shades.length; i++) {
-                if (shades[i].sortKey < shades[i - 1].sortKey) {
-                    correct = false;
-                    break;
-                }
-            }
-
-            if (correct) {
-                result.textContent = CONTENT.shades.responses.correct;
-                result.style.color = 'var(--color-petrol)';
-            } else {
-                result.textContent = CONTENT.shades.responses.incorrect;
-                result.style.color = 'var(--color-burgundy)';
-            }
-
-            this.responses.shades = correct ? 'correct' : 'attempted';
-            this.saveResponses();
-        });
-    },
-
     // ========== Toy 4: Emotion Game ==========
     initEmotionGame() {
         const text = document.getElementById('emotion-text');
@@ -624,68 +528,6 @@ const Playground = {
         }
     },
 
-    // ========== Toy 8: Sequence ==========
-    initSequence() {
-        const display = document.getElementById('sequence-display');
-        const options = document.getElementById('sequence-options');
-        const feedback = document.getElementById('sequence-feedback');
-
-        // Harder sequence puzzles
-        const puzzles = [
-            { sequence: [1, 1, 2, 3, 5, 8], answer: 13, wrong: [11, 12, 14] }, // fibonacci
-            { sequence: [2, 3, 5, 7, 11], answer: 13, wrong: [12, 14, 15] }, // primes
-            { sequence: [1, 4, 9, 16, 25], answer: 36, wrong: [30, 35, 49] }, // squares
-            { sequence: [1, 8, 27, 64], answer: 125, wrong: [100, 81, 216] }, // cubes
-            { sequence: [2, 6, 12, 20, 30], answer: 42, wrong: [36, 40, 44] }, // n(n+1)
-            { sequence: [1, 2, 4, 7, 11], answer: 16, wrong: [14, 15, 17] }, // +1, +2, +3, +4, +5
-            { sequence: [3, 4, 6, 9, 13], answer: 18, wrong: [16, 17, 19] }, // +1, +2, +3, +4, +5
-            { sequence: [0, 1, 1, 2, 4, 7], answer: 13, wrong: [11, 12, 14] }, // tribonacci
-        ];
-
-        const puzzle = puzzles[Math.floor(Math.random() * puzzles.length)];
-
-        // Render sequence
-        puzzle.sequence.forEach(num => {
-            const item = document.createElement('div');
-            item.className = 'sequence-item';
-            item.textContent = num;
-            display.appendChild(item);
-        });
-
-        // Add mystery box
-        const mystery = document.createElement('div');
-        mystery.className = 'sequence-item mystery';
-        mystery.textContent = '?';
-        display.appendChild(mystery);
-
-        // Render options
-        const allOptions = [puzzle.answer, ...puzzle.wrong].sort(() => Math.random() - 0.5);
-
-        allOptions.forEach(num => {
-            const btn = document.createElement('button');
-            btn.className = 'sequence-option';
-            btn.textContent = num;
-
-            btn.addEventListener('click', () => {
-                if (num === puzzle.answer) {
-                    feedback.textContent = CONTENT.sequence.responses.correct;
-                    feedback.style.color = 'var(--color-petrol)';
-                    mystery.textContent = num;
-                    mystery.classList.remove('mystery');
-                } else {
-                    feedback.textContent = CONTENT.sequence.responses.incorrect;
-                    feedback.style.color = 'var(--color-burgundy)';
-                }
-
-                this.responses.sequence = num === puzzle.answer ? 'correct' : 'attempted';
-                this.saveResponses();
-            });
-
-            options.appendChild(btn);
-        });
-    },
-
-    // ========== Toy 9: Image Choice ==========
     // ========== Toy 10: Message Preference ==========
     initMessagePreference() {
         const options = document.querySelectorAll('.message-option');
@@ -1042,62 +884,6 @@ const Playground = {
         checkCompletion();
     },
 
-    // ========== Toy 29: Embodiment ==========
-    initEmbodiment() {
-        const options = document.querySelectorAll('.embodiment-option');
-        const response = document.getElementById('embodiment-response');
-        const C = CONTENT.embodiment;
-
-        if (!C) return;
-
-        options.forEach(btn => {
-            btn.addEventListener('click', () => {
-                options.forEach(b => b.classList.remove('selected'));
-                btn.classList.add('selected');
-                response.textContent = C.response;
-                this.responses.embodiment = btn.dataset.answer;
-                this.saveResponses();
-            });
-        });
-
-        // Restore if saved
-        if (this.responses.embodiment) {
-            const saved = document.querySelector(`.embodiment-option[data-answer="${this.responses.embodiment}"]`);
-            if (saved) {
-                saved.classList.add('selected');
-                response.textContent = C.response;
-            }
-        }
-    },
-
-    // ========== Toy 30: Patterns ==========
-    initPatterns() {
-        const options = document.querySelectorAll('.patterns-option');
-        const response = document.getElementById('patterns-response');
-        const C = CONTENT.patterns;
-
-        if (!C) return;
-
-        options.forEach(btn => {
-            btn.addEventListener('click', () => {
-                options.forEach(b => b.classList.remove('selected'));
-                btn.classList.add('selected');
-                response.textContent = C.response;
-                this.responses.patterns = btn.dataset.answer;
-                this.saveResponses();
-            });
-        });
-
-        // Restore if saved
-        if (this.responses.patterns) {
-            const saved = document.querySelector(`.patterns-option[data-answer="${this.responses.patterns}"]`);
-            if (saved) {
-                saved.classList.add('selected');
-                response.textContent = C.response;
-            }
-        }
-    },
-
     // ========== Toy 12: Nature Ranking ==========
     initNatureRank() {
         const container = document.getElementById('nature-rank');
@@ -1240,43 +1026,6 @@ const Playground = {
                 }
             });
             updateResponse();
-        }
-    },
-
-    // ========== Toy 15: Room Slider ==========
-    initRoomSlider() {
-        const dial = document.getElementById('room-dial');
-        const response = document.getElementById('room-response');
-        const C = CONTENT.room;
-
-        const updateResponse = (value) => {
-            let text;
-            if (value < 20) {
-                text = C.responses[0];
-            } else if (value < 40) {
-                text = C.responses[25];
-            } else if (value < 60) {
-                text = C.responses[50];
-            } else if (value < 80) {
-                text = C.responses[75];
-            } else {
-                text = C.responses[100];
-            }
-            response.textContent = text;
-        };
-
-        dial.addEventListener('input', () => {
-            this.responses.room = dial.value;
-            updateResponse(dial.value);
-        });
-
-        dial.addEventListener('change', () => {
-            this.saveResponses();
-        });
-
-        if (this.responses.room !== undefined) {
-            dial.value = this.responses.room;
-            updateResponse(this.responses.room);
         }
     },
 
@@ -1425,52 +1174,6 @@ const Playground = {
         if (this.responses.spirit !== undefined) {
             dial.value = this.responses.spirit;
             updateResponse(this.responses.spirit);
-        }
-    },
-
-    // ========== Toy 19: Neuro Quiz ==========
-    initNeuroQuiz() {
-        const checkboxes = document.querySelectorAll('.neuro-option input[type="checkbox"]');
-        const response = document.getElementById('neuro-response');
-        const C = CONTENT.neuro;
-
-        const updateResponse = () => {
-            const checked = [...checkboxes].filter(cb => cb.checked).map(cb => cb.dataset.item);
-            this.responses.neuro = checked;
-            this.saveResponses();
-
-            checkboxes.forEach(cb => {
-                cb.closest('.neuro-option').classList.toggle('checked', cb.checked);
-            });
-
-            if (checked.includes('normal') && checked.length === 1) {
-                response.textContent = C.responses.normal;
-            } else if (checked.length === 0) {
-                response.textContent = "";
-            } else if (checked.length >= 4) {
-                response.textContent = C.responses.many;
-            } else if (checked.includes('swings')) {
-                response.textContent = C.responses.swings;
-            } else if (checked.includes('hyperfocus')) {
-                response.textContent = C.responses.hyperfocus;
-            } else {
-                response.textContent = C.responses.default;
-            }
-        };
-
-        checkboxes.forEach(cb => {
-            cb.addEventListener('change', updateResponse);
-        });
-
-        if (this.responses.neuro) {
-            this.responses.neuro.forEach(item => {
-                const cb = document.querySelector(`.neuro-option input[data-item="${item}"]`);
-                if (cb) {
-                    cb.checked = true;
-                    cb.closest('.neuro-option').classList.add('checked');
-                }
-            });
-            updateResponse();
         }
     },
 
@@ -1713,44 +1416,6 @@ const Playground = {
                 }
             });
             updateResponse();
-        }
-    },
-
-    // ========== Toy 24: Precision ==========
-    initPrecision() {
-        const slider = document.getElementById('precision-slider');
-        const valueDiv = document.getElementById('precision-value');
-        const checkBtn = document.getElementById('check-precision');
-        const response = document.getElementById('precision-response');
-        const C = CONTENT.precision;
-
-        slider.addEventListener('input', () => {
-            // don't show the number — that's the challenge
-        });
-
-        checkBtn.addEventListener('click', () => {
-            const value = parseInt(slider.value);
-            this.responses.precision = value;
-            this.saveResponses();
-
-            if (value === 50) {
-                response.textContent = C.responses.perfect;
-            } else if (value >= 49 && value <= 51) {
-                response.textContent = C.responses.close.replace('{value}', value);
-            } else if (value >= 45 && value <= 55) {
-                response.textContent = C.responses.near.replace('{value}', value);
-            } else {
-                response.textContent = C.responses.off.replace('{value}', value);
-            }
-        });
-
-        if (this.responses.precision !== undefined) {
-            slider.value = this.responses.precision;
-            if (this.responses.precision === 50) {
-                response.textContent = C.responses.perfect;
-            } else {
-                response.textContent = C.responses.restored.replace('{value}', this.responses.precision);
-            }
         }
     },
 
@@ -2132,6 +1797,12 @@ const Playground = {
         }
 
         // ---- Handle form submission ----
+        const CONTACT_EMAIL = 'lindapetrini@gmail.com';
+        const MAX_PHOTO_BYTES = 10 * 1024 * 1024;   // server: 10 MB per file
+        const MAX_TOTAL_BYTES = 20 * 1024 * 1024;   // server: 25 MB body, keep headroom
+        const FETCH_TIMEOUT_MS = 60000;
+        const toMb = (bytes) => (bytes / (1024 * 1024)).toFixed(1);
+
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -2143,6 +1814,28 @@ const Playground = {
 
             const hasPhoto = photoInput && photoInput.files.length > 0;
             const hasVoice = !!voiceBlob;
+            const photoFile = hasPhoto ? photoInput.files[0] : null;
+
+            const submitBtn = form.querySelector('.form-submit-btn.mailto-btn');
+            const originalText = submitBtn.textContent;
+            const showError = (msg) => {
+                responseDiv.className = 'form-response error';
+                responseDiv.textContent = msg;
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            };
+
+            // Client-side size check before we send anything
+            const photoBytes = photoFile ? photoFile.size : 0;
+            const voiceBytes = hasVoice ? voiceBlob.size : 0;
+            if (photoBytes > MAX_PHOTO_BYTES) {
+                showError(`photo is too large (${toMb(photoBytes)} MB) — max 10 MB. try a smaller one or skip it.`);
+                return;
+            }
+            if (photoBytes + voiceBytes > MAX_TOTAL_BYTES) {
+                showError(`photo + voice note are too large together (${toMb(photoBytes + voiceBytes)} MB) — max 20 MB. try a smaller photo or skip the voice note.`);
+                return;
+            }
 
             const formData = new FormData();
             formData.append('name', name);
@@ -2151,39 +1844,57 @@ const Playground = {
             formData.append('message', message);
             formData.append('answers', answers);
             if (resultsUrl) formData.append('results_url', resultsUrl);
-            if (hasPhoto) formData.append('photo', photoInput.files[0]);
+            if (hasPhoto) formData.append('photo', photoFile);
             if (hasVoice) formData.append('voice_note', voiceBlob, 'voice_note.webm');
 
             // Show sending state
-            const submitBtn = form.querySelector('.form-submit-btn.mailto-btn');
-            const originalText = submitBtn.textContent;
             submitBtn.textContent = 'sending...';
             submitBtn.disabled = true;
 
-            // API endpoint — use custom backend, fall back to Formspree
+            // API endpoint — custom backend
             const apiUrl = 'https://dateme-api.lindapetrini.com/api/submit';
+            const isLocalhost = window.location.hostname === 'localhost';
+
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
 
             try {
                 const res = await fetch(apiUrl, {
                     method: 'POST',
                     body: formData,
-                    headers: { 'Accept': 'application/json' }
+                    headers: { 'Accept': 'application/json' },
+                    signal: controller.signal
                 });
+                clearTimeout(timeoutId);
 
                 const data = await res.json().catch(() => ({}));
                 if (res.ok && data.ok) {
                     responseDiv.className = 'form-response success';
                     responseDiv.textContent = 'sent! thanks for sharing.';
-                    submitBtn.textContent = 'sent \u2713';
+                    submitBtn.textContent = 'sent ✓';
+                    return;
+                }
+
+                console.error('Form submit error: HTTP', res.status, data.error || '');
+                if (res.status === 413) {
+                    showError('files too large — try a smaller photo or skip the voice note.');
+                } else if (res.status === 429) {
+                    showError(`too many attempts — wait an hour or email me directly at ${CONTACT_EMAIL}.`);
                 } else {
-                    throw new Error(data.error || 'Submission failed');
+                    showError(`something went wrong (HTTP ${res.status}). email me directly at ${CONTACT_EMAIL} or copy your answers.`);
                 }
             } catch (err) {
+                clearTimeout(timeoutId);
                 console.error('Form submit error:', err);
-                responseDiv.className = 'form-response error';
-                responseDiv.textContent = window.location.hostname === 'localhost' ? 'form submission doesn\'t work on localhost \u2014 it\'ll work on the live site. use copy to clipboard for now.' : 'something went wrong. try copying your answers instead.';
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
+                if (isLocalhost) {
+                    showError('form submission doesn\'t work on localhost — it\'ll work on the live site. use copy to clipboard for now.');
+                } else if (err && err.name === 'AbortError') {
+                    showError('upload timed out — try without the photo.');
+                } else if (err instanceof TypeError) {
+                    showError('couldn\'t reach the server (network/adblock?). copy your answers and email them instead.');
+                } else {
+                    showError(`something went wrong. email me directly at ${CONTACT_EMAIL} or copy your answers.`);
+                }
             }
         });
     },

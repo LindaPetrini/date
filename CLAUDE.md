@@ -1,12 +1,12 @@
 # Date Me Playground - Linda
 
 ## Project Overview
-A personal "date me" website as an interactive playground of 30 small toys/questions. Instead of a traditional dating doc, visitors explore interactive elements that reveal personality compatibility through engagement.
+A personal "date me" website as an interactive playground of 24 small toys/questions. Instead of a traditional dating doc, visitors explore interactive elements that reveal personality compatibility through engagement.
 
 ## Design Philosophy
 - **Playground over resume**: If you enjoy this, you might enjoy me
 - **No right answers (mostly)**: Signal over judgment
-- **Skip around**: Not required to do all 30
+- **Skip around**: Not required to do all 24
 - **Filter through engagement**: The format attracts curious, playful people willing to invest effort
 
 ## Aesthetic
@@ -18,12 +18,11 @@ Petrol green + burgundy/rosa antico palette:
 
 Typography: Cinzel Decorative (display), Playfair Display (body), JetBrains Mono (interactive/mono)
 
-## Current Toys (30 total)
-Reorderable via `toyOrder` array in content.js:
-- texture, body, day, shades, autocomplete, ai, toes, embodiment
-- sequence, images, message, music, hold, nature, color, precision
-- upside, room, crying, reading, spirit, emotion, neuro, lead
-- therapy, god, food, patterns, meta, fun
+## Current Toys (24 total)
+Reorderable via `toyOrder` array in content.js (current order):
+- texture, autocomplete, travel, ai, toes, untangle, day, message
+- hold, nature, babies, color, upside, body, crying, reading
+- spirit, emotion, lead, therapy, god, food, meta, fun
 
 ## Key Features
 - **Intro**: Quick info box with photo, age, location, and key attributes
